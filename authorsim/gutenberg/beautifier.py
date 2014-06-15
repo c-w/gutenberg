@@ -9,6 +9,12 @@ def strip_headers(lines):
     This is a port of the C++ version by Johannes Krugel
     Link: http://www14.in.tum.de/spp1307/src/strip_headers.cpp
 
+    Args:
+        lines (list): the lines of text to filter
+
+    Returns:
+        list: the lines of text that don't belong to a header or footer
+
     """
     out = []
     i = 0
