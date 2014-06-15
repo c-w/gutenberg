@@ -55,9 +55,9 @@ if __name__ == '__main__':
     doc = 'Removes Project Gutenberg headers and footers.'
     parser = argparse.ArgumentParser(description=doc)
     parser.add_argument('infile', nargs='?', type=argparse.FileType('r'),
-                        default=sys.stdin, help='Gutenberg text to clean-up')
+                        default=sys.stdin, help='gutenberg text to clean-up')
     parser.add_argument('outfile', nargs='?', type=argparse.FileType('w'),
-                        default=sys.stdout, help='Cleaned text goes here')
+                        default=sys.stdout, help='cleaned text goes here')
     args = parser.parse_args()
 
     for line in strip_headers(args.infile):
