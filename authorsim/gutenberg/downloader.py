@@ -100,9 +100,12 @@ def makedirs(path):
 def download_corpus(todir, filetypes, langs, offset, delay=2):
     makedirs(todir)
     for link in gutenberg_links(filetypes, langs, offset):
-        logging.info('Downloading file %s' % link)
-        topath = os.path.join(todir, os.path.basename(link))
-        urllib.urlretrieve(link, filename=topath)
+        try:
+            logging.info('Downloading file %s' % link)
+            topath = os.path.join(todir, os.path.basename(link))
+            urllib.urlretrieve(link, filename=topath)
+        except KeyboardInterrupt:
+            pass
         time.sleep(delay)
 
 
