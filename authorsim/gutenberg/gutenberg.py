@@ -1,4 +1,4 @@
-from beautifier import strip_headers
+from beautify import strip_headers
 import os
 import urllib
 
