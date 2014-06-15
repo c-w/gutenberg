@@ -1,4 +1,6 @@
-SRC_DIR=authorsim
+MODULE=authorsim
+
+SRC_DIR=$(MODULE)
 
 
 test:
