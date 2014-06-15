@@ -98,6 +98,16 @@ def makedirs(path):
 
 
 def download_corpus(todir, filetypes, langs, offset, delay=2):
+    """Downloads the entire Project Gutenberg corpus to disk.
+
+    Args:
+        todir (str): directory to which to download the corpus files
+        filetypes (str): only download extexts in these formats (eg. "txt")
+        langs (str): only download etexts in these languages (eg. "en")
+        offset (int): start downloading from this results page onwards
+        delay (int): in-between request wait-time (in seconds)
+
+    """
     makedirs(todir)
     for link in gutenberg_links(filetypes, langs, offset):
         try:
