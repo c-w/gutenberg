@@ -1,4 +1,4 @@
-from user_agents import USER_AGENTS
+from useragents import USER_AGENTS
 import bs4
 import errno
 import logging
