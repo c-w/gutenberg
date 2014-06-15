@@ -1,4 +1,5 @@
 *.pyc
+/data/
 
 # setuptools stuff
 /*.egg-info
