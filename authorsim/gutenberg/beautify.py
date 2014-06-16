@@ -1,5 +1,17 @@
 # -*- coding: utf-8 -*-
 from terminators import HEADERS, FOOTERS
+import logging
+
+
+def get_metadata(lines, key, sep=':'):
+    value = None
+    for line in lines:
+        if line.startswith(key + sep):
+            value = line.split(sep)[1].strip()
+            break
+    if value is None:
+        logging.warning('no %s found' % key)
+    return value
 
 
 def strip_headers(lines):
