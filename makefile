@@ -9,5 +9,5 @@ test:
 clean:
 	find $(SRC_DIR) -name *.pyc -type f -delete
 
-get-requirements: requirements.txt
+install-requirements:
 	pip install -r requirements.txt
