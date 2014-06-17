@@ -59,7 +59,7 @@ def strip_headers(lines):
             if footer_found:
                 break
 
-        out.append(line)
+        out.append(line.strip())
         i += 1
 
     return out
