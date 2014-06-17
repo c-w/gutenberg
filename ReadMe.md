@@ -5,6 +5,6 @@ NLP resource [Project Gutenberg](www.gutenberg.org) easier.
 
 The functionality provided by this package includes:
 
-- Downloading Etexts from Project Gutenberg
-- Removing headers and footers from Etexts
-- Organizing meta-data about the Etexts in a database
+- Downloading etexts from Project Gutenberg
+- Removing headers and footers from etexts
+- Organizing meta-data about the etexts in a database
