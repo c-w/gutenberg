@@ -1,4 +1,4 @@
-MODULE=authorsim
+MODULE=gutenberg
 
 SRC_DIR=$(MODULE)
 

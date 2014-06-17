@@ -1,7 +1,10 @@
-# Author Similarity Detection
+# Project Gutenberg Corpus
 
-This project aims to use natural language processing techniques to compute the
-similarity between known authors and new pieces of prose.  The Project Gutenberg
-corpus is used to compute fingerprints of various famous authors.  The
-fingerprints are then used to find which authors are the most similar to any
-given text.
+This package contains a variety of scripts to make working with the tremendous
+NLP resource [Project Gutenberg](www.gutenberg.org) easier.
+
+The functionality provided by this package includes:
+
+- Downloading Etexts from Project Gutenberg
+- Removing headers and footers from Etexts
+- Organizing meta-data about the Etexts in a database
