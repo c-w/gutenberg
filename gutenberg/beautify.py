@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import logging
 
 
 # Markers that indicate the Project Gutenberg headers
