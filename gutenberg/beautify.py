@@ -135,5 +135,5 @@ if __name__ == '__main__':
                         default=sys.stdout, help='cleaned text goes here')
     args = parser.parse_args()
 
-    for line in strip_headers(args.infile):
-        args.outfile.write(line)
+    for inline in strip_headers(args.infile):
+        args.outfile.write(inline)
