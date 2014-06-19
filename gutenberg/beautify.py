@@ -73,17 +73,6 @@ FOOTERS = [
 ]
 
 
-def get_metadata(lines, key, sep=':'):
-    value = None
-    for line in lines:
-        if line.startswith(key + sep):
-            value = line.split(sep)[1].strip()
-            break
-    if value is None:
-        logging.warning('no %s found' % key)
-    return value
-
-
 def strip_headers(lines):
     """Remove lines that are part of the Project Gutenberg header or footer.
 
