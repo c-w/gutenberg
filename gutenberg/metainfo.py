@@ -218,11 +218,11 @@ def merge(head, tail, sep=' '):
     return ((head or '').strip(sep) + sep + (tail or '').strip(sep)).strip(sep)
 
 
-def splithead(s, sep=' '):
+def splithead(delimited, sep=' '):
     """Splits off the first element in a delimited string.
 
     Args:
-        s (str): the string to split
+        delimited (str): the string to split
         sep (str, optional): the separator to split on
 
     Returns:
@@ -236,5 +236,5 @@ def splithead(s, sep=' '):
         ('foo', 'bar:baz')
 
     """
-    tokens = s.split(sep)
+    tokens = delimited.split(sep)
     return tokens[0], sep.join(tokens[1:])
