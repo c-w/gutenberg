@@ -121,13 +121,13 @@ def parse_entity(lines):
         if not (line and line[-1].isdigit()):
             continue
 
-        fullmatch = re.match('(.+), by (.+) (\d+)', line)
+        fullmatch = re.match(r'(.+), by (.+) (\d+)', line)
         if fullmatch:
             title, author, etext = fullmatch.groups()
             break
 
-        titlematch = re.match('(.+), +(\d+)', line)
-        authormatch = re.match(' *by (.*)', next(lines))
+        titlematch = re.match(r'(.+), +(\d+)', line)
+        authormatch = re.match(r' *by (.*)', next(lines))
         if titlematch and authormatch:
             title, etext = titlematch.groups()
             author = authormatch.group(1)
