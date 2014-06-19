@@ -35,19 +35,17 @@ def gutenberg_links(filetypes, langs, offset):
     has_next = True
     while has_next:
         logging.info('Downloading from offset %s' % offset)
-        request = {
-            'url': 'http://www.gutenberg.org/robot/harvest',
-            'params': {
+        response = requests.get(
+            url='http://www.gutenberg.org/robot/harvest',
+            params={
                 'filetypes[]': filetypes,
                 'langs[]': langs,
                 'offset': offset,
             },
-            'headers': {
+            headers={
                 'user-agent': random.choice(USER_AGENTS),
             },
-        }
-
-        response = requests.get(**request)
+        )
         soup = bs4.BeautifulSoup(response.text)
         has_next = False
         for link in soup.find_all('a', href=True):
