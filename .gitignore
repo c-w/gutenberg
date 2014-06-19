@@ -1,5 +1,8 @@
-*.pyc
+# gutenberg stuff
 /data/
+
+# python stuff
+*.pyc
 
 # setuptools stuff
 /*.egg-info
