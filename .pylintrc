@@ -1,2 +1,2 @@
 [BASIC]
-const-rgx=([A-Za-z_][A-Za-z0-9_]*)$
+const-rgx=(([A-Z_][A-Z0-9_]*)|([a-z_][a-z0-9_]*))$
