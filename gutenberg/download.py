@@ -155,7 +155,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=doc)
     parser.add_argument('todir', type=str,
                         help='directory to which to download the corpus')
-    parser.add_argument('--filetypes', metavar='F',  type=str, default='txt',
+    parser.add_argument('--filetypes', metavar='F', type=str, default='txt',
                         help='only download files in these formats')
     parser.add_argument('--langs', metavar='L', type=str, default='en',
                         help='only download files in these languages')
