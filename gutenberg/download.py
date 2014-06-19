@@ -107,7 +107,8 @@ def makedirs(path):
 
 
 def download_corpus(todir, filetypes, langs, offset, delay=2):
-    """Downloads the entire Project Gutenberg corpus to disk.
+    """Downloads the entire Project Gutenberg corpus to disk. Prefers ISO
+    encoded files over ASCII encoded files.
 
     Args:
         todir (str): directory to which to download the corpus files
@@ -118,14 +119,33 @@ def download_corpus(todir, filetypes, langs, offset, delay=2):
 
     """
     makedirs(todir)
+    seen = set()
     for link in gutenberg_links(filetypes, langs, offset):
-        try:
-            logging.info('Downloading file %s' % link)
-            topath = os.path.join(todir, os.path.basename(link))
-            urllib.urlretrieve(link, filename=topath)
-        except KeyboardInterrupt:
-            pass
-        time.sleep(delay)
+        download = False
+        filename, ext = os.path.splitext(os.path.basename(link))
+        if '-' in filename:
+            # prefer iso encoded files over ascii encoded versions
+            asciiname, isoname = filename.split('-')[0], filename
+            if asciiname in seen:
+                download = True
+                seen.add(isoname)
+                seen.remove(asciiname)
+                os.remove(os.path.join(todir, asciiname + ext))
+        else:
+            # fetch ascii encoded etext if iso encoded version not downloaded
+            asciiname, isoname = filename, filename + '-'
+            if isoname not in seen:
+                download = True
+                seen.add(asciiname)
+
+        if download:
+            try:
+                logging.info('Downloading file %s' % link)
+                urllib.urlretrieve(link, os.path.join(todir, filename + ext))
+                seen.add(filename)
+            except KeyboardInterrupt:
+                pass
+            time.sleep(delay)
 
 
 if __name__ == '__main__':
