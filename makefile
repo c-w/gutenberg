@@ -13,4 +13,4 @@ install:
 	pip install -r requirements.txt
 
 lint:
-	pylint $(SRC_DIR) --output-format=colorized --reports=no --const-rgx='[A-Za-z_][A-Za-z0-9_]{2,30}$$' || true
+	pylint $(SRC_DIR) --output-format=colorized --reports=no --rcfile=.pylintrc || true
