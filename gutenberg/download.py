@@ -34,7 +34,7 @@ def gutenberg_links(filetypes, langs, offset):
     """
     has_next = True
     while has_next:
-        logging.info('Downloading from offset %s' % offset)
+        logging.info('Downloading from offset %s', offset)
         response = requests.get(
             url='http://www.gutenberg.org/robot/harvest',
             params={
@@ -138,7 +138,7 @@ def download_corpus(todir, filetypes, langs, offset, delay=2):
 
         if download:
             try:
-                logging.info('Downloading file %s' % link)
+                logging.info('Downloading file %s', link)
                 urllib.urlretrieve(link, os.path.join(todir, filename + ext))
                 seen.add(filename)
             except KeyboardInterrupt:
