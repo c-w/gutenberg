@@ -11,3 +11,6 @@ clean:
 
 install-requirements:
 	pip install -r requirements.txt
+
+pylint:
+	pylint $(SRC_DIR) --output-format=colorized --reports=no || true
