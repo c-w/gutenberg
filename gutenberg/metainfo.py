@@ -1,4 +1,5 @@
 import collections
+import json
 import re
 import requests
 
@@ -238,3 +239,14 @@ def splithead(delimited, sep=' '):
     """
     tokens = delimited.split(sep)
     return tokens[0], sep.join(tokens[1:])
+
+
+if __name__ == '__main__':
+    import argparse
+
+    doc = 'Downloads Project Gutenberg meta-data for all etexts as JSON'
+    parser = argparse.ArgumentParser(description=doc)
+    args = parser.parse_args()
+
+    info = parse_index(raw_metainfo())
+    print json.dumps(info, sort_keys=True, indent=2, separators=(',', ':'))
