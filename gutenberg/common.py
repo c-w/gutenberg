@@ -1,7 +1,36 @@
 import errno
+import functools
 import os
 import re
 import urlparse
+
+
+def memoize(fun):
+    """Decorator that memoizes function return values. The memoization is
+    implemented in a very naive manner and therefore shouldn't be used in
+    anything critical. Most notably, the memoization cache is not limited in
+    size.
+
+    Args:
+        fun (callable): the function to decorate
+
+    Returns:
+        callable: the function with memoization enabled
+
+    """
+    cache = fun._cache = {}
+
+    @functools.wraps(fun)
+    def memoizer(*args, **kwargs):
+        """Memoization layer."""
+        key = str(args) + str(kwargs)
+        try:
+            value = cache[key]
+        except KeyError:
+            value = cache[key] = fun(*args, **kwargs)
+        return value
+
+    return memoizer
 
 
 def makedirs(path):
