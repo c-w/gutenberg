@@ -1,4 +1,4 @@
-from common import merge, splithead
+from common import memoize, merge, splithead
 import collections
 import json
 import re
@@ -23,6 +23,7 @@ def etextno(lines):
     return None
 
 
+@memoize
 def metainfo():
     """Retrieves a database of meta-data about Project Gutenberg etexts.  The
     meta-data always contains at least information about the title and author
