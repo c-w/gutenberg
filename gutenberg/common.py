@@ -7,8 +7,34 @@ import gzip
 import itertools
 import os
 import re
+import signal
 import urlparse
 import zipfile
+
+
+def nointerrupt(fun):
+    """Wrapper to ensure that a function always terminates. The current
+    implementation relies on catching and discarding the SIGINT signal and
+    therefore will only work on UNIX systems. Alternative implementations for
+    Windows could implement a similar function using threads.
+
+    Args:
+        fun (callable): the function to make un-interruptable
+
+    Returns:
+        callable: the un-interruptable version of the function
+
+    """
+
+    @functools.wraps(fun)
+    def wrapper(*args, **kwargs):
+        """Decorator."""
+        sigint = signal.signal(signal.SIGINT, signal.SIG_IGN)
+        retval = fun(*args, **kwargs)
+        signal.signal(signal.SIGINT, sigint)
+        return retval
+
+    return wrapper
 
 
 def memoize(fun):
