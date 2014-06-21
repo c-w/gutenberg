@@ -31,7 +31,7 @@ def gutenberg_links(filetypes, langs, offset):
         offset (int): start downloading from this results page onwards
 
     Yields:
-        str: the download location of the next etext
+        str, int: the download location of the next etext and its offset
 
     """
     has_next = True
@@ -55,12 +55,73 @@ def gutenberg_links(filetypes, langs, offset):
                 offset = common.request_param('offset', link['href'])
                 has_next = True
             else:
-                yield link['href']
+                yield link['href'], int(offset)
+
+
+def canonicalize(path):
+    """Project Gutenberg paths consist of a resource identifier and an
+    optinal suffix specifying an encoding. For example, ``14639.zip'' is an
+    ascii-encoded file and ``14639-8.zip'' is a utf-8 encoded file. This
+    function splits a path into uri and encoding.
+
+    Args:
+        path (str): the path to canonicalize
+
+    Returns:
+        str, str: the resource identifier associated with the path and its
+                  encoding (or None if the file is ascii-encoded)
+
+    Examples:
+        >>> canonicalize('http://www.gutenberg.lib.md.us/14639.zip')
+        ('14639', None)
+
+        >>> canonicalize('http://www.gutenberg.lib.md.us/14641-8.zip')
+        ('14641', '8')
+
+        >>> canonicalize('http://www.gutenberg.lib.md.us/14674-0.zip')
+        ('14674', '0')
+
+    """
+    uri, _ = os.path.splitext(os.path.basename(path))
+    uri, encoding = uri.split('-') if '-' in uri else (uri, None)
+    return uri, encoding
+
+
+def download_link(link, todir, seen=None):
+    """Download a single Project Gutenberg etext. Prefers URF-8 encoded files
+    over ASCII encoded files.
+
+    Args:
+        link (str): the link to the etext to download
+        todir (str): the directory to which to download the etext
+        seen (dict, optional): a pointer to the already downloaded etexts
+
+    """
+    common.makedirs(todir)
+    seen = seen if seen is not None else set()
+    download = False
+    uri, cur_encoding = canonicalize(link)
+
+    if uri not in seen:
+        # totally new ebook
+        download = True
+    else:
+        # seen this ebook before - only download if it's a better version
+        prev_location = seen[uri]
+        prev_encoding = canonicalize(prev_location)[1]
+        if cur_encoding > prev_encoding:
+            download = True
+            common.nointerrupt(os.remove)(prev_location)
+
+    if download:
+        logging.info('Downloading file %s', link)
+        downloadloc = os.path.join(todir, os.path.basename(link))
+        common.nointerrupt(urllib.urlretrieve)(link, downloadloc)
+        seen[uri] = downloadloc
 
 
 def download_corpus(todir, filetypes, langs, offset, delay=2):
-    """Downloads the entire Project Gutenberg corpus to disk. Prefers ISO
-    encoded files over ASCII encoded files.
+    """Downloads the entire Project Gutenberg corpus to disk.
 
     Args:
         todir (str): directory to which to download the corpus files
@@ -69,35 +130,21 @@ def download_corpus(todir, filetypes, langs, offset, delay=2):
         offset (int): start downloading from this results page onwards
         delay (int): in-between request wait-time (in seconds)
 
+    Returns:
+        int: the last offset location from which etexts were downloaded
+
     """
     common.makedirs(todir)
-    seen = set()
-    for link in gutenberg_links(filetypes, langs, offset):
-        download = False
-        filename, ext = os.path.splitext(os.path.basename(link))
-        if '-' in filename:
-            # prefer iso encoded files over ascii encoded versions
-            asciiname, isoname = filename.split('-')[0], filename
-            if asciiname in seen:
-                download = True
-                seen.add(isoname)
-                seen.remove(asciiname)
-                os.remove(os.path.join(todir, asciiname + ext))
-        else:
-            # fetch ascii encoded etext if iso encoded version not downloaded
-            asciiname, isoname = filename, filename + '-'
-            if isoname not in seen:
-                download = True
-                seen.add(asciiname)
+    seen = dict((canonicalize(path)[0], path)
+                for path in common.listfiles(todir))
 
-        if download:
-            try:
-                logging.info('Downloading file %s', link)
-                urllib.urlretrieve(link, os.path.join(todir, filename + ext))
-                seen.add(filename)
-            except KeyboardInterrupt:
-                pass
+    try:
+        for link, offset in gutenberg_links(filetypes, langs, offset):
+            common.nointerrupt(download_link)(link, todir, seen=seen)
             time.sleep(delay)
+    except KeyboardInterrupt:
+        pass
+    return offset
 
 
 if __name__ == '__main__':
