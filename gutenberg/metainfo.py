@@ -222,5 +222,4 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=doc)
     args = parser.parse_args()
 
-    info = metainfo()
-    print json.dumps(info, sort_keys=True, indent=2, separators=(',', ':'))
+    print json.dumps(metainfo(), sort_keys=True, indent=2)
