@@ -27,8 +27,8 @@ def memoize(fun):
     cache = fun._cache = {}
 
     @functools.wraps(fun)
-    def memoizer(*args, **kwargs):
-        """Memoization layer."""
+    def wrapper(*args, **kwargs):
+        """Decorator."""
         key = str(args) + str(kwargs)
         try:
             value = cache[key]
@@ -36,7 +36,7 @@ def memoize(fun):
             value = cache[key] = fun(*args, **kwargs)
         return value
 
-    return memoizer
+    return wrapper
 
 
 def readfile(path):
