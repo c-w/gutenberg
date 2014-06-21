@@ -9,9 +9,5 @@
 /*.egg-info
 /dist/
 
-# virtualenv folders
-/bin/
-/include/
-/lib/
-/local/
-/man/
+# virtualenv stuff
+/virtualenv/
