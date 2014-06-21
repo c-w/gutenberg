@@ -100,19 +100,19 @@ def parse_index(lines):
 
     """
     lines = iter(lines)
-    metainfo = collections.defaultdict(dict)
+    metadata = collections.defaultdict(dict)
     while True:
         try:
             title, author, etext = parse_entity(lines)
         except StopIteration:
             break
 
-        metainfo[etext]['title'] = title
-        metainfo[etext]['author'] = author
+        metadata[etext]['title'] = title
+        metadata[etext]['author'] = author
         for key, value in parse_extrainfo(lines):
-            metainfo[etext][key.lower()] = value
+            metadata[etext][key.lower()] = value
 
-    return dict(metainfo)
+    return dict(metadata)
 
 
 def parse_entity(lines):
