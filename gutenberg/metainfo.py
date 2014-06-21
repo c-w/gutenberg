@@ -23,6 +23,18 @@ def etextno(lines):
     return None
 
 
+def metainfo():
+    """Retrieves a database of meta-data about Project Gutenberg etexts.  The
+    meta-data always contains at least information about the title and author
+    of a work. Optional information includes translator, editor, language, etc.
+
+    Returns:
+        dict: a mapping from etext-identifier to etext meta-data
+
+    """
+    return parse_index(raw_metainfo())
+
+
 def raw_metainfo():
     """Retrieves the raw Project Gutenberg index via HTTP.
 
@@ -210,5 +222,5 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=doc)
     args = parser.parse_args()
 
-    info = parse_index(raw_metainfo())
+    info = metainfo()
     print json.dumps(info, sort_keys=True, indent=2, separators=(',', ':'))
