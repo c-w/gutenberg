@@ -12,14 +12,14 @@ def etextno(lines):
         lines (iter): the lines of the etext to search
 
     Returns:
-        str: the id of the etext or None if no such id was found
+        int: the id of the etext or None if no such id was found
 
     """
     etext_re = re.compile(r'e(text|book) #(?P<etextno>\d+)', re.I)
     for line in lines:
         match = etext_re.search(line)
         if match is not None:
-            return match.group('etextno')
+            return int(match.group('etextno'))
     return None
 
 
