@@ -5,6 +5,24 @@ import re
 import requests
 
 
+def etextno(lines):
+    """Retrieves the id for an etext.
+
+    Args:
+        lines (iter): the lines of the etext to search
+
+    Returns:
+        str: the id of the etext or None if no such id was found
+
+    """
+    etext_re = re.compile(r'e(text|book) #(?p<etextno>\d+)', re.I)
+    for line in lines:
+        match = etext_re.search(line)
+        if match is not None:
+            return match.group('etextno')
+    return None
+
+
 def raw_metainfo():
     """Retrieves the raw Project Gutenberg index via HTTP.
 
