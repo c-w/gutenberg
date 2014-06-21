@@ -15,7 +15,7 @@ def etextno(lines):
         str: the id of the etext or None if no such id was found
 
     """
-    etext_re = re.compile(r'e(text|book) #(?p<etextno>\d+)', re.I)
+    etext_re = re.compile(r'e(text|book) #(?P<etextno>\d+)', re.I)
     for line in lines:
         match = etext_re.search(line)
         if match is not None:
