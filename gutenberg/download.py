@@ -1,8 +1,9 @@
 """Module to download raw etexts from Project Gutenberg."""
 
 
+from __future__ import absolute_import
 import bs4
-import common
+import gutenberg.common as common
 import logging
 import os
 import random

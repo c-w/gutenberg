@@ -1,8 +1,9 @@
 """Module to tag Project Gutenberg etexts with meta-data."""
 
 
+from __future__ import absolute_import
 import collections
-import common
+import gutenberg.common as common
 import json
 import re
 import requests
