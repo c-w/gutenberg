@@ -1,3 +1,4 @@
+from common import merge, splithead
 import collections
 import json
 import re
@@ -182,63 +183,6 @@ def parse_extrainfo(lines):
 
         else:
             value = merge(value, line)
-
-
-def merge(head, tail, sep=' '):
-    """Null-safe and whitespace-consistent concatenation of two strings using a
-    separator.
-
-    Args:
-        head (str): the string to concatenate left
-        tail (str): the string to concatenate right
-        sep (str, optional): the separator to use for concatenation
-
-    Returns:
-        str: the string "head + sep + tail"
-
-    Examples:
-        >>> merge('foo', 'bar')
-        'foo bar'
-
-        >> merge('foo ', 'bar')
-        'foo bar'
-
-        >>> merge('foo', '   bar')
-        'foo bar'
-
-        >>> merge(None, ' foo')
-        'foo'
-
-        >>> merge(' foo ', None)
-        'foo'
-
-        >>> merge(None, None)
-        ''
-
-    """
-    return ((head or '').strip(sep) + sep + (tail or '').strip(sep)).strip(sep)
-
-
-def splithead(delimited, sep=' '):
-    """Splits off the first element in a delimited string.
-
-    Args:
-        delimited (str): the string to split
-        sep (str, optional): the separator to split on
-
-    Returns:
-        tuple: the first element split and the rest of the string
-
-    Examples:
-        >>> splithead('foo bar')
-        ('foo', 'bar')
-
-        >>> splithead('foo:bar:baz', sep=':')
-        ('foo', 'bar:baz')
-
-    """
-    tokens = delimited.split(sep)
-    return tokens[0], sep.join(tokens[1:])
 
 
 if __name__ == '__main__':
