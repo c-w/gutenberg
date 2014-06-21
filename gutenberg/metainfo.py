@@ -1,3 +1,6 @@
+"""Module to tag Project Gutenberg etexts with meta-data."""
+
+
 import collections
 import common
 import json

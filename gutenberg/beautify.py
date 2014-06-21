@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Module to process raw Project Gutenberg ETexts into a more usable format."""
 
 
 # Markers that indicate the Project Gutenberg headers

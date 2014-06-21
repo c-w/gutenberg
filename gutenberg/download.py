@@ -1,3 +1,6 @@
+"""Module to download raw etexts from Project Gutenberg."""
+
+
 import bs4
 import common
 import logging

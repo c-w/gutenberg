@@ -1,3 +1,6 @@
+"""Module for shared/common/utility functions."""
+
+
 import errno
 import functools
 import gzip
