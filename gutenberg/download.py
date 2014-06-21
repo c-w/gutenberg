@@ -1,5 +1,5 @@
-from common import makedirs, request_param
 import bs4
+import common
 import logging
 import os
 import random
@@ -48,7 +48,7 @@ def gutenberg_links(filetypes, langs, offset):
         has_next = False
         for link in soup.find_all('a', href=True):
             if link.text.lower() == 'next page':
-                offset = request_param('offset', link['href'])
+                offset = common.request_param('offset', link['href'])
                 has_next = True
             else:
                 yield link['href']
@@ -66,7 +66,7 @@ def download_corpus(todir, filetypes, langs, offset, delay=2):
         delay (int): in-between request wait-time (in seconds)
 
     """
-    makedirs(todir)
+    common.makedirs(todir)
     seen = set()
     for link in gutenberg_links(filetypes, langs, offset):
         download = False

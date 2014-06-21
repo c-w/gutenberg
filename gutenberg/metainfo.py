@@ -1,5 +1,5 @@
-from common import memoize, merge, splithead
 import collections
+import common
 import json
 import re
 import requests
@@ -23,7 +23,7 @@ def etextno(lines):
     return None
 
 
-@memoize
+@common.memoize
 def metainfo():
     """Retrieves a database of meta-data about Project Gutenberg etexts.  The
     meta-data always contains at least information about the title and author
@@ -200,20 +200,20 @@ def parse_extrainfo(lines):
                 break
 
         if line.startswith('[') and line.endswith(']'):
-            key, value = splithead(line[1:-1], sep=':')
+            key, value = common.splithead(line[1:-1], sep=':')
             yield key, value.strip()
             key = value = None
 
         elif line.startswith('['):
-            key, value = splithead(line[1:], sep=':')
+            key, value = common.splithead(line[1:], sep=':')
 
         elif line.endswith(']') and key is not None:
-            value = merge(value, line[:-1])
+            value = common.merge(value, line[:-1])
             yield key, value.strip()
             key = value = None
 
         else:
-            value = merge(value, line)
+            value = common.merge(value, line)
 
 
 if __name__ == '__main__':
