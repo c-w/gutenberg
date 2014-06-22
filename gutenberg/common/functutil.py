@@ -1,3 +1,6 @@
+"""Utility methods that deal with functions."""
+
+
 import functools
 import signal
 

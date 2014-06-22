@@ -1,3 +1,6 @@
+"""Utility methods to deal with the file-system."""
+
+
 import errno
 import itertools
 import gzip

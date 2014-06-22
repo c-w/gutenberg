@@ -1,3 +1,6 @@
+"""Utility methods to deal with strings."""
+
+
 import re
 import urlparse
 
