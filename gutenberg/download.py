@@ -143,7 +143,7 @@ def download_corpus(todir, filetypes, langs, offset, delay=2):
         int: the last offset location from which etexts were downloaded
 
     """
-    todir = os.path.expandvars(os.path.expanduser(todir))
+    todir = osutil.canonical(todir)
     osutil.makedirs(todir)
     seen = dict((canonicalize(path)[0], path)
                 for path in osutil.listfiles(todir))

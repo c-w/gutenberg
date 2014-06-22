@@ -8,6 +8,37 @@ import os
 import zipfile
 
 
+def canonical(path):
+    """Normalize a path.
+
+    Args:
+        path (str): the path to normalize
+
+    Returns:
+        str: an absolute version of the path with all variables expanded
+
+    Examples:
+        >>> import os
+
+        >>> os.environ['BAZ'] = 'baz'
+        >>> canonical('/foo/bar/$BAZ')
+        '/foo/bar/baz'
+
+        >>> os.chdir('/tmp')
+        >>> canonical('foo/bar/../baz')
+        '/tmp/foo/baz'
+
+        >>> home = os.environ['HOME']
+        >>> canonical('~/foo') == os.path.join(home, 'foo')
+        True
+
+    """
+    path = os.path.expandvars(path)
+    path = os.path.expanduser(path)
+    path = os.path.abspath(path)
+    return path
+
+
 def readfile(path):
     """Opens a file. This is a wrapper around various file-opening methods that
     automatically determines which opener to use depending on the file's magic
