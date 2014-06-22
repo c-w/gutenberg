@@ -3,7 +3,9 @@
 
 from __future__ import absolute_import
 import bs4
-import gutenberg.common as common
+import gutenberg.common.functutil as functutil
+import gutenberg.common.osutil as osutil
+import gutenberg.common.stringutil as stringutil
 import logging
 import os
 import random
@@ -52,7 +54,7 @@ def gutenberg_links(filetypes, langs, offset):
         has_next = False
         for link in soup.find_all('a', href=True):
             if link.text.lower() == 'next page':
-                offset = common.request_param('offset', link['href'])
+                offset = stringutil.request_param('offset', link['href'])
                 has_next = True
             else:
                 yield link['href'], int(offset)
@@ -97,7 +99,7 @@ def download_link(link, todir, seen=None):
         seen (dict, optional): a pointer to the already downloaded etexts
 
     """
-    common.makedirs(todir)
+    osutil.makedirs(todir)
     seen = seen if seen is not None else set()
     download = False
     uri, cur_encoding = canonicalize(link)
@@ -111,12 +113,12 @@ def download_link(link, todir, seen=None):
         prev_encoding = canonicalize(prev_location)[1]
         if cur_encoding > prev_encoding:
             download = True
-            common.nointerrupt(os.remove)(prev_location)
+            functutil.nointerrupt(os.remove)(prev_location)
 
     if download:
         logging.info('Downloading file %s', link)
         downloadloc = os.path.join(todir, os.path.basename(link))
-        common.nointerrupt(urllib.urlretrieve)(link, downloadloc)
+        functutil.nointerrupt(urllib.urlretrieve)(link, downloadloc)
         seen[uri] = downloadloc
 
 
@@ -134,13 +136,13 @@ def download_corpus(todir, filetypes, langs, offset, delay=2):
         int: the last offset location from which etexts were downloaded
 
     """
-    common.makedirs(todir)
+    osutil.makedirs(todir)
     seen = dict((canonicalize(path)[0], path)
-                for path in common.listfiles(todir))
+                for path in osutil.listfiles(todir))
 
     try:
         for link, offset in gutenberg_links(filetypes, langs, offset):
-            common.nointerrupt(download_link)(link, todir, seen=seen)
+            functutil.nointerrupt(download_link)(link, todir, seen=seen)
             time.sleep(delay)
     except KeyboardInterrupt:
         pass
