@@ -160,7 +160,7 @@ def parse_entity(lines):
             continue
 
         fullmatch = re.match(
-            r'(?P<title>.+), by (?P<author>.+) (?P<etext>\d+)', line)
+            r'(?P<title>.+), by (?P<author>.+) (?P<etext>\d+)$', line)
         if fullmatch:
             title = fullmatch.group('title')
             author = fullmatch.group('author')
