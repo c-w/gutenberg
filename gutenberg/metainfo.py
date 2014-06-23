@@ -137,6 +137,7 @@ def parse_entity(lines):
         ...     '',
         ...     'Histoire de la monarchie,           13',
         ...     ' by Paul Thureau-Dangin',
+        ...     'Oxford [City], by Andrew Lang[AL #25][oxfrdxxx.xxx] 2444',
         ...     'This line will not be consumed.',
         ... ])
 
@@ -148,6 +149,9 @@ def parse_entity(lines):
 
         >>> parse_entity(lines)
         ('Histoire de la monarchie', 'Paul Thureau-Dangin', 13)
+
+        >>> parse_entity(lines)
+        ('Oxford', 'Andrew Lang', 2444)
 
         >>> next(lines)
         'This line will not be consumed.'
@@ -175,6 +179,8 @@ def parse_entity(lines):
             author = authormatch.group('author')
             break
 
+    title = re.sub(r'\[[^]]*\]', '', title)
+    author = re.sub(r'\[[^]]*\]', '', author)
     return title.strip(), author.strip(), int(etext)
 
 
