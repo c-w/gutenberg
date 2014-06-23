@@ -5,6 +5,7 @@ from __future__ import absolute_import
 import collections
 import gutenberg.common.functutil as functutil
 import gutenberg.common.stringutil as stringutil
+import itertools
 import json
 import re
 import requests
@@ -108,27 +109,29 @@ def parse_index(lines):
     metadata = collections.defaultdict(dict)
     while True:
         try:
-            title, author, etext = parse_entity(lines)
+            (title, author, etext), lines = parse_entity(lines)
         except StopIteration:
             break
 
         metadata[etext]['title'] = title
         metadata[etext]['author'] = author
-        for key, value in parse_extrainfo(lines):
+        extrainfo, lines = parse_extrainfo(lines)
+        for key, value in extrainfo:
             metadata[etext][key.lower()] = value
 
     return dict(metadata)
 
 
-def parse_entity(lines):
+def parse_entity(gutindex):
     """Parses the next (title, author, etext) tuple from the Project Gutenberg
     index. Note that this tuple may be split over one or two lines.
 
     Args:
-        lines (iter): the lines in the raw Project Gutenberg index
+        gutindex (iter): the lines in the raw Project Gutenberg index
 
     Returns:
-        dict: the next (title, author, etext) tuple in the index
+        dict, iter: the next (title, author, etext) tuple in the index and an
+                    iterator over the lines remaining to be parsed
 
     Examples:
         >>> lines = iter([
@@ -141,23 +144,27 @@ def parse_entity(lines):
         ...     'This line will not be consumed.',
         ... ])
 
-        >>> parse_entity(lines)
+        >>> entity, lines = parse_entity(lines)
+        >>> entity
         ('Wood engraving', 'R. Beedham', 11)
 
-        >>> parse_entity(lines)
+        >>> entity, lines = parse_entity(lines)
+        >>> entity
         ('Life of Wm.', 'W. Fletcher Johnson', 12)
 
-        >>> parse_entity(lines)
+        >>> entity, lines = parse_entity(lines)
+        >>> entity
         ('Histoire de la monarchie', 'Paul Thureau-Dangin', 13)
 
-        >>> parse_entity(lines)
+        >>> entity, lines = parse_entity(lines)
+        >>> entity
         ('Oxford', 'Andrew Lang', 2444)
 
         >>> next(lines)
         'This line will not be consumed.'
 
     """
-    lines = iter(lines)
+    lines = iter(gutindex)
     while True:
         line = next(lines)
         if not (line and line[-1].isdigit()):
@@ -181,31 +188,66 @@ def parse_entity(lines):
 
     title = re.sub(r'\[[^]]*\]', '', title)
     author = re.sub(r'\[[^]]*\]', '', author)
-    return title.strip(), author.strip(), int(etext)
+    return (title.strip(), author.strip(), int(etext)), lines
 
 
-def parse_extrainfo(lines):
+def parse_extrainfo(gutindex):
     """Parses all the additional information for the current entity.
 
     Args:
-        lines (iter): the lines in the raw Project Gutenberg index
+        gutindex (iter): the lines in the raw Project Gutenberg index
 
     Returns:
-        list: (key, value) pairs providing meta-information about the entity
+        list, iter: (key, value) pairs providing meta-information about the
+                    entity and the lines remaining to be parsed
 
     Examples:
-        >>> list(parse_extrainfo([
+        >>> lines = iter([
         ...     '[Subtitle: A study',
         ...     'of the ',
         ...     'ideals]',
         ...     '[Editor: Thomas Capek]',
-        ... ]))
+        ...     '',
+        ...     '[Author AKA: Francois Marie Arouet]',
+        ...     'This line will not be consumed.',
+        ...     '[Subtitle: From the Date]',
+        ...     '[Author: William',
+        ...     'Alexander',
+        ...     'Linn]',
+        ...     'This line will not be consumed.',
+        ... ])
+
+        >>> entities, lines = parse_extrainfo(lines)
+        >>> entities
         [('Subtitle', 'A study of the ideals'), ('Editor', 'Thomas Capek')]
 
+        >>> entities, lines = parse_extrainfo(lines)
+        >>> entities
+        [('Author AKA', 'Francois Marie Arouet')]
+
+        >>> next(lines)
+        'This line will not be consumed.'
+
+        >>> entities, lines = parse_extrainfo(lines)
+        >>> entities
+        [('Subtitle', 'From the Date'), ('Author', 'William Alexander Linn')]
+
+        >>> next(lines)
+        'This line will not be consumed.'
+
     """
-    lines = iter(lines)
+    lines, peek = itertools.tee(iter(gutindex), 2)
     key = value = None
+    entities = []
+    extrainfo_end = False
+
     while True:
+        try:
+            lookahead = next(peek)
+        except StopIteration:
+            break
+        if extrainfo_end and lookahead and not lookahead.startswith('['):
+            break
         try:
             line = next(lines)
         except StopIteration:
@@ -216,19 +258,24 @@ def parse_extrainfo(lines):
 
         if line.startswith('[') and line.endswith(']'):
             key, value = stringutil.splithead(line[1:-1], sep=':')
-            yield key, value.strip()
+            entities.append((key, value.strip()))
             key = value = None
+            extrainfo_end = True
 
         elif line.startswith('['):
             key, value = stringutil.splithead(line[1:], sep=':')
+            extrainfo_end = False
 
         elif line.endswith(']') and key is not None:
             value = stringutil.merge(value, line[:-1])
-            yield key, value.strip()
+            entities.append((key, value.strip()))
             key = value = None
+            extrainfo_end = True
 
         else:
             value = stringutil.merge(value, line)
+
+    return entities, lines
 
 
 if __name__ == '__main__':
