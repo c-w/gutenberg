@@ -159,16 +159,20 @@ def parse_entity(lines):
         if not (line and line[-1].isdigit()):
             continue
 
-        fullmatch = re.match(r'(.+), by (.+) (\d+)', line)
+        fullmatch = re.match(
+            r'(?P<title>.+), by (?P<author>.+) (?P<etext>\d+)', line)
         if fullmatch:
-            title, author, etext = fullmatch.groups()
+            title = fullmatch.group('title')
+            author = fullmatch.group('author')
+            etext = fullmatch.group('etext')
             break
 
-        titlematch = re.match(r'(.+), +(\d+)', line)
-        authormatch = re.match(r' *by (.*)', next(lines))
+        titlematch = re.match(r'(?P<title>.+), +(?P<etext>\d+)', line)
+        authormatch = re.match(r' *by (?P<author>.*)', next(lines))
         if titlematch and authormatch:
-            title, etext = titlematch.groups()
-            author = authormatch.group(1)
+            title = titlematch.group('title')
+            etext = titlematch.group('etext')
+            author = authormatch.group('author')
             break
 
     return title.strip(), author.strip(), int(etext)
