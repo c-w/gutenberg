@@ -60,16 +60,17 @@ class EText(Base):
     __tablename__ = 'etexts'
 
     etextno = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
-    author = sqlalchemy.Column(sqlalchemy.String)
-    title = sqlalchemy.Column(sqlalchemy.String)
-    fulltext = sqlalchemy.Column(sqlalchemy.Text)
+    author = sqlalchemy.Column(sqlalchemy.Unicode)
+    title = sqlalchemy.Column(sqlalchemy.Unicode)
+    fulltext = sqlalchemy.Column(sqlalchemy.UnicodeText)
 
     @classmethod
     def from_file(cls, fobj):
         lines = fobj if isinstance(fobj, file) else osutil.readfile(fobj)
+        lines = (unicode(line, 'latin1') for line in lines)
         metaiter, fulltextiter = itertools.tee(lines, 2)
         ident = metainfo.etextno(metaiter)
-        text = '\n'.join(beautify.strip_headers(fulltextiter))
+        text = u'\n'.join(beautify.strip_headers(fulltextiter))
         metadata = metainfo.metainfo()[ident]
         author = metadata.get('author')
         title = metadata.get('title')
