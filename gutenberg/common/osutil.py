@@ -39,6 +39,32 @@ def canonical(path):
     return path
 
 
+def opener(path):
+    """Returns the appropriate open-method for a file. Determines which
+    open-method to return by looking at the extension of the file.
+
+    Args:
+        path (str): the path of the file to open
+
+    Returns:
+        function: the appropriate opener for the path given its extension
+
+    Examples:
+        >>> open = opener('foo.gz')
+        >>> '%s.%s' % (open.__module__, open.__name__)
+        'gzip.open'
+
+        >>> open = opener('foo')
+        >>> '%s.%s' % (open.__module__, open.__name__)
+        '__builtin__.open'
+
+    """
+    if path.endswith('.gz'):
+        return gzip.open
+
+    return open
+
+
 def readfile(path):
     """Opens a file. This is a wrapper around various file-opening methods that
     automatically determines which opener to use depending on the file's magic
