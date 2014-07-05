@@ -17,7 +17,7 @@ Base = sqlalchemy.ext.declarative.declarative_base()
 class Gutenberg(configutil.ConfigMapping):
     def __init__(self):
         self.download = configutil.ConfigMapping.Section()
-        self.download.data_path = '.'
+        self.download.data_path = 'ProjectGutenberg/rawdata'
         self.download.offset = 0
         self.database = configutil.ConfigMapping.Section()
         self.database.drivername = 'sqlite'
@@ -25,7 +25,7 @@ class Gutenberg(configutil.ConfigMapping):
         self.database.password = None
         self.database.host = None
         self.database.port = None
-        self.database.database = 'gutenberg.db3'
+        self.database.database = 'ProjectGutenberg/gutenberg.db3'
 
     def download_corpus(self, filetypes='txt', langs='en'):
         self.download.offset = download.download_corpus(
