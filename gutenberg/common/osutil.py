@@ -51,6 +51,7 @@ def readfile(path):
         iter: an iterator over the lines in the file
 
     """
+    path = canonical(path)
     with open(path, 'rb') as binary_file:
         magic = str(binary_file.read(4).encode('hex')).upper()
 
@@ -81,6 +82,7 @@ def listfiles(root):
               directory
 
     """
+    root = canonical(root)
     for dirpath, subdirs, filenames in os.walk(root):
         for filename in filenames:
             yield os.path.join(dirpath, filename)
@@ -104,6 +106,7 @@ def makedirs(path):
         >>> makedirs('/tmp/foo/bar')
 
     """
+    path = canonical(path)
     try:
         os.makedirs(path)
     except (IOError, OSError) as ex:
