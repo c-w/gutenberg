@@ -6,6 +6,7 @@ import gutenberg.download as download
 import gutenberg.metainfo as metainfo
 import itertools
 import logging
+import os
 import sqlalchemy
 import sqlalchemy.ext.declarative
 import sqlalchemy.orm
@@ -28,11 +29,13 @@ class Gutenberg(configutil.ConfigMapping):
         self.database.database = 'ProjectGutenberg/gutenberg.db3'
 
     def download_corpus(self, filetypes='txt', langs='en'):
+        osutil.makedirs(self.download.data_path)
         self.download.offset = download.download_corpus(
             self.download.data_path, filetypes=filetypes, langs=langs,
             offset=int(self.download.offset))
 
     def _dbsession(self):
+        osutil.makedirs(os.path.dirname(self.database.database))
         engine = sqlalchemy.create_engine(sqlalchemy.engine.url.URL(
             drivername=self.database.drivername,
             username=self.database.username,
