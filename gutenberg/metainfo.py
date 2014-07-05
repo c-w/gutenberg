@@ -141,6 +141,7 @@ def parse_entity(gutindex):
         ...     'Histoire de la monarchie,           13',
         ...     ' by Paul Thureau-Dangin',
         ...     'Oxford [City], by Andrew Lang[AL #25][oxfrdxxx.xxx] 2444',
+        ...     'History, V2 by MacCaffrey [2hcthxxx.xxx] 2455',
         ...     'This line will not be consumed.',
         ... ])
 
@@ -160,6 +161,10 @@ def parse_entity(gutindex):
         >>> entity
         ('Oxford', 'Andrew Lang', 2444)
 
+        >>> entity, lines = parse_entity(lines)
+        >>> entity
+        ('History', 'MacCaffrey', 2455)
+
         >>> next(lines)
         'This line will not be consumed.'
 
@@ -171,7 +176,7 @@ def parse_entity(gutindex):
             continue
 
         fullmatch = re.match(
-            r'(?P<title>.+), by (?P<author>.+) (?P<etext>\d+)$', line)
+            r'(?P<title>.+),.* by (?P<author>.+) (?P<etext>\d+)$', line)
         if fullmatch:
             title = fullmatch.group('title')
             author = fullmatch.group('author')
