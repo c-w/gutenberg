@@ -38,7 +38,7 @@ def gutenberg_links(filetypes, langs, offset):
     """
     has_next = True
     while has_next:
-        logging.info('Downloading from offset %s', offset)
+        logging.info('downloading starting at offset %s', offset)
         response = requests.get(
             url='http://www.gutenberg.org/robot/harvest',
             params={
@@ -119,12 +119,12 @@ def download_link(link, todir, seen=None):
             functutil.nointerrupt(os.remove)(prev_location)
 
     if download:
-        logging.info('Downloading file %s', link)
+        logging.info('downloading file %s', link)
         downloadloc = os.path.join(todir, os.path.basename(link))
         functutil.nointerrupt(urllib.urlretrieve)(link, downloadloc)
         seen[uri] = downloadloc
     else:
-        logging.debug('Skipping file %s', link)
+        logging.debug('skipping file %s', link)
 
     return download
 

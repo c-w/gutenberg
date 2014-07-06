@@ -108,9 +108,9 @@ class EText(Base):
         author = metadata.get('author')
         title = metadata.get('title')
         if author is None:
-            logging.warning('No author for etextno %s', ident)
+            logging.warning('no author available for etext %s', ident)
         if title is None:
-            logging.warning('No title for etextno %s', ident)
+            logging.warning('no title available for etext %s', ident)
         return EText(etextno=ident, author=author, title=title, fulltext=text)
 
     def __repr__(self):

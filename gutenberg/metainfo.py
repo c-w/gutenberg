@@ -82,9 +82,9 @@ def metainfo():
         author = parse_author(xml)
         title = parse_title(xml)
         if author is None:
-            logging.warning('no author found for etext %s', etext)
+            logging.warning('no author meta-data found for etext %s', etext)
         if title is None:
-            logging.warning('no title found for etext %s', etext)
+            logging.warning('no title meta-data found for etext %s', etext)
         metadata[etext]['author'] = author
         metadata[etext]['title'] = title
     return dict(metadata)
