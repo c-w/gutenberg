@@ -149,18 +149,17 @@ def download_corpus(todir, filetypes, langs, offset, delay=2):
                 for path in osutil.listfiles(todir))
 
     download = functutil.nointerrupt(download_link)
-    try:
-        for link, offset in gutenberg_links(filetypes, langs, offset):
-            try:
-                download_success = download(link, todir, seen=seen)
-            except Exception as ex:  # pylint: disable=W0703
-                logging.error('skipping %s, [%s] %s',
-                              link, type(ex).__name__, ex.message)
-            else:
-                if download_success:
-                    time.sleep(delay)
-    except KeyboardInterrupt:
-        pass
+    for link, offset in gutenberg_links(filetypes, langs, offset):
+        try:
+            download_success = download(link, todir, seen=seen)
+        except KeyboardInterrupt:
+            pass
+        except Exception as ex:  # pylint: disable=W0703
+            logging.error('skipping %s, [%s] %s',
+                          link, type(ex).__name__, ex.message)
+        else:
+            if download_success:
+                time.sleep(delay)
     return offset
 
 
