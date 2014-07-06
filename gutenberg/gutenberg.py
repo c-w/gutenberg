@@ -17,7 +17,7 @@ import sqlalchemy.orm
 Base = sqlalchemy.ext.declarative.declarative_base()
 
 
-class Gutenberg(configutil.ConfigMapping):
+class GutenbergCorpus(configutil.ConfigMapping):
     def __init__(self):
         BASEDIR = 'ProjectGutenbergCorpus'
         self.download = configutil.ConfigMapping.Section()
@@ -47,7 +47,7 @@ class Gutenberg(configutil.ConfigMapping):
                 json.dump(metadata, metadata_file, sort_keys=True, indent=2)
         return metadata
 
-    def download_corpus(self, filetypes='txt', langs='en'):
+    def download(self, filetypes='txt', langs='en'):
         osutil.makedirs(self.download.data_path)
         self.download.offset = download.download_corpus(
             self.download.data_path, filetypes=filetypes, langs=langs,
@@ -67,7 +67,7 @@ class Gutenberg(configutil.ConfigMapping):
         Session = sqlalchemy.orm.sessionmaker(bind=engine)
         return Session()
 
-    def update_database(self):
+    def persist(self):
         session = self._dbsession()
         existing = set(etext.etextno for etext in session.query(EText).all())
         files, num_added = osutil.listfiles(self.download.data_path), 0
