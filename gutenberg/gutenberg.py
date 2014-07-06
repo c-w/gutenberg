@@ -73,7 +73,7 @@ class Gutenberg(configutil.ConfigMapping):
         for path in osutil.listfiles(self.download.data_path):
             try:
                 etext = EText.from_file(path, self.etext_metadata())
-            except NotImplementedError as ex:
+            except (NotImplementedError, ValueError) as ex:
                 logging.error('skipping %s: [%s] %s',
                               path, type(ex).__name__, ex.message)
             else:
