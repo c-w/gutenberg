@@ -26,8 +26,11 @@ def etextno(lines):
         >>> etextno(['Release Date: March 17, 2004 [EBook #11609]'])
         11609
 
+        >>> etextno(['Release Date: July, 2003 [Etext# 4263]'])
+        4263
+
     """
-    etext_re = re.compile(r'e(text|book) #(?P<etextno>\d+)', re.I)
+    etext_re = re.compile(r'e(text|book)\s*#\s*(?P<etextno>\d+)', re.I)
     for line in lines:
         match = etext_re.search(line)
         if match is not None:
