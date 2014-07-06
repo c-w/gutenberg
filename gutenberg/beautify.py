@@ -2,6 +2,7 @@
 """Module to process raw Project Gutenberg ETexts into a more usable format."""
 
 
+from __future__ import absolute_import
 import logging
 
 
@@ -130,11 +131,12 @@ def strip_headers(lines):
 
 
 if __name__ == '__main__':
+    import gutenberg.common.cliutil as cliutil
     import argparse
     import sys
 
     doc = 'Removes Project Gutenberg headers and footers.'
-    parser = argparse.ArgumentParser(description=doc)
+    parser = cliutil.ArgumentParser(description=doc)
     parser.add_argument('infile', nargs='?', type=argparse.FileType('r'),
                         default=sys.stdin, help='gutenberg text to clean-up')
     parser.add_argument('outfile', nargs='?', type=argparse.FileType('w'),

@@ -155,10 +155,10 @@ def raw_metainfo():
 
 
 if __name__ == '__main__':
-    import argparse
+    import gutenberg.common.cliutil as cliutil
 
     doc = 'Downloads Project Gutenberg meta-data for all etexts as JSON'
-    parser = argparse.ArgumentParser(description=doc)
+    parser = cliutil.ArgumentParser(description=doc)
     args = parser.parse_args()
 
     print json.dumps(metainfo(), sort_keys=True, indent=2)
