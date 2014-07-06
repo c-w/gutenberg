@@ -72,6 +72,7 @@ class Gutenberg(configutil.ConfigMapping):
         existing = set(etext.etextno for etext in session.query(EText).all())
         files, num_added = osutil.listfiles(self.download.data_path), 0
         for path in files:
+            logging.debug('processing %s', path)
             try:
                 etext = EText.from_file(path, self.etext_metadata())
             except (NotImplementedError, ValueError) as ex:
@@ -83,6 +84,7 @@ class Gutenberg(configutil.ConfigMapping):
                 existing.add(etext.etextno)
                 num_added += 1
                 if num_added % 100 == 0:
+                    logging.debug('committing')
                     session.commit()
         session.commit()
 
