@@ -164,10 +164,10 @@ def download_corpus(todir, filetypes, langs, offset, delay=2):
 
 
 if __name__ == '__main__':
-    import argparse
+    import gutenberg.common.cliutil as cliutil
 
     doc = 'Downloads the Project Gutenberg corpus.'
-    parser = argparse.ArgumentParser(description=doc)
+    parser = cliutil.ArgumentParser(description=doc)
     parser.add_argument('todir', type=str,
                         help='directory to which to download the corpus')
     parser.add_argument('--filetypes', metavar='F', type=str, default='txt',
@@ -176,10 +176,6 @@ if __name__ == '__main__':
                         help='only download files in these languages')
     parser.add_argument('--offset', metavar='O', type=int, default=0,
                         help='start download at this element')
-    parser.add_argument('--verbose', dest='log', action='store_const',
-                        const=logging.DEBUG, default=logging.WARNING,
-                        help='log more detailed messages')
     args = parser.parse_args()
 
-    logging.basicConfig(level=args.log)
     download_corpus(args.todir, args.filetypes, args.langs, args.offset)
