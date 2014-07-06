@@ -70,16 +70,20 @@ class Gutenberg(configutil.ConfigMapping):
     def update_database(self):
         session = self._dbsession()
         existing = set(etext.etextno for etext in session.query(EText).all())
-        for path in osutil.listfiles(self.download.data_path):
+        files, num_added = osutil.listfiles(self.download.data_path), 0
+        for path in files:
             try:
                 etext = EText.from_file(path, self.etext_metadata())
             except (NotImplementedError, ValueError) as ex:
                 logging.error('skipping %s: [%s] %s',
                               path, type(ex).__name__, ex.message)
-            else:
-                if etext.etextno not in existing:
-                    session.add(etext)
-                    existing.add(etext.etextno)
+                continue
+            if etext.etextno not in existing:
+                session.add(etext)
+                existing.add(etext.etextno)
+                num_added += 1
+                if num_added % 100 == 0:
+                    session.commit()
         session.commit()
 
 
