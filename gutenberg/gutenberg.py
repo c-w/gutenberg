@@ -74,8 +74,8 @@ class Gutenberg(configutil.ConfigMapping):
             try:
                 etext = EText.from_file(path, self.etext_metadata())
             except NotImplementedError as ex:
-                logging.error('%s while processing etext at %s: %s',
-                              type(ex).__name__, path, ex.message)
+                logging.error('skipping %s: [%s] %s',
+                              path, type(ex).__name__, ex.message)
             else:
                 if etext.etextno not in existing:
                     session.add(etext)
