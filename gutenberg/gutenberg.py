@@ -75,7 +75,7 @@ class Gutenberg(configutil.ConfigMapping):
             logging.debug('processing %s', path)
             try:
                 etext = EText.from_file(path, self.etext_metadata())
-            except (NotImplementedError, ValueError) as ex:
+            except Exception as ex:  # pylint: disable=W0703
                 logging.error('skipping %s: [%s] %s',
                               path, type(ex).__name__, ex.message)
                 continue
