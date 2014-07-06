@@ -20,7 +20,10 @@ def etextno(lines):
         lines (iter): the lines of the etext to search
 
     Returns:
-        int: the id of the etext or None if no such id was found
+        int: the id of the etext
+
+    Raises:
+        ValueError: if no etext id was found
 
     Examples:
         >>> etextno(['Release Date: March 17, 2004 [EBook #11609]'])
@@ -29,13 +32,18 @@ def etextno(lines):
         >>> etextno(['Release Date: July, 2003 [Etext# 4263]'])
         4263
 
+        >>> etextno(['Some lines', 'without', 'Any [Etext] Number'])
+        Traceback (most recent call last):
+            ...
+        ValueError: no etext-id found
+
     """
     etext_re = re.compile(r'e(text|book)\s*#\s*(?P<etextno>\d+)', re.I)
     for line in lines:
         match = etext_re.search(line)
         if match is not None:
             return int(match.group('etextno'))
-    return None
+    raise ValueError('no etext-id found')
 
 
 @functutil.memoize
