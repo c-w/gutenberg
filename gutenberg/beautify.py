@@ -2,6 +2,9 @@
 """Module to process raw Project Gutenberg ETexts into a more usable format."""
 
 
+import logging
+
+
 # Markers that indicate the Project Gutenberg headers
 HEADERS = [
     ur"*END*THE SMALL PRINT",
@@ -91,7 +94,7 @@ def strip_headers(lines):
     reset = True
     footer_found = False
 
-    for line in lines:
+    for lineno, line in enumerate(lines, start=1):
         if len(line) <= 12:
             continue  # just a shortcut for short lines
 
@@ -100,6 +103,7 @@ def strip_headers(lines):
         if i <= 600:
             # Check if the header ends here
             if any(line.startswith(header) for header in HEADERS):
+                logging.debug('found end of header on line %s', lineno)
                 reset = True
 
             # If it's the end of the header, delete the output produced so far.
@@ -112,6 +116,7 @@ def strip_headers(lines):
         if i >= 100:
             # Check if the footer begins here
             if any(line.startswith(footer) for footer in FOOTERS):
+                logging.debug('found start of footer on line %s', lineno)
                 footer_found = True
 
             # If it's the beginning of the footer, stop output
