@@ -148,9 +148,10 @@ def download_corpus(todir, filetypes, langs, offset, delay=2):
     seen = dict((canonicalize(path)[0], path)
                 for path in osutil.listfiles(todir))
 
+    download = functutil.nointerrupt(download_link)
     try:
         for link, offset in gutenberg_links(filetypes, langs, offset):
-            if functutil.nointerrupt(download_link)(link, todir, seen=seen):
+            if download(link, todir, seen=seen):
                 time.sleep(delay)
     except KeyboardInterrupt:
         pass
