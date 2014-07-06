@@ -115,7 +115,7 @@ def listfiles(root):
     root = canonical(root)
     for dirpath, subdirs, filenames in os.walk(root):
         for filename in filenames:
-            yield os.path.join(dirpath, filename)
+            yield canonical(os.path.join(dirpath, filename))
         for subdir in subdirs:
             listfiles(subdir)
 
