@@ -35,21 +35,34 @@ def etextno(lines):
         >>> etextno(['Release Date: November 29, 2003 [Eook #10335]'])
         10335
 
+        >>> etextno(['December, 1998  [Etext 1576#]'])
+        1576
+
         >>> etextno(['Some lines', 'without', 'Any [Etext] Number'])
         Traceback (most recent call last):
             ...
         ValueError: no etext-id found
 
     """
+
     etext_re = re.compile(r'''
         e(text|b?ook)
         \s*
-        \#\s*(?P<etextno>\d+)
+        (\#\s*(?P<etextid_front>\d+)
+         |
+        (?P<etextid_back>\d+)\s*\#)
         ''', re.IGNORECASE | re.VERBOSE)
     for line in lines:
         match = etext_re.search(line)
         if match is not None:
-            return int(match.group('etextno'))
+            front_match = match.group('etextid_front')
+            back_match = match.group('etextid_back')
+            if front_match is not None:
+                return int(front_match)
+            elif back_match is not None:
+                return int(back_match)
+            else:
+                raise ValueError('no regex match (this should never happen')
     raise ValueError('no etext-id found')
 
 
