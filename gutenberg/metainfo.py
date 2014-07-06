@@ -41,7 +41,11 @@ def etextno(lines):
         ValueError: no etext-id found
 
     """
-    etext_re = re.compile(r'e(text|b?ook)\s*#\s*(?P<etextno>\d+)', re.I)
+    etext_re = re.compile(r'''
+        e(text|b?ook)
+        \s*
+        \#\s*(?P<etextno>\d+)
+        ''', re.IGNORECASE | re.VERBOSE)
     for line in lines:
         match = etext_re.search(line)
         if match is not None:
