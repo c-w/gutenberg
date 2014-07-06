@@ -22,6 +22,10 @@ def etextno(lines):
     Returns:
         int: the id of the etext or None if no such id was found
 
+    Examples:
+        >>> etextno(['Release Date: March 17, 2004 [EBook #11609]'])
+        11609
+
     """
     etext_re = re.compile(r'e(text|book) #(?P<etextno>\d+)', re.I)
     for line in lines:
