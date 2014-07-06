@@ -71,10 +71,15 @@ class Gutenberg(configutil.ConfigMapping):
         session = self._dbsession()
         existing = set(etext.etextno for etext in session.query(EText).all())
         for path in osutil.listfiles(self.download.data_path):
-            etext = EText.from_file(path, self.etext_metadata())
-            if etext.etextno not in existing:
-                session.add(etext)
-                existing.add(etext.etextno)
+            try:
+                etext = EText.from_file(path, self.etext_metadata())
+            except Exception as ex:  # pylint: disable=W0703
+                logging.error('%s while processing etext at %s: %s',
+                              type(ex).__name__, path, ex.message)
+            else:
+                if etext.etextno not in existing:
+                    session.add(etext)
+                    existing.add(etext.etextno)
         session.commit()
 
 
