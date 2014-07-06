@@ -73,7 +73,7 @@ class Gutenberg(configutil.ConfigMapping):
         for path in osutil.listfiles(self.download.data_path):
             try:
                 etext = EText.from_file(path, self.etext_metadata())
-            except Exception as ex:  # pylint: disable=W0703
+            except NotImplementedError as ex:
                 logging.error('%s while processing etext at %s: %s',
                               type(ex).__name__, path, ex.message)
             else:

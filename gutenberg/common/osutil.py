@@ -76,6 +76,10 @@ def readfile(path):
     Returns:
         iter: an iterator over the lines in the file
 
+    Raises:
+        NotImplementedError: if the file has a magic number for which no
+                             opener has been implemented
+
     """
     path = canonical(path)
     with open(path, 'rb') as binary_file:
@@ -92,7 +96,7 @@ def readfile(path):
         with gzip.open(path) as gzipf:
             return iter(gzipf)
 
-    raise ValueError(
+    raise NotImplementedError(
         'Unsupported file with extension {ext} and magic number {magic}'
         .format(ext=os.path.splitext(path)[1], magic=magic))
 
