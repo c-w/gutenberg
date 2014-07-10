@@ -160,12 +160,21 @@ def _main():
 
     """
     import gutenberg.common.cliutil as cliutil
+    import argparse
+    import sys
 
     doc = 'Downloads Project Gutenberg meta-data for all etexts as JSON'
     parser = cliutil.ArgumentParser(description=doc)
+    parser.add_argument('outfile', nargs='?', type=argparse.FileType('w'),
+                        default=sys.stdout,
+                        help=('the file to which to write the etext meta-data '
+                              '(default: stdout)'))
     args = parser.parse_args()
 
-    print json.dumps(metainfo(), sort_keys=True, indent=2)
+    try:
+        json.dump(metainfo(), args.outfile, sort_keys=True, indent=2)
+    finally:
+        args.outfile.close()
 
 
 if __name__ == '__main__':
