@@ -130,3 +130,24 @@ class EText(Base):
                     author=self.author,
                     title=self.title,
                     text=self.fulltext[:15] + '...'))
+
+
+if __name__ == '__main__':
+    import gutenberg.common.cliutil as cliutil
+
+    doc = 'command line utilities to manage the Project Gutenberg corpus'
+    parser = cliutil.ArgumentParser(description=doc)
+    parser.add_argument('configfile', type=str, nargs='?',
+                        help='path to corpus configuration file')
+    parser.add_argument('--download', action='store_true',
+                        help='download more etexts')
+    parser.add_argument('--persist', action='store_true',
+                        help='persist meta-data of etexts to database')
+    args = parser.parse_args()
+
+    corpus = (GutenbergCorpus() if args.configfile is None
+              else GutenbergCorpus.using_config(args.configfile))
+    if args.download:
+        corpus.download()
+    if args.persist:
+        corpus.persist()
