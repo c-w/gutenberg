@@ -163,7 +163,11 @@ def download_corpus(todir, filetypes, langs, offset, delay=2):
     return offset
 
 
-if __name__ == '__main__':
+def _main():
+    """This function implements the main/script/command-line functionality of
+    the module and will be called from the `if __name__ == '__main__':` block.
+
+    """
     import gutenberg.common.cliutil as cliutil
 
     doc = 'Downloads the Project Gutenberg corpus.'
@@ -179,3 +183,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     download_corpus(args.todir, args.filetypes, args.langs, args.offset)
+
+
+if __name__ == '__main__':
+    _main()

@@ -130,7 +130,11 @@ def strip_headers(lines):
     return out
 
 
-if __name__ == '__main__':
+def _main():
+    """This function implements the main/script/command-line functionality of
+    the module and will be called from the `if __name__ == '__main__':` block.
+
+    """
     import gutenberg.common.cliutil as cliutil
     import argparse
     import sys
@@ -145,3 +149,7 @@ if __name__ == '__main__':
 
     for inline in strip_headers(args.infile):
         args.outfile.write(inline)
+
+
+if __name__ == '__main__':
+    _main()

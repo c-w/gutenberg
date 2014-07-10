@@ -154,7 +154,11 @@ def raw_metainfo():
         yield ElementTree.XML('\n'.join(archive.extractfile(tarinfo)))
 
 
-if __name__ == '__main__':
+def _main():
+    """This function implements the main/script/command-line functionality of
+    the module and will be called from the `if __name__ == '__main__':` block.
+
+    """
     import gutenberg.common.cliutil as cliutil
 
     doc = 'Downloads Project Gutenberg meta-data for all etexts as JSON'
@@ -162,3 +166,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     print json.dumps(metainfo(), sort_keys=True, indent=2)
+
+
+if __name__ == '__main__':
+    _main()

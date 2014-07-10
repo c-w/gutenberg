@@ -132,7 +132,11 @@ class EText(Base):
                     text=self.fulltext[:15] + '...'))
 
 
-if __name__ == '__main__':
+def _main():
+    """This function implements the main/script/command-line functionality of
+    the module and will be called from the `if __name__ == '__main__':` block.
+
+    """
     import gutenberg.common.cliutil as cliutil
 
     doc = 'command line utilities to manage the Project Gutenberg corpus'
@@ -151,3 +155,7 @@ if __name__ == '__main__':
         corpus.download()
     if args.persist:
         corpus.persist()
+
+
+if __name__ == '__main__':
+    _main()
