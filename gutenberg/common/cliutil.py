@@ -17,7 +17,7 @@ class ArgumentParser(argparse.ArgumentParser):
     def __init__(self, *args, **kwargs):
         self.logformat = kwargs.pop('logformat', LOG_FORMAT)
         argparse.ArgumentParser.__init__(self, *args, **kwargs)
-        self.add_argument('-v', '--verbose', action='count',
+        self.add_argument('-v', '--verbose', action='count', default=0,
                           help='increase logging verbosity')
 
     def parse_args(self, *args, **kwargs):
