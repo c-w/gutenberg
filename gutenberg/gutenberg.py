@@ -17,51 +17,61 @@ import sqlalchemy.orm
 Base = sqlalchemy.ext.declarative.declarative_base()
 
 
-class GutenbergCorpus(configutil.ConfigMapping):
+class GutenbergCorpus(object):
     def __init__(self):
         BASEDIR = 'ProjectGutenbergCorpus'
-        self.download = configutil.ConfigMapping.Section()
-        self.download.data_path = os.path.join(BASEDIR, 'rawdata')
-        self.download.offset = 0
-        self.metadata = configutil.ConfigMapping.Section()
-        self.metadata.metadata = os.path.join(BASEDIR, 'metadata.json.gz')
-        self.database = configutil.ConfigMapping.Section()
-        self.database.drivername = 'sqlite'
-        self.database.username = None
-        self.database.password = None
-        self.database.host = None
-        self.database.port = None
-        self.database.database = os.path.join(BASEDIR, 'gutenberg.db3')
+        self.cfg = configutil.ConfigMapping()
+        self.cfg.download = configutil.ConfigMapping.Section()
+        self.cfg.download.data_path = os.path.join(BASEDIR, 'rawdata')
+        self.cfg.download.offset = 0
+        self.cfg.metadata = configutil.ConfigMapping.Section()
+        self.cfg.metadata.metadata = os.path.join(BASEDIR, 'metadata.json.gz')
+        self.cfg.database = configutil.ConfigMapping.Section()
+        self.cfg.database.drivername = 'sqlite'
+        self.cfg.database.username = None
+        self.cfg.database.password = None
+        self.cfg.database.host = None
+        self.cfg.database.port = None
+        self.cfg.database.database = os.path.join(BASEDIR, 'gutenberg.db3')
+
+    @classmethod
+    def using_config(cls, config_path):
+        corpus = GutenbergCorpus()
+        corpus.cfg.merge(configutil.ConfigMapping.from_config(config_path))
+        return corpus
+
+    def write_config(self, path):
+        self.cfg.write_config(path)
 
     @functutil.memoize
     def etext_metadata(self):
-        opener = osutil.opener(self.metadata.metadata)
+        opener = osutil.opener(self.cfg.metadata.metadata)
         try:
-            with opener(self.metadata.metadata, 'rb') as metadata_file:
+            with opener(self.cfg.metadata.metadata, 'rb') as metadata_file:
                 json_items = json.load(metadata_file).iteritems()
                 metadata = dict((int(key), val) for (key, val) in json_items)
         except IOError:
             metadata = metainfo.metainfo()
-            osutil.makedirs(os.path.dirname(self.metadata.metadata))
-            with opener(self.metadata.metadata, 'wb') as metadata_file:
+            osutil.makedirs(os.path.dirname(self.cfg.metadata.metadata))
+            with opener(self.cfg.metadata.metadata, 'wb') as metadata_file:
                 json.dump(metadata, metadata_file, sort_keys=True, indent=2)
         return metadata
 
     def download(self, filetypes='txt', langs='en'):
-        osutil.makedirs(self.download.data_path)
-        self.download.offset = download.download_corpus(
-            self.download.data_path, filetypes=filetypes, langs=langs,
-            offset=int(self.download.offset))
+        osutil.makedirs(self.cfg.download.data_path)
+        self.cfg.download.offset = download.download_corpus(
+            self.cfg.download.data_path, filetypes=filetypes, langs=langs,
+            offset=int(self.cfg.download.offset))
 
     def _dbsession(self):
-        osutil.makedirs(os.path.dirname(self.database.database))
+        osutil.makedirs(os.path.dirname(self.cfg.database.database))
         engine = sqlalchemy.create_engine(sqlalchemy.engine.url.URL(
-            drivername=self.database.drivername,
-            username=self.database.username,
-            password=self.database.password,
-            host=self.database.host,
-            port=self.database.port,
-            database=osutil.canonical(self.database.database),
+            drivername=self.cfg.database.drivername,
+            username=self.cfg.database.username,
+            password=self.cfg.database.password,
+            host=self.cfg.database.host,
+            port=self.cfg.database.port,
+            database=osutil.canonical(self.cfg.database.database),
         ))
         Base.metadata.create_all(engine)
         Session = sqlalchemy.orm.sessionmaker(bind=engine)
@@ -70,7 +80,7 @@ class GutenbergCorpus(configutil.ConfigMapping):
     def persist(self):
         session = self._dbsession()
         existing = set(etext.etextno for etext in session.query(EText).all())
-        files, num_added = osutil.listfiles(self.download.data_path), 0
+        files, num_added = osutil.listfiles(self.cfg.download.data_path), 0
         for path in files:
             logging.debug('processing %s', path)
             try:

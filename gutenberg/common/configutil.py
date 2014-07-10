@@ -104,6 +104,28 @@ class ConfigMapping(object):
         with open(path, 'wb') as configfile:
             config.write(configfile)
 
+    def merge(self, other):
+        """Updates the ConfigMapping object with the sections from another
+        ConfigMapping. If any sections and options therein are shared between
+        the two objects, the option-values from the other ConfigMapping object
+        are kept.
+
+        Args:
+            other (ConfigMapping): the ConfigMapping to merge with
+
+        """
+        if not isinstance(other, ConfigMapping):
+            raise ValueError('can not merge {cls} with non-{cls} object'
+                             .format(cls=self.__class__.__name__))
+
+        own_sections, other_sections = self.__dict__, other.__dict__
+        for section_name, other_section in other_sections.iteritems():
+            if section_name not in own_sections:
+                setattr(self, section_name, other_section)
+            else:
+                own_section = own_sections[section_name]
+                own_section.__dict__.update(other_section.__dict__)
+
     def __repr__(self):
         clsname = self.__class__.__name__
         attr = ', '.join('%s=%s' % kv for kv in self.__dict__.iteritems())
