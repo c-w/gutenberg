@@ -8,6 +8,41 @@ import os
 import zipfile
 
 
+def stripext(path):
+    """Removes the extension from a path.
+
+    Args:
+        path (str): the path from which to strip the extension
+
+    Returns:
+        str: the path without an extension
+
+    Examples:
+        >>> stripext('/foo/bar.ext')
+        '/foo/bar'
+
+        >>> stripext('/foo')
+        '/foo'
+
+        >>> stripext('foo.ext')
+        'foo'
+
+        >>> stripext('/')
+        '/'
+
+        >>> stripext('.')
+        '.'
+
+        >>> stripext('..')
+        '..'
+
+        >>> stripext('')
+        ''
+
+    """
+    return os.path.splitext(path)[0]
+
+
 def canonical(path):
     """Normalize a path.
 

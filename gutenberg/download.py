@@ -84,7 +84,7 @@ def canonicalize(path):
         ('14674', '0')
 
     """
-    uri, _ = os.path.splitext(os.path.basename(path))
+    uri = osutil.stripext(os.path.basename(path))
     uri, encoding = uri.split('-') if '-' in uri else (uri, None)
     return uri, encoding
 
