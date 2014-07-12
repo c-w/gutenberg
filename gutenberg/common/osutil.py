@@ -102,9 +102,9 @@ def opener(path, mode='r', encoding=None):
 
 
 def readfile(path, encoding=None):
-    """Opens a file. This is a wrapper around various file-opening methods that
-    automatically determines which opener to use depending on the file's magic
-    number.
+    """Opens a file for reading. This is a wrapper around various file-opening
+    methods that automatically determines which opener to use depending on the
+    file's magic number.
 
     Args:
         path (str): the path of the file to open
