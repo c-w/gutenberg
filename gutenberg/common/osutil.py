@@ -1,6 +1,7 @@
 """Utility methods to deal with the file-system."""
 
 
+import codecs
 import errno
 import itertools
 import gzip
@@ -74,13 +75,14 @@ def canonical(path):
     return path
 
 
-def opener(path, mode='r'):
+def opener(path, mode='r', encoding=None):
     """Uses the appropriate open-method to open a file. Determines which
     open-method to use by looking at the extension of the file.
 
     Args:
         path (str): the path of the file to open
         mode (str, optional): the mode in which to open the file
+        encoding (str, optional): the encoding with which to open the file
 
     Returns:
         file: the opened file
@@ -90,17 +92,23 @@ def opener(path, mode='r'):
         openfn = gzip.open
     else:
         openfn = open
+    fileobj = openfn(path, mode)
 
-    return openfn(path, mode)
+    if encoding is not None:
+        encoder = codecs.getreader if 'r' in mode else codecs.getwriter
+        fileobj = encoder(encoding)(fileobj)
+
+    return fileobj
 
 
-def readfile(path):
+def readfile(path, encoding=None):
     """Opens a file. This is a wrapper around various file-opening methods that
     automatically determines which opener to use depending on the file's magic
     number.
 
     Args:
         path (str): the path of the file to open
+        encoding (str, optional): the encoding with which to read the file
 
     Returns:
         iter: an iterator over the lines in the file
@@ -112,18 +120,26 @@ def readfile(path):
     """
     path = canonical(path)
     magic = magic_number(path)
+    lines = None
 
     if magic.startswith(magic_number.ZIP):
         zipf = zipfile.ZipFile(path)
-        return itertools.chain(*[zipf.open(f) for f in zipf.namelist()])
+        lines = itertools.chain(*[zipf.open(f) for f in zipf.namelist()])
 
     if magic.startswith(magic_number.GZIP):
         gzipf = gzip.open(path)
-        return iter(gzipf)
+        lines = iter(gzipf)
 
-    raise NotImplementedError(
-        'Unsupported file with extension {ext} and magic number {magic}'
-        .format(ext=os.path.splitext(path)[1], magic=magic))
+    if lines is None:
+        raise NotImplementedError(
+            'Unsupported file with extension {ext} and magic number {magic}'
+            .format(ext=os.path.splitext(path)[1], magic=magic))
+
+    if encoding is not None:
+        encoder = lambda line: unicode(line, encoding)
+        lines = itertools.imap(encoder, lines)
+
+    return lines
 
 
 def magic_number(path):

@@ -109,8 +109,7 @@ class EText(Base):
 
     @classmethod
     def from_file(cls, fobj, etext_metadata):
-        lines = fobj if isinstance(fobj, file) else osutil.readfile(fobj)
-        lines = (unicode(line, 'latin1') for line in lines)
+        lines = osutil.readfile(fobj, encoding='latin1')
         metaiter, fulltextiter = itertools.tee(lines, 2)
         ident = metainfo.etextno(metaiter)
         text = u'\n'.join(beautify.strip_headers(fulltextiter))
