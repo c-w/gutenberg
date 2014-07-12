@@ -111,23 +111,39 @@ def readfile(path):
 
     """
     path = canonical(path)
-    with open(path, 'rb') as binary_file:
-        magic = str(binary_file.read(4).encode('hex')).upper()
+    magic = magic_number(path)
 
-    if magic.startswith('504B0304'):
+    if magic.startswith(magic_number.ZIP):
         zipf = zipfile.ZipFile(path)
         try:
             return itertools.chain(*[zipf.open(f) for f in zipf.namelist()])
         finally:
             zipf.close()
 
-    if magic.startswith('1F8B08'):
+    if magic.startswith(magic_number.GZIP):
         with gzip.open(path) as gzipf:
             return iter(gzipf)
 
     raise NotImplementedError(
         'Unsupported file with extension {ext} and magic number {magic}'
         .format(ext=os.path.splitext(path)[1], magic=magic))
+
+
+def magic_number(path):
+    """Retrieves the magic number of a file.
+
+    Args:
+        path (str): the path from which to retrieve the magic number
+
+    Returns:
+        str: an upper-case hex-string representation of the magic number
+
+    """
+    with open(path, 'rb') as binary_file:
+        magic = str(binary_file.read(4).encode('hex')).upper()
+    return magic
+magic_number.GZIP = '1F8B08'
+magic_number.ZIP = '504B'
 
 
 def listfiles(root):
