@@ -115,14 +115,11 @@ def readfile(path):
 
     if magic.startswith(magic_number.ZIP):
         zipf = zipfile.ZipFile(path)
-        try:
-            return itertools.chain(*[zipf.open(f) for f in zipf.namelist()])
-        finally:
-            zipf.close()
+        return itertools.chain(*[zipf.open(f) for f in zipf.namelist()])
 
     if magic.startswith(magic_number.GZIP):
-        with gzip.open(path) as gzipf:
-            return iter(gzipf)
+        gzipf = gzip.open(path)
+        return iter(gzipf)
 
     raise NotImplementedError(
         'Unsupported file with extension {ext} and magic number {magic}'
