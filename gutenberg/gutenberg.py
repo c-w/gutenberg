@@ -45,7 +45,7 @@ class GutenbergCorpus(object):
 
     @functutil.memoize
     def etext_metadata(self):
-        opener = osutil.opener(self.cfg.metadata.metadata)
+        opener = osutil.opener
         try:
             with opener(self.cfg.metadata.metadata, 'rb') as metadata_file:
                 json_items = json.load(metadata_file).iteritems()
