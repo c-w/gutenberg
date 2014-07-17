@@ -16,7 +16,7 @@ import sqlalchemy.ext.declarative
 import sqlalchemy.orm
 
 
-Base = sqlalchemy.ext.declarative.declarative_base()
+ORM_BASE = sqlalchemy.ext.declarative.declarative_base()
 
 
 class GutenbergCorpus(object):
@@ -26,20 +26,20 @@ class GutenbergCorpus(object):
 
     """
     def __init__(self):
-        BASEDIR = 'ProjectGutenbergCorpus'
+        basedir = 'ProjectGutenbergCorpus'
         self.cfg = configutil.ConfigMapping()
         self.cfg.download = configutil.ConfigMapping.Section()
-        self.cfg.download.data_path = os.path.join(BASEDIR, 'rawdata')
+        self.cfg.download.data_path = os.path.join(basedir, 'rawdata')
         self.cfg.download.offset = 0
         self.cfg.metadata = configutil.ConfigMapping.Section()
-        self.cfg.metadata.metadata = os.path.join(BASEDIR, 'metadata.json.gz')
+        self.cfg.metadata.metadata = os.path.join(basedir, 'metadata.json.gz')
         self.cfg.database = configutil.ConfigMapping.Section()
         self.cfg.database.drivername = 'sqlite'
         self.cfg.database.username = None
         self.cfg.database.password = None
         self.cfg.database.host = None
         self.cfg.database.port = None
-        self.cfg.database.database = os.path.join(BASEDIR, 'gutenberg.db3')
+        self.cfg.database.database = os.path.join(basedir, 'gutenberg.db3')
 
     @classmethod
     def using_config(cls, config_path):
@@ -85,7 +85,7 @@ class GutenbergCorpus(object):
             port=self.cfg.database.port,
             database=osutil.canonical(self.cfg.database.database),
         ))
-        Base.metadata.create_all(engine)
+        ORM_BASE.metadata.create_all(engine)
         new_session = sqlalchemy.orm.sessionmaker(bind=engine)
         return new_session()
 
@@ -147,7 +147,7 @@ class GutenbergCorpus(object):
         session.commit()
 
 
-class EText(Base):
+class EText(ORM_BASE):
     """Bag-of-properties representing a Project Gutenberg etext. The class also
     provides ORM with the on-disk database for the corpus.
 

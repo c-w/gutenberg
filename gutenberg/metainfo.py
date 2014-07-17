@@ -147,8 +147,8 @@ def raw_metainfo():
         xml.etree.ElementTree.Element: an etext meta-data definition
 
     """
-    INDEX_URL = r'http://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2'
-    filename, _ = urllib.urlretrieve(INDEX_URL)
+    index_url = r'http://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2'
+    filename, _ = urllib.urlretrieve(index_url)
     archive = tarfile.open(filename)
     for tarinfo in archive:
         yield ElementTree.XML('\n'.join(archive.extractfile(tarinfo)))
