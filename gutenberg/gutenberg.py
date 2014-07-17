@@ -130,7 +130,8 @@ class EText(Base):
                     clsname=self.__class__.__name__,
                     author=self.author,
                     title=self.title,
-                    text=self.fulltext[:15] + '...'))
+                    text=self.fulltext[:15] + '...',
+                ))
 
 
 def _main():
