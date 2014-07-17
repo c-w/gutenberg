@@ -5,7 +5,6 @@ import gutenberg.common.functutil as functutil
 import gutenberg.common.osutil as osutil
 import gutenberg.download as download
 import gutenberg.metainfo as metainfo
-import itertools
 import json
 import logging
 import os
@@ -86,7 +85,8 @@ class GutenbergCorpus(object):
     def persist(self):
         session = self._dbsession()
         existing = set(etext.etextno for etext in session.query(EText).all())
-        files, num_added = osutil.listfiles(self.cfg.download.data_path), 0
+        files = osutil.listfiles(self.cfg.download.data_path, absolute=False)
+        num_added = 0
         _new_etext = functutil.ignore(Exception)(EText.from_file)
         for path in files:
             logging.debug('processing %s', path)
@@ -107,30 +107,24 @@ class EText(Base):
     etextno = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
     author = sqlalchemy.Column(sqlalchemy.Unicode)
     title = sqlalchemy.Column(sqlalchemy.Unicode)
-    fulltext = sqlalchemy.Column(sqlalchemy.UnicodeText)
+    path = sqlalchemy.Column(sqlalchemy.String)
 
     @classmethod
-    def from_file(cls, fobj, etext_metadata):
-        lines = osutil.readfile(fobj, encoding='latin1')
-        metaiter, fulltextiter = itertools.tee(lines, 2)
-        ident = metainfo.etextno(metaiter)
-        text = u'\n'.join(beautify.strip_headers(fulltextiter))
+    def from_file(cls, path, etext_metadata):
+        ident = metainfo.etextno(osutil.readfile(path, encoding='latin1'))
         metadata = etext_metadata[ident]
         author = metadata.get('author')
         title = metadata.get('title')
-        if author is None:
-            logging.warning('no author available for etext %s', ident)
-        if title is None:
-            logging.warning('no title available for etext %s', ident)
-        return EText(etextno=ident, author=author, title=title, fulltext=text)
+        path = beautify.clean_and_compress(path)
+        return EText(etextno=ident, author=author, title=title, path=path)
 
     def __repr__(self):
-        return ('{clsname}(author="{author}", title="{title}", text="{text}")'
+        return ('{clsname}(author="{author}", title="{title}", path="{path}")'
                 .format(
                     clsname=self.__class__.__name__,
                     author=self.author,
                     title=self.title,
-                    text=self.fulltext[:15] + '...',
+                    path=self.path,
                 ))
 
 
