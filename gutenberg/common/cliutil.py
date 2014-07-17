@@ -2,6 +2,7 @@
 
 
 import argparse
+import contextlib
 import logging
 
 
@@ -26,7 +27,19 @@ class ArgumentParser(argparse.ArgumentParser):
             level=loglevel(argv.verbose),
             format=self.logformat,
         )
-        return argv
+        return managed_namespace(argv)
+
+
+@contextlib.contextmanager
+def managed_namespace(args):
+    """Context manager for argparse.Namespace objects that automatically closes
+    all the files that were passed in as arguments.
+
+    """
+    yield args
+    for argv in args.__dict__.itervalues():
+        if isinstance(argv, file):
+            argv.close()
 
 
 def loglevel(logval):

@@ -204,14 +204,14 @@ def _main():
                         help='download more etexts')
     parser.add_argument('--persist', action='store_true',
                         help='persist meta-data of etexts to database')
-    args = parser.parse_args()
 
-    corpus = (GutenbergCorpus() if args.configfile is None
-              else GutenbergCorpus.using_config(args.configfile))
-    if args.download:
-        corpus.download()
-    if args.persist:
-        corpus.persist()
+    with parser.parse_args() as args:
+        corpus = (GutenbergCorpus() if args.configfile is None
+                  else GutenbergCorpus.using_config(args.configfile))
+        if args.download:
+            corpus.download()
+        if args.persist:
+            corpus.persist()
 
 
 if __name__ == '__main__':

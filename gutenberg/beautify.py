@@ -171,10 +171,10 @@ def _main():
                         default=sys.stdin, help='gutenberg text to clean-up')
     parser.add_argument('outfile', nargs='?', type=argparse.FileType('w'),
                         default=sys.stdout, help='cleaned text goes here')
-    args = parser.parse_args()
 
-    for inline in strip_headers(args.infile):
-        args.outfile.write(inline)
+    with parser.parse_args() as args:
+        for inline in strip_headers(args.infile):
+            args.outfile.write(inline)
 
 
 if __name__ == '__main__':

@@ -174,9 +174,9 @@ def _main():
                         help='only download files in these languages')
     parser.add_argument('--offset', metavar='O', type=int, default=0,
                         help='start download at this element')
-    args = parser.parse_args()
 
-    download_corpus(args.todir, args.filetypes, args.langs, args.offset)
+    with parser.parse_args() as args:
+        download_corpus(args.todir, args.filetypes, args.langs, args.offset)
 
 
 if __name__ == '__main__':

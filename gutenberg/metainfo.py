@@ -169,12 +169,9 @@ def _main():
                         default=sys.stdout,
                         help=('the file to which to write the etext meta-data '
                               '(default: stdout)'))
-    args = parser.parse_args()
 
-    try:
+    with parser.parse_args() as args:
         json.dump(metainfo(), args.outfile, sort_keys=True, indent=2)
-    finally:
-        args.outfile.close()
 
 
 if __name__ == '__main__':
