@@ -76,12 +76,6 @@ class GutenbergCorpus(object):
             self.cfg.download.data_path, filetypes=filetypes, langs=langs,
             offset=int(self.cfg.download.offset))
 
-    def cleanup(self):
-        _cleanup = functutil.ignore(Exception)(beautify.clean_and_compress)
-        for path in osutil.listfiles(self.cfg.download.data_path):
-            logging.debug('processing %s', path)
-            _cleanup(path)
-
     def persist(self):
         session = self._dbsession()
         existing = set(etext.etextno for etext in session.query(EText).all())
@@ -141,8 +135,6 @@ def _main():
                         help='path to corpus configuration file')
     parser.add_argument('--download', action='store_true',
                         help='download more etexts')
-    parser.add_argument('--cleanup', action='store_true',
-                        help='cleanup etexts (remove headers etc.)')
     parser.add_argument('--persist', action='store_true',
                         help='persist meta-data of etexts to database')
     args = parser.parse_args()
@@ -151,8 +143,6 @@ def _main():
               else GutenbergCorpus.using_config(args.configfile))
     if args.download:
         corpus.download()
-    if args.cleanup:
-        corpus.cleanup()
     if args.persist:
         corpus.persist()
 
