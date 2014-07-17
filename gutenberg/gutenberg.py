@@ -35,7 +35,7 @@ class GutenbergCorpus(object):
 
     @classmethod
     def using_config(cls, config_path):
-        corpus = GutenbergCorpus()
+        corpus = cls()
         corpus.cfg.merge(configutil.ConfigMapping.from_config(config_path))
         return corpus
 
@@ -116,7 +116,7 @@ class EText(Base):
         author = metadata.get('author')
         title = metadata.get('title')
         path = beautify.clean_and_compress(path)
-        return EText(etextno=ident, author=author, title=title, path=path)
+        return cls(etextno=ident, author=author, title=title, path=path)
 
     def __repr__(self):
         return ('{clsname}(author="{author}", title="{title}", path="{path}")'
