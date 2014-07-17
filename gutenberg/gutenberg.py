@@ -64,13 +64,10 @@ class GutenbergCorpus(object):
             offset=int(self.cfg.download.offset))
 
     def cleanup(self):
+        _cleanup = functutil.ignore(Exception)(beautify.clean_and_compress)
         for path in osutil.listfiles(self.cfg.download.data_path):
             logging.debug('processing %s', path)
-            try:
-                beautify.clean_and_compress(path)
-            except Exception as ex:  # pylint: disable=W0703
-                logging.error('skipping %s: [%s] %s',
-                              path, type(ex).__name__, ex.message)
+            _cleanup(path)
 
     def _dbsession(self):
         osutil.makedirs(os.path.dirname(self.cfg.database.database))
@@ -90,15 +87,11 @@ class GutenbergCorpus(object):
         session = self._dbsession()
         existing = set(etext.etextno for etext in session.query(EText).all())
         files, num_added = osutil.listfiles(self.cfg.download.data_path), 0
+        _new_etext = functutil.ignore(Exception)(EText.from_file)
         for path in files:
             logging.debug('processing %s', path)
-            try:
-                etext = EText.from_file(path, self.etext_metadata())
-            except Exception as ex:  # pylint: disable=W0703
-                logging.error('skipping %s: [%s] %s',
-                              path, type(ex).__name__, ex.message)
-                continue
-            if etext.etextno not in existing:
+            etext = _new_etext(path, self.etext_metadata())
+            if etext and etext.etextno not in existing:
                 session.add(etext)
                 existing.add(etext.etextno)
                 num_added += 1

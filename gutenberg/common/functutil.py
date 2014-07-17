@@ -2,6 +2,7 @@
 
 
 import functools
+import logging
 import signal
 
 
@@ -28,6 +29,53 @@ def nointerrupt(fun):
         return retval
 
     return wrapper
+
+
+def ignore(*exceptions):
+    """Decorator that evaluates a function and logs exceptions instead of
+    throwing errors on them.
+
+    Args:
+        exceptions (list): the exceptions to ignore
+
+    Returns:
+        callable: the function with exception ignoring enabled
+
+    Examples:
+        >>> d = {1: '1', 2: '2'}
+        >>> @ignore(KeyError)
+        ... def getter(dictionary, key):
+        ...     return dictionary[key]
+        >>> str(getter(d, 1))
+        '1'
+
+        >>> d_get = ignore(KeyError)(d.__getitem__)
+        >>> str(d_get(2))
+        '2'
+
+        >>> str(getter(d, 'key not in dictionary'))
+        'None'
+
+        >>> str(d_get('key not in dictionary'))
+        'None'
+
+    """
+    def decorator(fun):
+        """Decorator with arguments."""
+        @functools.wraps(fun)
+        def wrapper(*args, **kwargs):
+            """Decorator."""
+            try:
+                retval = fun(*args, **kwargs)
+            except Exception as ex:  # pylint: disable=W0703
+                if not isinstance(ex, exceptions):
+                    raise
+                logging.error('ignored [%s] %s', type(ex).__name__, ex.message)
+                retval = None
+            return retval
+        return wrapper
+
+    return decorator
 
 
 def memoize(fun):
