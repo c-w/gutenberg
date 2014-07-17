@@ -1,3 +1,6 @@
+"""Module to interface with the Project Gutenberg corpus."""
+
+
 from __future__ import absolute_import
 import gutenberg.beautify as beautify
 import gutenberg.common.configutil as configutil
@@ -17,6 +20,11 @@ Base = sqlalchemy.ext.declarative.declarative_base()
 
 
 class GutenbergCorpus(object):
+    """Object representing the Project Gutenberg corpus. The object offers a
+    simple interface to functionality such as downloading the corpus, removing
+    headers, persisting meta-data to a database, etc.
+
+    """
     def __init__(self):
         BASEDIR = 'ProjectGutenbergCorpus'
         self.cfg = configutil.ConfigMapping()
@@ -35,14 +43,39 @@ class GutenbergCorpus(object):
 
     @classmethod
     def using_config(cls, config_path):
+        """Initialize a corpus using the settings specified in a configuration
+        file. Any non-specified settings are set to the default values.
+
+        Args:
+            config_path (str): the path to the .cfg file
+
+        Returns:
+            GutenbergCorpus: a corpus respecting the settings in the
+                             configuration file
+
+        """
         corpus = cls()
         corpus.cfg.merge(configutil.ConfigMapping.from_config(config_path))
         return corpus
 
     def write_config(self, path):
+        """Dump the configuration options of the corpus to a file for later
+        restoring.
+
+        Args:
+            path (str): the path to which to write the configuration file
+
+        """
         self.cfg.write_config(path)
 
     def _dbsession(self):
+        """Creates a database session respecting the configuration settings of
+        the corpus.
+
+        Returns:
+            sqlalchemy.orm.Session: a database session
+
+        """
         osutil.makedirs(os.path.dirname(self.cfg.database.database))
         engine = sqlalchemy.create_engine(sqlalchemy.engine.url.URL(
             drivername=self.cfg.database.drivername,
@@ -58,6 +91,14 @@ class GutenbergCorpus(object):
 
     @functutil.memoize
     def etext_metadata(self):
+        """Reads a database of etext metadata from disk (or creates the
+        database if it does not exist). The metadata contains information such
+        as title, author, etc.
+
+        Returns:
+            dict: a mapping from etext-identifier to etext-metadata
+
+        """
         opener = osutil.opener
         try:
             with opener(self.cfg.metadata.metadata, 'rb') as metadata_file:
@@ -71,12 +112,23 @@ class GutenbergCorpus(object):
         return metadata
 
     def download(self, filetypes='txt', langs='en'):
+        """Downloads the Gutenberg corpus to disk.
+
+        Args:
+            filetypes (str, optional): the etext formats to download
+            langs (str, optional): the etext languages to download
+
+        """
         osutil.makedirs(self.cfg.download.data_path)
         self.cfg.download.offset = download.download_corpus(
             self.cfg.download.data_path, filetypes=filetypes, langs=langs,
             offset=int(self.cfg.download.offset))
 
     def persist(self):
+        """Picks up any new files in the corpus download directory, extracts
+        the raw etexts and tags the etext with metadata in the corpus database.
+
+        """
         session = self._dbsession()
         existing = set(etext.etextno for etext in session.query(EText).all())
         files = osutil.listfiles(self.cfg.download.data_path, absolute=False)
@@ -96,6 +148,10 @@ class GutenbergCorpus(object):
 
 
 class EText(Base):
+    """Bag-of-properties representing a Project Gutenberg etext. The class also
+    provides ORM with the on-disk database for the corpus.
+
+    """
     __tablename__ = 'etexts'
 
     etextno = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
@@ -105,6 +161,17 @@ class EText(Base):
 
     @classmethod
     def from_file(cls, path, etext_metadata):
+        """Creates an etext from a file on disk. Consults a metadata database
+        to tag the etext with author and title information.
+
+        Args:
+            path (str): the path to the etext file to load
+            etext_metadata (dict): the metadata database to consult
+
+        Returns:
+            EText: an object representation of the etext file
+
+        """
         ident = metainfo.etextno(osutil.readfile(path, encoding='latin1'))
         metadata = etext_metadata[ident]
         author = metadata.get('author')
