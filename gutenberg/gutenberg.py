@@ -80,8 +80,8 @@ class GutenbergCorpus(object):
             database=osutil.canonical(self.cfg.database.database),
         ))
         Base.metadata.create_all(engine)
-        Session = sqlalchemy.orm.sessionmaker(bind=engine)
-        return Session()
+        new_session = sqlalchemy.orm.sessionmaker(bind=engine)
+        return new_session()
 
     def persist(self):
         session = self._dbsession()
