@@ -149,9 +149,9 @@ def raw_metainfo():
     """
     index_url = r'http://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2'
     filename, _ = urllib.urlretrieve(index_url)
-    archive = tarfile.open(filename)
-    for tarinfo in archive:
-        yield ElementTree.XML('\n'.join(archive.extractfile(tarinfo)))
+    with tarfile.open(filename) as archive:
+        for tarinfo in archive:
+            yield ElementTree.XML('\n'.join(archive.extractfile(tarinfo)))
 
 
 def _main():
