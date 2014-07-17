@@ -159,21 +159,23 @@ magic_number.GZIP = '1F8B08'
 magic_number.ZIP = '504B'
 
 
-def listfiles(root):
+def listfiles(root, absolute=True):
     """Lists all the files in a directory and all of its subdirectories.
 
     Args:
         root (str): the top-level directory from which to list files
+        absolute (bool, optional): output paths as absolute instead of relative
 
     Returns:
         iter: an iterator over the paths to all files under the top-level
               directory
 
     """
-    root = canonical(root)
+    finalize_path = canonical if absolute else lambda path: path
+    root = finalize_path(root)
     for dirpath, subdirs, filenames in os.walk(root):
         for filename in filenames:
-            yield canonical(os.path.join(dirpath, filename))
+            yield finalize_path(os.path.join(dirpath, filename))
         for subdir in subdirs:
             listfiles(subdir)
 
