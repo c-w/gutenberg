@@ -1,5 +1,6 @@
 # gutenberg stuff
-/data/
+/ProjectGutenbergCorpus/
+*.cfg
 *.log
 
 # python stuff
