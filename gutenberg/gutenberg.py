@@ -63,6 +63,15 @@ class GutenbergCorpus(object):
             self.cfg.download.data_path, filetypes=filetypes, langs=langs,
             offset=int(self.cfg.download.offset))
 
+    def cleanup(self):
+        for path in osutil.listfiles(self.cfg.download.data_path):
+            logging.debug('processing %s', path)
+            try:
+                beautify.clean_and_compress(path)
+            except Exception as ex:  # pylint: disable=W0703
+                logging.error('skipping %s: [%s] %s',
+                              path, type(ex).__name__, ex.message)
+
     def _dbsession(self):
         osutil.makedirs(os.path.dirname(self.cfg.database.database))
         engine = sqlalchemy.create_engine(sqlalchemy.engine.url.URL(
@@ -144,6 +153,8 @@ def _main():
                         help='path to corpus configuration file')
     parser.add_argument('--download', action='store_true',
                         help='download more etexts')
+    parser.add_argument('--cleanup', action='store_true',
+                        help='cleanup etexts (remove headers etc.)')
     parser.add_argument('--persist', action='store_true',
                         help='persist meta-data of etexts to database')
     args = parser.parse_args()
@@ -152,6 +163,8 @@ def _main():
               else GutenbergCorpus.using_config(args.configfile))
     if args.download:
         corpus.download()
+    if args.cleanup:
+        corpus.cleanup()
     if args.persist:
         corpus.persist()
 
