@@ -42,6 +42,20 @@ class GutenbergCorpus(object):
     def write_config(self, path):
         self.cfg.write_config(path)
 
+    def _dbsession(self):
+        osutil.makedirs(os.path.dirname(self.cfg.database.database))
+        engine = sqlalchemy.create_engine(sqlalchemy.engine.url.URL(
+            drivername=self.cfg.database.drivername,
+            username=self.cfg.database.username,
+            password=self.cfg.database.password,
+            host=self.cfg.database.host,
+            port=self.cfg.database.port,
+            database=osutil.canonical(self.cfg.database.database),
+        ))
+        Base.metadata.create_all(engine)
+        new_session = sqlalchemy.orm.sessionmaker(bind=engine)
+        return new_session()
+
     @functutil.memoize
     def etext_metadata(self):
         opener = osutil.opener
@@ -67,20 +81,6 @@ class GutenbergCorpus(object):
         for path in osutil.listfiles(self.cfg.download.data_path):
             logging.debug('processing %s', path)
             _cleanup(path)
-
-    def _dbsession(self):
-        osutil.makedirs(os.path.dirname(self.cfg.database.database))
-        engine = sqlalchemy.create_engine(sqlalchemy.engine.url.URL(
-            drivername=self.cfg.database.drivername,
-            username=self.cfg.database.username,
-            password=self.cfg.database.password,
-            host=self.cfg.database.host,
-            port=self.cfg.database.port,
-            database=osutil.canonical(self.cfg.database.database),
-        ))
-        Base.metadata.create_all(engine)
-        new_session = sqlalchemy.orm.sessionmaker(bind=engine)
-        return new_session()
 
     def persist(self):
         session = self._dbsession()
