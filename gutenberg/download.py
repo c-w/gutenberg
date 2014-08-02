@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 import bs4
+import collections
 import gutenberg.common.functutil as functutil
 import gutenberg.common.osutil as osutil
 import gutenberg.common.stringutil as stringutil
@@ -89,6 +90,11 @@ def canonicalize(path):
     return uri, encoding
 
 
+LinkDownloadResult = collections.namedtuple(
+    'LinkDownloadResult',
+    'did_download download_size')
+
+
 def download_link(link, todir, seen=None):
     """Download a single Project Gutenberg etext. Prefers URF-8 encoded files
     over ASCII encoded files.
@@ -99,8 +105,9 @@ def download_link(link, todir, seen=None):
         seen (dict, optional): a pointer to the already downloaded etexts
 
     Returns:
-        bool, int: True if the file was downloaded and False if it was skipped;
-                   size in bytes of the downloaded file
+        LinkDownloadResult:
+            .did_download => True if the file was downloaded, False if skipped
+            .download_size => size in bytes of the downloaded file
 
     """
     osutil.makedirs(todir)
@@ -128,7 +135,7 @@ def download_link(link, todir, seen=None):
     else:
         logging.debug('skipping file %s', link)
 
-    return download, download_size
+    return LinkDownloadResult(download, download_size)
 
 
 def download_corpus(todir, filetypes, langs, offset, delay=2):
@@ -153,8 +160,8 @@ def download_corpus(todir, filetypes, langs, offset, delay=2):
     download = functutil.nointerrupt(download_link)
     _download = functutil.ignore(Exception)(download)
     for link, offset in gutenberg_links(filetypes, langs, offset):
-        download_success, _ = _download(link, todir, seen=seen)
-        if download_success:
+        link_download_context = _download(link, todir, seen=seen)
+        if link_download_context.did_download:
             time.sleep(delay)
     return offset
 
