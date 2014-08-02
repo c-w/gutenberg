@@ -152,13 +152,13 @@ class GutenbergCorpus(object):
         session.commit()
 
     def __len__(self):
-        return self._dbsession().query(EText).distinct().count()
+        return self._dbsession().query(EText.author).distinct().count()
 
     def __repr__(self):
-        return ('{clsname}(num_etexts={num_etexts})'
+        return ('{clsname}(num_authors={num_authors})'
                 .format(
                     clsname=self.__class__.__name__,
-                    num_etexts=len(self),
+                    num_authors=len(self),
                 ))
 
 
