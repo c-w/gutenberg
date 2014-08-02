@@ -30,9 +30,9 @@ def gutenberg_links(download_opts):
 
     Args:
         download_opts (CorpusDownloadContext):
-            .filetypes => generate links for files of these types (eg. "txt")
-            .langs => generate links for etexts in this language (eg. "en")
-            .offset => start downloading from this results page onwards
+            .filetypes (str) => crawl files of these types (eg. "txt")
+            .langs (str) => crawl etexts in this language (eg. "en")
+            .offset (int) => start crawling from this results page onwards
 
     Yields:
         str, int: the download location of the next etext and its offset
@@ -111,8 +111,8 @@ def download_link(link, todir, seen=None):
 
     Returns:
         LinkDownloadResult:
-            .did_download => True if the file was downloaded, False if skipped
-            .download_size => size in bytes of the downloaded file
+            .did_download (bool) => True if the file was downloaded
+            .download_size (int) => size in bytes of the downloaded file
 
     """
     osutil.makedirs(todir)
@@ -154,9 +154,9 @@ def download_corpus(todir, download_opts, limit=None, delay=2):
     Args:
         todir (str): directory to which to download the corpus files
         download_opts (CorpusDownloadContext):
-            .filetypes => only download extexts in these formats (eg. "txt")
-            .langs => only download etexts in these languages (eg. "en")
-            .offset => start downloading from this results page onwards
+            .filetypes (str) => download extexts in these formats (eg. "txt")
+            .langs (str) => download etexts in these languages (eg. "en")
+            .offset (int) => start downloading from this results page onwards
         limit (int, optional): download at most this many bytes of content
         delay (int, optional): in-between request wait-time (in seconds)
 
