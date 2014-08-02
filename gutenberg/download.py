@@ -176,7 +176,12 @@ def _main():
                         help='start download at this element')
 
     with parser.parse_args() as args:
-        download_corpus(args.todir, args.filetypes, args.langs, args.offset)
+        download_corpus(
+            args.todir,
+            args.filetypes,
+            args.langs,
+            args.offset,
+        )
 
 
 if __name__ == '__main__':
