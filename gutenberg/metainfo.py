@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 import gutenberg.common.functutil as functutil
+import gutenberg.common.stringutil as stringutil
 import collections
 import json
 import logging
@@ -122,7 +123,9 @@ def parse_author(xml):
     if creator is None:
         return None
     name = creator.find(r'.//{http://www.gutenberg.org/2009/pgterms/}name')
-    return name.text.encode('utf-8') if name is not None else None
+    if name is None:
+        return None
+    return stringutil.safeunicode(name.text, encoding='utf-8')
 
 
 def parse_title(xml):
@@ -137,7 +140,9 @@ def parse_title(xml):
     """
     ebook = xml.find(r'{http://www.gutenberg.org/2009/pgterms/}ebook')
     title = ebook.find(r'.//{http://purl.org/dc/terms/}title')
-    return title.text.encode('utf-8') if title is not None else None
+    if title is None:
+        return None
+    return stringutil.safeunicode(title.text, encoding='utf-8')
 
 
 def raw_metainfo():

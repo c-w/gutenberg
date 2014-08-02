@@ -5,6 +5,31 @@ import re
 import urlparse
 
 
+def safeunicode(text, *args, **kwargs):
+    """Converts a text to unicode. Unlike the builtin unicode conversion
+    method, this function does not fail on text that already is unicode but
+    simply returns the passed-in unicode text instead.
+
+    Args:
+        text (str): the text to convert to unicode
+
+    Returns:
+        unicode: the text as unicode
+
+    Examples:
+        >>> safeunicode('foo', 'utf-8')
+        u'foo'
+
+        >>> safeunicode(u'foo')
+        u'foo'
+
+    """
+    if isinstance(text, unicode):
+        return text
+
+    return unicode(text, *args, **kwargs)
+
+
 def request_param(param, url):
     """Extracts the value of a single http request parameter.
 
