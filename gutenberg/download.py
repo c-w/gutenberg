@@ -176,7 +176,7 @@ def download_corpus(todir, download_opts, limit=None, delay=2):
         download_result = download(link, todir, seen=seen)
         if download_result is not None and download_result.did_download:
             total_download_size += download_result.download_size
-            if limit is not None and total_download_size > limit:
+            if limit is not None and total_download_size >= limit:
                 break
             time.sleep(delay)
     return offset
