@@ -25,6 +25,16 @@ USER_AGENTS = [
 ]
 
 
+LinkDownloadResult = collections.namedtuple(
+    'LinkDownloadResult',
+    'did_download download_size')
+
+
+CorpusDownloadContext = collections.namedtuple(
+    'CorpusDownloadContext',
+    'filetypes langs offset')
+
+
 def gutenberg_links(download_opts):
     """Crawls Project Gutenberg for etext download locations.
 
@@ -95,11 +105,6 @@ def canonicalize(path):
     return uri, encoding
 
 
-LinkDownloadResult = collections.namedtuple(
-    'LinkDownloadResult',
-    'did_download download_size')
-
-
 def download_link(link, todir, seen=None):
     """Download a single Project Gutenberg etext. Prefers URF-8 encoded files
     over ASCII encoded files.
@@ -141,11 +146,6 @@ def download_link(link, todir, seen=None):
         logging.debug('skipping file %s', link)
 
     return LinkDownloadResult(download, download_size)
-
-
-CorpusDownloadContext = collections.namedtuple(
-    'CorpusDownloadContext',
-    'filetypes langs offset')
 
 
 def download_corpus(todir, download_opts, limit=None, delay=2):
