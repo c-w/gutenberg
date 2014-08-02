@@ -203,6 +203,8 @@ def _main():
     parser.add_argument('--limit', metavar='L', type=cliutil.byte_size_type,
                         help=('stop downloading after L %s'
                               % ('/'.join(cliutil.byte_size_type.size_names))))
+    parser.add_argument('--delay', metavar='D', type=int, default=2,
+                        help='wait D seconds between crawling requests')
 
     with parser.parse_args() as args:
         download_corpus(
@@ -213,6 +215,7 @@ def _main():
                 args.offset,
             ),
             args.limit,
+            args.delay,
         )
 
 
