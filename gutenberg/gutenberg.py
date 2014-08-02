@@ -111,12 +111,13 @@ class GutenbergCorpus(object):
                 json.dump(metadata, metadata_file, sort_keys=True, indent=2)
         return metadata
 
-    def download(self, filetypes='txt', langs='en'):
+    def download(self, filetypes='txt', langs='en', limit=None):
         """Downloads the Gutenberg corpus to disk.
 
         Args:
             filetypes (str, optional): the etext formats to download
             langs (str, optional): the etext languages to download
+            limit (int, optional): number of bytes of etexts to download
 
         """
         osutil.makedirs(self.cfg.download.data_path)
@@ -125,7 +126,8 @@ class GutenbergCorpus(object):
             download.CorpusDownloadContext(
                 filetypes=filetypes,
                 langs=langs,
-                offset=int(self.cfg.download.offset)))
+                offset=int(self.cfg.download.offset)),
+            limit=limit)
 
     def persist(self):
         """Picks up any new files in the corpus download directory, extracts
