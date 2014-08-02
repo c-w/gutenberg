@@ -137,7 +137,7 @@ def download_corpus(todir, filetypes, langs, offset, delay=2):
         filetypes (str): only download extexts in these formats (eg. "txt")
         langs (str): only download etexts in these languages (eg. "en")
         offset (int): start downloading from this results page onwards
-        delay (int): in-between request wait-time (in seconds)
+        delay (int, optional): in-between request wait-time (in seconds)
 
     Returns:
         int: the last offset location from which etexts were downloaded
