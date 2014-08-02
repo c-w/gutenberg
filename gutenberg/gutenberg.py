@@ -152,6 +152,9 @@ class GutenbergCorpus(object):
         session.commit()
 
     def __len__(self):
+        """Counts the number of authors in the corpus.
+
+        """
         return self._dbsession().query(EText.author).distinct().count()
 
     def __repr__(self):
@@ -162,25 +165,41 @@ class GutenbergCorpus(object):
                 ))
 
     def __getitem__(self, author):
+        """Retrieves an object representation of a particular author.
+
+        """
         return GutenbergAuthor(author, self._dbsession().query(EText))
 
     def author_names(self):
+        """Iterates over the names of the authors in the corpus.
+
+        """
         return iter(etext.author for etext in self._dbsession()
                     .query(EText.author)
                     .distinct()
                     .order_by(EText.author))
 
     def authors(self):
+        """Iterates over the object representations of the corpus' authors.
+
+        """
         for author_name in self.author_names():
             yield self[author_name]
 
 
 class GutenbergAuthor(object):
+    """Object representing an author in the Project Gutenberg corpus. An author
+    is characterized by his collected works.
+
+    """
     def __init__(self, name, dbview):
         self.name = name
         self._dbview = dbview.from_self(EText).filter(EText.author == name)
 
     def __len__(self):
+        """Counts the number of works of the author.
+
+        """
         return self._dbview.from_self(EText.title).distinct().count()
 
     def __repr__(self):
@@ -192,19 +211,32 @@ class GutenbergAuthor(object):
                 ))
 
     def __getitem__(self, title):
+        """Retrieves an object representation of a particular text of the
+        author.
+
+        """
         return GutenbergText(title, self._dbview)
 
     def work_names(self):
+        """Iterates over the names of the works of the author.
+
+        """
         return iter(etext.title for etext in self._dbview
                     .distinct()
                     .order_by(EText.title))
 
     def works(self):
+        """Iterates over the object representations of the authors' titles.
+
+        """
         for title in self.work_names():
             yield self[title]
 
 
 class GutenbergText(object):
+    """Object representing a work in the Project Gutenberg corpus.
+
+    """
     def __init__(self, title, dbview):
         self.title = title
         self._dbview = dbview.from_self(EText).filter(EText.title == title)
@@ -217,11 +249,17 @@ class GutenbergText(object):
                 ))
 
     def lines(self):
+        """Iterates over the lines in the work.
+
+        """
         return osutil.readfile(self._dbview.first().path, encoding='latin1')
 
     @property
     @functutil.memoize
     def fulltext(self):
+        """Unicode representation of the work.
+
+        """
         return u'\n'.join(self.lines())
 
 
