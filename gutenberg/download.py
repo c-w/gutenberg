@@ -171,10 +171,9 @@ def download_corpus(todir, download_opts, limit=None, delay=2):
     total_download_size = 0
     offset = download_opts.offset
 
-    download = functutil.nointerrupt(download_link)
-    _download = functutil.ignore(Exception)(download)
+    download = functutil.ignore(Exception)(download_link)
     for link, offset in gutenberg_links(download_opts):
-        link_download_result = _download(link, todir, seen=seen)
+        link_download_result = download(link, todir, seen=seen)
         if link_download_result.did_download:
             total_download_size += link_download_result.download_size
             if limit is not None and total_download_size > limit:
