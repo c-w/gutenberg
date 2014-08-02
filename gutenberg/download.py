@@ -99,12 +99,13 @@ def download_link(link, todir, seen=None):
         seen (dict, optional): a pointer to the already downloaded etexts
 
     Returns:
-        bool: True if the file was downloaded and False if it was skipped
+        bool, int: True if the file was downloaded and False if it was skipped;
+                   size in bytes of the downloaded file
 
     """
     osutil.makedirs(todir)
     seen = seen if seen is not None else set()
-    download = False
+    download, download_size = False, 0
     uri, cur_encoding = canonicalize(link)
 
     if uri not in seen:
@@ -123,10 +124,11 @@ def download_link(link, todir, seen=None):
         downloadloc = os.path.join(todir, os.path.basename(link))
         functutil.nointerrupt(urllib.urlretrieve)(link, downloadloc)
         seen[uri] = downloadloc
+        download_size = os.stat(downloadloc).st_size
     else:
         logging.debug('skipping file %s', link)
 
-    return download
+    return download, download_size
 
 
 def download_corpus(todir, filetypes, langs, offset, delay=2):
@@ -151,7 +153,7 @@ def download_corpus(todir, filetypes, langs, offset, delay=2):
     download = functutil.nointerrupt(download_link)
     _download = functutil.ignore(Exception)(download)
     for link, offset in gutenberg_links(filetypes, langs, offset):
-        download_success = _download(link, todir, seen=seen)
+        download_success, _ = _download(link, todir, seen=seen)
         if download_success:
             time.sleep(delay)
     return offset
