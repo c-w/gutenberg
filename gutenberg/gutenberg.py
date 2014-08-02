@@ -99,7 +99,7 @@ class GutenbergCorpus(object):
             dict: a mapping from etext-identifier to etext-metadata
 
         """
-        opener = osutil.opener
+        opener = lambda path, mode: osutil.opener(path, mode, encoding='utf-8')
         try:
             with opener(self.cfg.metadata.metadata, 'rb') as metadata_file:
                 json_items = json.load(metadata_file).iteritems()

@@ -122,7 +122,7 @@ def parse_author(xml):
     if creator is None:
         return None
     name = creator.find(r'.//{http://www.gutenberg.org/2009/pgterms/}name')
-    return name.text if name is not None else None
+    return name.text.encode('utf-8') if name is not None else None
 
 
 def parse_title(xml):
@@ -137,7 +137,7 @@ def parse_title(xml):
     """
     ebook = xml.find(r'{http://www.gutenberg.org/2009/pgterms/}ebook')
     title = ebook.find(r'.//{http://purl.org/dc/terms/}title')
-    return title.text if title is not None else None
+    return title.text.encode('utf-8') if title is not None else None
 
 
 def raw_metainfo():
