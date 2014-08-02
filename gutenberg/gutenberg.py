@@ -192,32 +192,3 @@ class EText(ORM_BASE):
                     title=self.title,
                     path=self.path,
                 ))
-
-
-def _main():
-    """This function implements the main/script/command-line functionality of
-    the module and will be called from the `if __name__ == '__main__':` block.
-
-    """
-    import gutenberg.common.cliutil as cliutil
-
-    doc = 'command line utilities to manage the Project Gutenberg corpus'
-    parser = cliutil.ArgumentParser(description=doc)
-    parser.add_argument('configfile', type=str, nargs='?',
-                        help='path to corpus configuration file')
-    parser.add_argument('--download', action='store_true',
-                        help='download more etexts')
-    parser.add_argument('--persist', action='store_true',
-                        help='persist meta-data of etexts to database')
-
-    with parser.parse_args() as args:
-        corpus = (GutenbergCorpus() if args.configfile is None
-                  else GutenbergCorpus.using_config(args.configfile))
-        if args.download:
-            corpus.download()
-        if args.persist:
-            corpus.persist()
-
-
-if __name__ == '__main__':
-    _main()
