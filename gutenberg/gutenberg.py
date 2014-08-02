@@ -151,6 +151,16 @@ class GutenbergCorpus(object):
                     session.commit()
         session.commit()
 
+    def __len__(self):
+        return self._dbsession().query(EText).distinct().count()
+
+    def __repr__(self):
+        return ('{clsname}(num_etexts={num_etexts})'
+                .format(
+                    clsname=self.__class__.__name__,
+                    num_etexts=len(self),
+                ))
+
 
 class EText(ORM_BASE):
     """Bag-of-properties representing a Project Gutenberg etext. The class also
