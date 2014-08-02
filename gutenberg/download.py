@@ -138,7 +138,7 @@ def download_link(link, todir, seen=None):
     return LinkDownloadResult(download, download_size)
 
 
-def download_corpus(todir, filetypes, langs, offset, delay=2):
+def download_corpus(todir, filetypes, langs, offset, limit=None, delay=2):
     """Downloads the entire Project Gutenberg corpus to disk.
 
     Args:
@@ -146,6 +146,7 @@ def download_corpus(todir, filetypes, langs, offset, delay=2):
         filetypes (str): only download extexts in these formats (eg. "txt")
         langs (str): only download etexts in these languages (eg. "en")
         offset (int): start downloading from this results page onwards
+        limit (int, optional): download at most this many bytes of content
         delay (int, optional): in-between request wait-time (in seconds)
 
     Returns:
@@ -156,12 +157,16 @@ def download_corpus(todir, filetypes, langs, offset, delay=2):
     osutil.makedirs(todir)
     seen = dict((canonicalize(path)[0], path)
                 for path in osutil.listfiles(todir))
+    total_download_size = 0
 
     download = functutil.nointerrupt(download_link)
     _download = functutil.ignore(Exception)(download)
     for link, offset in gutenberg_links(filetypes, langs, offset):
-        link_download_context = _download(link, todir, seen=seen)
-        if link_download_context.did_download:
+        link_download_result = _download(link, todir, seen=seen)
+        if link_download_result.did_download:
+            total_download_size += link_download_result.download_size
+            if limit is not None and total_download_size > limit:
+                break
             time.sleep(delay)
     return offset
 
@@ -183,6 +188,9 @@ def _main():
                         help='only download files in these languages')
     parser.add_argument('--offset', metavar='O', type=int, default=0,
                         help='start download at this element')
+    parser.add_argument('--limit', metavar='L', type=cliutil.byte_size_type,
+                        help=('stop downloading after L %s'
+                              % ('/'.join(cliutil.byte_size_type.size_names))))
 
     with parser.parse_args() as args:
         download_corpus(
@@ -190,6 +198,7 @@ def _main():
             args.filetypes,
             args.langs,
             args.offset,
+            args.limit,
         )
 
 
