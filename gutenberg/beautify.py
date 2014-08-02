@@ -7,7 +7,6 @@ import gutenberg.common.osutil as osutil
 import logging
 import os
 import shutil
-import tempfile
 
 
 # Markers that indicate the Project Gutenberg headers
@@ -145,7 +144,7 @@ def clean_and_compress(etext_path):
         str: the location of the beautified and compressed etext
 
     """
-    temp_path = tempfile.mkstemp(suffix='.gz')[1]
+    temp_path = osutil.mkstemp(suffix='.gz')
     with osutil.opener(temp_path, mode='wb', encoding='utf-8') as compressed:
         lines = osutil.readfile(etext_path, encoding='latin1')
         for line in strip_headers(lines):

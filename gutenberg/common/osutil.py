@@ -6,7 +6,21 @@ import errno
 import itertools
 import gzip
 import os
+import tempfile
 import zipfile
+
+
+def mkstemp(*args, **kwargs):
+    """Returns the path of a new temporary file that can be opened for reading,
+    writing, etc. The caller is responsible for deleting the temporary file.
+    This function is a wrapper around tempfile.mkstemp that closes the returned
+    file handle (without this, an OSError is thrown when trying to open the
+    temporary path returned by tempfile.mkstemp on Windows).
+
+    """
+    handle, path = tempfile.mkstemp(*args, **kwargs)
+    os.close(handle)
+    return path
 
 
 def stripext(path):
