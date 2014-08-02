@@ -121,8 +121,11 @@ class GutenbergCorpus(object):
         """
         osutil.makedirs(self.cfg.download.data_path)
         self.cfg.download.offset = download.download_corpus(
-            self.cfg.download.data_path, filetypes=filetypes, langs=langs,
-            offset=int(self.cfg.download.offset))
+            self.cfg.download.data_path,
+            download.CorpusDownloadContext(
+                filetypes=filetypes,
+                langs=langs,
+                offset=int(self.cfg.download.offset)))
 
     def persist(self):
         """Picks up any new files in the corpus download directory, extracts
