@@ -10,6 +10,6 @@ setup(
     url='http://pypi.python.org/pypi/Gutenberg',
     license='',
     description='Project Gutenberg corpus interface',
-    long_description=open('ReadMe.md').read(),
+    long_description=open('README.txt').read(),
     install_requires=list(line.strip() for line in open('requirements.txt')),
 )
