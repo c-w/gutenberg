@@ -171,11 +171,12 @@ magic_number.GZIP = '1F8B08'
 magic_number.ZIP = '504B'
 
 
-def listfiles(root, absolute=True):
+def listfiles(root, ext=None, absolute=True):
     """Lists all the files in a directory and all of its subdirectories.
 
     Args:
         root (str): The top-level directory from which to list files.
+        ext (str, optional): Only list files with this extension.
         absolute (bool, optional): Output paths as absolute instead of
             relative.
 
@@ -188,7 +189,8 @@ def listfiles(root, absolute=True):
     root = finalize_path(root)
     for dirpath, subdirs, filenames in os.walk(root):
         for filename in filenames:
-            yield finalize_path(os.path.join(dirpath, filename))
+            if ext is None or filename.endswith(ext):
+                yield finalize_path(os.path.join(dirpath, filename))
         for subdir in subdirs:
             listfiles(subdir)
 
