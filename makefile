@@ -9,6 +9,10 @@ VENV_DIR=virtualenv
 
 VENV_ACTIVATE=$(VENV_DIR)/bin/activate
 
+MANIFEST=MANIFEST.in
+MANIFEST_INCLUDE=*.txt makefile
+MANIFEST_RECURSIVE_INCLUDE=$(DOC_DIR) *.txt
+
 .PHONY: test dist clean docs lint
 
 
@@ -22,13 +26,17 @@ test: virtualenv
 	. "$(VENV_ACTIVATE)"; \
 	nosetests --verbose --with-doctest
 
-dist:
+$(MANIFEST):
+	echo "include $(MANIFEST_INCLUDE)" > $(MANIFEST)
+	echo "recursize-include $(MANIFEST_RECURSIVE_INCLUDE)" >> $(MANIFEST)
+
+dist: $(MANIFEST) docs
 	. "$(VENV_ACTIVATE)"; \
 	python setup.py sdist --dist-dir="$(DIST_DIR)"
 
 clean:
 	find "$(SRC_DIR)" -name *.pyc -type f -delete
-	rm -f MANIFEST
+	rm -f MANIFEST*
 	rm -rf "$(DIST_DIR)"
 
 setup_docs: virtualenv
