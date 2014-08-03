@@ -8,6 +8,8 @@ VENV_DIR=virtualenv
 
 VENV_ACTIVATE=$(VENV_DIR)/bin/activate
 
+.PHONY: test clean docs lint
+
 
 virtualenv: $(VENV_ACTIVATE)
 $(VENV_ACTIVATE): requirements.txt
