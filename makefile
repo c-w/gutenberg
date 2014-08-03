@@ -7,13 +7,14 @@ VERSION=$(shell sed -n "s@^.*version='\([^']\+\)'.*@\1@p" "$(SETUP)")
 SRC_DIR=$(MODULE)
 DOC_DIR=docs
 DIST_DIR=dist
-VENV_DIR=virtualenv
 
+VENV_DIR=virtualenv
 VENV_ACTIVATE=$(VENV_DIR)/bin/activate
 
 MANIFEST=MANIFEST.in
 MANIFEST_INCLUDE=*.txt makefile
 MANIFEST_RECURSIVE_INCLUDE=$(DOC_DIR) *.txt
+
 
 .PHONY: test dist clean docs lint
 
