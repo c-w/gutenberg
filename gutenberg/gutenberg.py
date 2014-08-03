@@ -185,7 +185,8 @@ class GutenbergCorpus(object):
         """
         session = self._dbsession()
         existing = set(etext.etextno for etext in session.query(EText).all())
-        files = osutil.listfiles(self.cfg.download.data_path, absolute=False)
+        files = osutil.listfiles(self.cfg.download.data_path,
+                                 ext='.zip', absolute=False)
         num_added = 0
         _new_etext = functutil.ignore(Exception)(EText.from_file)
         for path in files:
