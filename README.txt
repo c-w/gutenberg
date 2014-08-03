@@ -51,13 +51,13 @@ The following functionality is available via the command line:
 * Clean up a downloaded text: ``python -m gutenberg.beautify``.
 * Grab some meta-data for the texts: ``python -m gutenberg.metainfo``.
 
-For example, to download 10MB of texts to the directory `corpus`, you could run
+For example, to download 10MB of texts to the directory *corpus*, you could run
 the following::
 
     python -m gutenberg.download ./corpus --limit=10MB
 
-You can find out more about how to run the scripts by appending ``--help`` to
-the commands listed above.
+You can find out more about how to run the scripts by appending *--help* to the
+commands listed above.
 
 
 As a module
@@ -131,14 +131,14 @@ The default configuration looks like this::
     metadata = corpus/metadata.json.gz  # storage location of the metadata DB
 
 More information on the different configuration options can be found in the API
-documentation of the ``gutenberg.gutenberg`` package.
+documentation of the *gutenberg.gutenberg* package.
 
 The corpus database stores information about the downloaded texts. The database
-has a single table, ``etexts``, with four columns: ``etextno``, ``title``,
-``author`` and ``path``. The first column is the primary key of the table and
-represents the unique identifier of the work in the Project Gutenberg corpus.
-The remaining columns record meta-data about the work (in unicode) and a
-relative path to the raw text on disk.
+has a single table, *etexts*, with four columns: *etextno*, *title*, *author*
+and *path*. The first column is the primary key of the table and represents the
+unique identifier of the work in the Project Gutenberg corpus.  The remaining
+columns record meta-data about the work (in unicode) and a relative path to the
+raw text on disk.
 
 
 Limitations
