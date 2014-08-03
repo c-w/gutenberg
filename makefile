@@ -4,11 +4,12 @@ VERSION=0.1
 
 SRC_DIR=$(MODULE)
 DOC_DIR=docs
+DIST_DIR=dist
 VENV_DIR=virtualenv
 
 VENV_ACTIVATE=$(VENV_DIR)/bin/activate
 
-.PHONY: test clean docs lint
+.PHONY: test dist clean docs lint
 
 
 virtualenv: $(VENV_ACTIVATE)
@@ -21,8 +22,14 @@ test: virtualenv
 	. "$(VENV_ACTIVATE)"; \
 	nosetests --verbose --with-doctest
 
+dist:
+	. "$(VENV_ACTIVATE)"; \
+	python setup.py sdist --dist-dir="$(DIST_DIR)"
+
 clean:
 	find "$(SRC_DIR)" -name *.pyc -type f -delete
+	rm -f MANIFEST
+	rm -rf "$(DIST_DIR)"
 
 setup_docs: virtualenv
 	. "$(VENV_ACTIVATE)"; \
