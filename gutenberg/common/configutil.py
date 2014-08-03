@@ -55,7 +55,9 @@ class Bunch(object):
 class ConfigMapping(object):
     """Object to config-file mapping class."""
 
-    Section = type('Section', (Bunch, ), {})
+    class Section(Bunch):
+        """Object representing a section in the config file/mapping."""
+        pass
 
     @classmethod
     def from_config(cls, path):
