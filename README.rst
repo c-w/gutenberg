@@ -52,7 +52,9 @@ The following functionality is available via the command line:
 * Grab some meta-data for the texts: ``python -m gutenberg.metainfo``.
 
 For example, to download 10MB of texts to the directory *corpus*, you could run
-the following::
+the following:
+
+.. sourcecode :: sh
 
     python -m gutenberg.download ./corpus --limit=10MB
 
@@ -65,7 +67,9 @@ As a module
 
 You can also use the project as a Python package. The following snippet
 demonstrates how you'd download some texts from Project Gutenberg and then
-iterate over your freshly built corpus::
+iterate over your freshly built corpus:
+
+.. sourcecode :: python
 
     from gutenberg import GutenbergCorpus
 
@@ -85,7 +89,9 @@ iterate over your freshly built corpus::
                            author=author.name,
                            preview=text.replace('\n', ' ')[:preview_chars]))
 
-You can also easily drill down on specific texts and authors::
+You can also easily drill down on specific texts and authors:
+
+.. sourcecode :: python
 
     shakespeare = corpus[u'Shakespeare, William']
 
@@ -117,7 +123,9 @@ GutenbergCorpus.using_config('my-corpus.cfg')``. A configuration file can be
 generated from a corpus object by using
 ``corpus.write_config('path-to-config.cfg')``.
 
-The default configuration looks like this::
+The default configuration looks like this:
+
+.. sourcecode :: cfg
 
     [download]
     data_path = corpus/rawdata  # storage location of the raw Gutenberg texts
