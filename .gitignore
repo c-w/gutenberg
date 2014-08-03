@@ -3,6 +3,10 @@
 *.cfg
 *.log
 
+# documentation stuff
+/docs/*
+!/docs/conf.py
+
 # python stuff
 *.pyc
 

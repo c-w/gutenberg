@@ -61,8 +61,7 @@ clean:
 	find "$(SRC_DIR)" -name *.pyc -type f -delete
 	rm -f MANIFEST*
 	rm -rf "$(DIST_DIR)"
-	find "$(DOC_DIR)" -not \
-		\( -name conf.py -or -name .gitignore -or -name $(DOC_DIR) \) -delete
+	find "$(DOC_DIR)" -not \( -name conf.py -or -name $(DOC_DIR) \) -delete
 
 setup_docs: virtualenv
 	. "$(VENV_ACTIVATE)"; \
