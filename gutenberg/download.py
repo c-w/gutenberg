@@ -35,22 +35,19 @@ CorpusDownloadContext = collections.namedtuple(
     'filetypes langs offset')
 
 
-def gutenberg_links(download_opts):
+def gutenberg_links(download_context):
     """Crawls Project Gutenberg for etext download locations.
 
     Args:
-        download_opts (CorpusDownloadContext):
-            .filetypes (str) => crawl files of these types (eg. "txt")
-            .langs (str) => crawl etexts in this language (eg. "en")
-            .offset (int) => start crawling from this results page onwards
+        download_context (CorpusDownloadContext): bag of download properties
 
     Yields:
         str, int: the download location of the next etext and its offset
 
     """
-    filetypes = download_opts.filetypes
-    langs = download_opts.langs
-    offset = download_opts.offset
+    filetypes = download_context.filetypes
+    langs = download_context.langs
+    offset = download_context.offset
 
     has_next = True
     while has_next:
@@ -77,10 +74,10 @@ def gutenberg_links(download_opts):
 
 
 def canonicalize(path):
-    """Project Gutenberg paths consist of a resource identifier and an
-    optinal suffix specifying an encoding. For example, ``14639.zip'' is an
-    ascii-encoded file and ``14639-8.zip'' is a utf-8 encoded file. This
-    function splits a path into uri and encoding.
+    """Project Gutenberg paths consist of a resource identifier and an optinal
+    suffix specifying an encoding. For example, '14639.zip' is an ascii-encoded
+    file and '14639-8.zip' is a utf-8 encoded file. This function splits a path
+    into uri and encoding.
 
     Args:
         path (str): the path to canonicalize
@@ -148,15 +145,12 @@ def download_link(link, todir, seen=None):
     return LinkDownloadResult(download, download_size)
 
 
-def download_corpus(todir, download_opts, limit=None, delay=2):
+def download_corpus(todir, download_context, limit=None, delay=2):
     """Downloads the entire Project Gutenberg corpus to disk.
 
     Args:
         todir (str): directory to which to download the corpus files
-        download_opts (CorpusDownloadContext):
-            .filetypes (str) => download extexts in these formats (eg. "txt")
-            .langs (str) => download etexts in these languages (eg. "en")
-            .offset (int) => start downloading from this results page onwards
+        download_context (CorpusDownloadContext): bag of download properties
         limit (int, optional): download at most this many bytes of content
         delay (int, optional): in-between request wait-time (in seconds)
 
@@ -169,10 +163,10 @@ def download_corpus(todir, download_opts, limit=None, delay=2):
     seen = dict((canonicalize(path)[0], path)
                 for path in osutil.listfiles(todir))
     total_download_size = 0
-    offset = download_opts.offset
+    offset = download_context.offset
 
     download = functutil.ignore(Exception)(download_link)
-    for link, offset in gutenberg_links(download_opts):
+    for link, offset in gutenberg_links(download_context):
         download_result = download(link, todir, seen=seen)
         if download_result is not None and download_result.did_download:
             total_download_size += download_result.download_size
