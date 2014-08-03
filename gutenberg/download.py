@@ -25,14 +25,30 @@ USER_AGENTS = [
 ]
 
 
-LinkDownloadResult = collections.namedtuple(
-    'LinkDownloadResult',
-    'did_download download_size')
+class LinkDownloadResult(collections.namedtuple(
+        'LinkDownloadResult', 'did_download download_size')):
+    """Container for the download state of a link.
+
+    Attributes:
+        did_download (bool): False if the link was skipped, True otherwise.
+        download_size (int): Size of the downloaded resource.
+
+    """
+    pass
 
 
-CorpusDownloadContext = collections.namedtuple(
-    'CorpusDownloadContext',
-    'filetypes langs offset')
+class CorpusDownloadContext(collections.namedtuple(
+        'CorpusDownloadContext', 'filetypes langs offset')):
+    """Container for the context in which to download the Project Gutenberg
+    corpus.
+
+    Attributes:
+        filetypes (str): download files of these types (eg. "txt")
+        langs (str): dowload etexts in this language (eg. "en")
+        offset (int): download from this results page onwards
+
+    """
+    pass
 
 
 def gutenberg_links(download_context):
