@@ -19,27 +19,73 @@ import sqlalchemy.orm
 ORM_BASE = sqlalchemy.ext.declarative.declarative_base()
 
 
+class GutenbergCorpusConfigMapping(configutil.ConfigMapping):
+    """Project Gutenberg configuation options.
+
+    """
+    class DownloadSection(configutil.ConfigMapping.Section):
+        """Corpus downloading configuration options.
+
+        Attributes:
+            data_path (str): the path to which to dump the downloaded data
+            offset (int): the page from which to start downloading
+
+        """
+        def __init__(self, basedir):
+            configutil.ConfigMapping.Section.__init__(self)
+            self.data_path = os.path.join(basedir, 'rawdata')
+            self.offset = 0
+
+    class MetadataSection(configutil.ConfigMapping.Section):
+        """Corpus metadata configuration options.
+
+        Attributes:
+            metadata (str): the path to the corpus metadata file
+
+        """
+        def __init__(self, basedir):
+            configutil.ConfigMapping.Section.__init__(self)
+            self.metadata = os.path.join(basedir, 'metadata.json.gz')
+
+    class DatabaseSection(configutil.ConfigMapping.Section):
+        """Corpus database configuration options.
+
+        Attributes:
+            drivername (str): the type of database backend that should be used
+            username (str): the user that should connect to the database
+            password (str): the database password
+            host (str): the database host
+            port (int): the database port
+            database (str): the path to the database
+
+        """
+        def __init__(self, basedir):
+            configutil.ConfigMapping.Section.__init__(self)
+            self.drivername = 'sqlite'
+            self.username = None
+            self.password = None
+            self.host = None
+            self.port = None
+            self.database = os.path.join(basedir, 'gutenberg.db3')
+
+    def __init__(self, basedir='ProjectGutenbergCorpus'):
+        configutil.ConfigMapping.__init__(self)
+        self.download = GutenbergCorpusConfigMapping.DownloadSection(basedir)
+        self.metadata = GutenbergCorpusConfigMapping.MetadataSection(basedir)
+        self.database = GutenbergCorpusConfigMapping.DatabaseSection(basedir)
+
+
 class GutenbergCorpus(object):
     """Object representing the Project Gutenberg corpus. The object offers a
     simple interface to functionality such as downloading the corpus, removing
     headers, persisting meta-data to a database, etc.
 
+    Attributes:
+        cfg (GutenbergCorpusConfigMapping): corpus configuration options
+
     """
     def __init__(self):
-        basedir = 'ProjectGutenbergCorpus'
-        self.cfg = configutil.ConfigMapping()
-        self.cfg.download = configutil.ConfigMapping.Section()
-        self.cfg.download.data_path = os.path.join(basedir, 'rawdata')
-        self.cfg.download.offset = 0
-        self.cfg.metadata = configutil.ConfigMapping.Section()
-        self.cfg.metadata.metadata = os.path.join(basedir, 'metadata.json.gz')
-        self.cfg.database = configutil.ConfigMapping.Section()
-        self.cfg.database.drivername = 'sqlite'
-        self.cfg.database.username = None
-        self.cfg.database.password = None
-        self.cfg.database.host = None
-        self.cfg.database.port = None
-        self.cfg.database.database = os.path.join(basedir, 'gutenberg.db3')
+        self.cfg = GutenbergCorpusConfigMapping()
 
     @classmethod
     def using_config(cls, config_path):
@@ -55,7 +101,7 @@ class GutenbergCorpus(object):
 
         """
         corpus = cls()
-        corpus.cfg.merge(configutil.ConfigMapping.from_config(config_path))
+        corpus.cfg.merge(GutenbergCorpusConfigMapping.from_config(config_path))
         return corpus
 
     def write_config(self, path):
