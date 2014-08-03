@@ -2,11 +2,11 @@
 
 
 from __future__ import absolute_import
-import bs4
-import collections
 import gutenberg.common.functutil as functutil
 import gutenberg.common.osutil as osutil
 import gutenberg.common.stringutil as stringutil
+import bs4
+import collections
 import logging
 import os
 import random
