@@ -150,7 +150,9 @@ class GutenbergCorpus(object):
             with opener(self.cfg.metadata.metadata, 'rb') as metadata_file:
                 json_items = json.load(metadata_file).iteritems()
                 metadata = dict((int(key), val) for (key, val) in json_items)
+            logging.debug('loaded metadata from disk')
         except IOError:
+            logging.debug('fetching metadata and serializing to disk')
             metadata = metainfo.metainfo()
             osutil.makedirs(os.path.dirname(self.cfg.metadata.metadata))
             with opener(self.cfg.metadata.metadata, 'wb') as metadata_file:
