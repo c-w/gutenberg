@@ -208,8 +208,7 @@ def _main():
     parser.add_argument('--offset', metavar='O', type=int, default=0,
                         help='start download at this element')
     parser.add_argument('--limit', metavar='L', type=cliutil.byte_size_type,
-                        help=('stop downloading after L %s'
-                              % ('/'.join(cliutil.byte_size_type.size_names))))
+                        help='stop downloading after L kb/mg/gb')
     parser.add_argument('--delay', metavar='D', type=int, default=2,
                         help='wait D seconds between crawling requests')
 
