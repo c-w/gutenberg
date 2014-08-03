@@ -28,7 +28,7 @@ test: virtualenv
 
 $(MANIFEST):
 	echo "include $(MANIFEST_INCLUDE)" > $(MANIFEST)
-	echo "recursize-include $(MANIFEST_RECURSIVE_INCLUDE)" >> $(MANIFEST)
+	echo "recursive-include $(MANIFEST_RECURSIVE_INCLUDE)" >> $(MANIFEST)
 
 dist: $(MANIFEST) docs
 	. "$(VENV_ACTIVATE)"; \
