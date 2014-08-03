@@ -136,7 +136,7 @@ class GutenbergCorpus(object):
         return new_session()
 
     @functutil.memoize
-    def etext_metadata(self):
+    def _etext_metadata(self):
         """Reads a database of etext metadata from disk (or creates the
         database if it does not exist). The metadata contains information such
         as title, author, etc.
@@ -174,8 +174,9 @@ class GutenbergCorpus(object):
                 langs=langs,
                 offset=int(self.cfg.download.offset)),
             limit=limit)
+        self._persist()
 
-    def persist(self):
+    def _persist(self):
         """Picks up any new files in the corpus download directory, extracts
         the raw etexts and tags the etext with metadata in the corpus database.
 
@@ -187,7 +188,7 @@ class GutenbergCorpus(object):
         _new_etext = functutil.ignore(Exception)(EText.from_file)
         for path in files:
             logging.debug('processing %s', path)
-            etext = _new_etext(path, self.etext_metadata())
+            etext = _new_etext(path, self._etext_metadata())
             if etext and etext.etextno not in existing:
                 session.add(etext)
                 existing.add(etext.etextno)
