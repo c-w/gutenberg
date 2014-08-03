@@ -237,6 +237,12 @@ class GutenbergAuthor(object):
     """Object representing an author in the Project Gutenberg corpus. An author
     is characterized by his collected works.
 
+    Attributes:
+        name (str): the name of the author
+        _dbview (sqlalchemy.orm.query.Query): a database query that can be
+            extended for further refinement but will only consider this
+            particular author.
+
     """
     def __init__(self, name, dbview):
         self.name = name
@@ -281,6 +287,12 @@ class GutenbergAuthor(object):
 
 class GutenbergText(object):
     """Object representing a work in the Project Gutenberg corpus.
+
+    Attributes:
+        title (str): the title of the work
+        _dbview (sqlalchemy.orm.query.Query): a database query that can be
+            extended for further refinement but will only consider this
+            particular work.
 
     """
     def __init__(self, title, dbview):
