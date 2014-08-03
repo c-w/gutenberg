@@ -1,6 +1,8 @@
-MODULE=$(shell sed -n "s@^.*name='\([^']\+\)'.*@\L\1@p" setup.py)
-AUTHOR=$(shell sed -n "s@^.*author='\([^']\+\)'.*@\1@p" setup.py)
-VERSION=$(shell sed -n "s@^.*version='\([^']\+\)'.*@\1@p" setup.py)
+SETUP=setup.py
+
+MODULE=$(shell sed -n "s@^.*name='\([^']\+\)'.*@\L\1@p" "$(SETUP)")
+AUTHOR=$(shell sed -n "s@^.*author='\([^']\+\)'.*@\1@p" "$(SETUP)")
+VERSION=$(shell sed -n "s@^.*version='\([^']\+\)'.*@\1@p" "$(SETUP)")
 
 SRC_DIR=$(MODULE)
 DOC_DIR=docs
@@ -32,16 +34,16 @@ $(MANIFEST):
 
 dist: $(MANIFEST) docs
 	. "$(VENV_ACTIVATE)"; \
-	python setup.py sdist --dist-dir="$(DIST_DIR)"
+	python "$(SETUP)" sdist --dist-dir="$(DIST_DIR)"
 
 increase-major-version:
-	perl -i -p -e 's/(\d+).(\d+).(\d+)/"".($$1+1).".0.0"/e' setup.py
+	perl -i -p -e 's/(\d+).(\d+).(\d+)/"".($$1+1).".0.0"/e' "$(SETUP)"
 
 increase-minor-version:
-	perl -i -p -e 's/(\d+).(\d+).(\d+)/"$$1.".($$2+1).".0"/e' setup.py
+	perl -i -p -e 's/(\d+).(\d+).(\d+)/"$$1.".($$2+1).".0"/e' "$(SETUP)"
 
 increase-micro-version:
-	perl -i -p -e 's/(\d+).(\d+).(\d+)/"$$1.$$2.".($$3+1)/e' setup.py
+	perl -i -p -e 's/(\d+).(\d+).(\d+)/"$$1.$$2.".($$3+1)/e' "$(SETUP)"
 
 release-major: increase-major-version dist
 	@echo "Now at version $(VERSION)"
