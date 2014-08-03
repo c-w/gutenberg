@@ -6,7 +6,6 @@ import gutenberg.common.functutil as functutil
 import gutenberg.common.stringutil as stringutil
 import collections
 import json
-import logging
 import os
 import re
 import tarfile
@@ -82,10 +81,6 @@ def metainfo():
         etext = parse_etextno(xml)
         author = parse_author(xml)
         title = parse_title(xml)
-        if author is None:
-            logging.warning('no author meta-data found for etext %s', etext)
-        if title is None:
-            logging.warning('no title meta-data found for etext %s', etext)
         metadata[etext]['author'] = author
         metadata[etext]['title'] = title
     return dict(metadata)

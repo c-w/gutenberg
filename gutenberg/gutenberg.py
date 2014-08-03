@@ -351,6 +351,10 @@ class EText(ORM_BASE):
         metadata = etext_metadata[ident]
         author = metadata.get('author')
         title = metadata.get('title')
+        if author is None:
+            logging.warning('no author meta-data found for etext %s', ident)
+        if title is None:
+            logging.warning('no title meta-data found for etext %s', ident)
         path = beautify.clean_and_compress(path)
         return cls(etextno=ident, author=author, title=title, path=path)
 
