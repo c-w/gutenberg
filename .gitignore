@@ -12,7 +12,9 @@
 
 # setuptools stuff
 /*.egg-info
+/build/
 /dist/
+/install/
 /MANIFEST*
 
 # virtualenv stuff
