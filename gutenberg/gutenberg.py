@@ -188,18 +188,20 @@ class GutenbergCorpus(object):
         files = osutil.listfiles(self.cfg.download.data_path,
                                  ext='.zip', absolute=False)
         num_added = 0
-        _new_etext = functutil.ignore(Exception)(EText.from_file)
-        for path in files:
-            logging.debug('processing %s', path)
-            etext = _new_etext(path, self._etext_metadata())
-            if etext and etext.etextno not in existing:
-                session.add(etext)
-                existing.add(etext.etextno)
-                num_added += 1
-                if num_added % 100 == 0:
-                    logging.debug('committing')
-                    session.commit()
-        session.commit()
+        try:
+            _new_etext = functutil.ignore(Exception)(EText.from_file)
+            for path in files:
+                logging.debug('processing %s', path)
+                etext = _new_etext(path, self._etext_metadata())
+                if etext and etext.etextno not in existing:
+                    session.add(etext)
+                    existing.add(etext.etextno)
+                    num_added += 1
+                    if num_added % 100 == 0:
+                        logging.debug('committing')
+                        session.commit()
+        finally:
+            session.commit()
 
     def __len__(self):
         """Counts the number of authors in the corpus.
