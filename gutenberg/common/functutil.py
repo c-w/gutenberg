@@ -96,7 +96,7 @@ def memoize(fun):
     @functools.wraps(fun)
     def wrapper(*args, **kwargs):
         """Decorator."""
-        key = str(args) + str(kwargs)
+        key = (args, frozenset(sorted(kwargs.items())))
         try:
             value = cache[key]
         except KeyError:
