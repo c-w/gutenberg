@@ -46,13 +46,13 @@ increase-minor-version:
 increase-micro-version:
 	perl -i -p -e 's/(\d+).(\d+).(\d+)/"$$1.$$2.".($$3+1)/e' "$(SETUP)"
 
-release-major: increase-major-version dist
+release-major-version: increase-major-version dist
 	@echo "Now at version $(VERSION)"
 
-release-minor: increase-minor-version dist
+release-minor-version: increase-minor-version dist
 	@echo "Now at version $(VERSION)"
 
-release-micro: increase-micro-version dist
+release-micro-version: increase-micro-version dist
 	@echo "Now at version $(VERSION)"
 
 clean:
