@@ -118,10 +118,17 @@ Advanced usage
 ==============
 
 You can influence how the corpus object behaves via specifying a configuration
-file when constructing the object: ``corpus =
-GutenbergCorpus.using_config('my-corpus.cfg')``. A configuration file can be
-generated from a corpus object by using
-``corpus.write_config('path-to-config.cfg')``.
+file when constructing the object:
+
+.. sourcecode :: python
+
+    corpus = GutenbergCorpus.using_config('my-corpus.cfg')
+
+A configuration file can be generated from a corpus object like so:
+
+.. sourcecode :: python
+
+    corpus.write_config('path-to-config.cfg')
 
 The default configuration looks like this:
 
