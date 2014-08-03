@@ -16,7 +16,7 @@ MANIFEST_INCLUDE=*.txt makefile
 MANIFEST_RECURSIVE_INCLUDE=$(DOC_DIR) *.txt
 
 
-.PHONY: virtualenv test dist clean docs lint setup_docs
+.PHONY: virtualenv test publish clean docs lint setup_docs
 .PHONY: increase-major-version increase-minor-version increase-micro-version
 .PHONY: release-major-version release-minor-version release-micro-version
 
@@ -35,9 +35,9 @@ $(MANIFEST):
 	echo "include $(MANIFEST_INCLUDE)" > $(MANIFEST)
 	echo "recursive-include $(MANIFEST_RECURSIVE_INCLUDE)" >> $(MANIFEST)
 
-dist: $(MANIFEST) docs
+publish: $(MANIFEST) docs
 	. "$(VENV_ACTIVATE)"; \
-	python "$(SETUP)" sdist --dist-dir="$(DIST_DIR)"
+	python $(SETUP) sdist --dist-dir="$(DIST_DIR)" upload
 
 increase-major-version:
 	perl -i -p -e 's/(\d+).(\d+).(\d+)/"".($$1+1).".0.0"/e' "$(SETUP)"
@@ -48,13 +48,13 @@ increase-minor-version:
 increase-micro-version:
 	perl -i -p -e 's/(\d+).(\d+).(\d+)/"$$1.$$2.".($$3+1)/e' "$(SETUP)"
 
-release-major-version: increase-major-version dist
+release-major-version: increase-major-version publish
 	@echo "Now at version $(VERSION)"
 
-release-minor-version: increase-minor-version dist
+release-minor-version: increase-minor-version publish
 	@echo "Now at version $(VERSION)"
 
-release-micro-version: increase-micro-version dist
+release-micro-version: increase-micro-version publish
 	@echo "Now at version $(VERSION)"
 
 clean:
