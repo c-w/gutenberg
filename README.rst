@@ -24,7 +24,7 @@ verify your install.
 
 * The recommended way of doing this is using the project's makefile. The
   command ``make virtualenv`` will install all the required dependencies for
-  the package in a local directory called ``virtualenv``.
+  the package in a local directory called *virtualenv*
 * You might want to run the tests to see if everything installed correctly:
   ``make test``.
 * Now run ``source virtualenv/bin/activate`` and you're good to go.
@@ -32,7 +32,7 @@ verify your install.
 Another setup task you might want to run is ``make docs`` to automatically
 generate some API documentation for the project. After running the command, you
 can enjoy your documentation by pointing your browser at
-``docs/_build/html/index.html``.
+*docs/_build/html/index.html*.
 
 
 Usage
