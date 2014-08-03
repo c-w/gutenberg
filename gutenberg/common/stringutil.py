@@ -11,10 +11,10 @@ def safeunicode(text, *args, **kwargs):
     simply returns the passed-in unicode text instead.
 
     Args:
-        text (str): the text to convert to unicode
+        text (str): The text to convert to unicode.
 
     Returns:
-        unicode: the text as unicode
+        unicode: The text as unicode.
 
     Examples:
         >>> safeunicode('foo', 'utf-8')
@@ -34,12 +34,12 @@ def request_param(param, url):
     """Extracts the value of a single http request parameter.
 
     Args:
-        param (str): the request parameter whose value to extract
-        url (str): the request string from which to extract the paramter value
+        param (str): The request parameter whose value to extract.
+        url (str): The request string from which to extract the paramter value.
 
     Returns:
-        str: the value of the parameter or None if the paramter is not
-             in the url
+        str: The value of the parameter or None if the paramter is not
+            in the url.
 
     Examples:
         >>> request_param('baz', 'http://www.foo.com/bar?baz=1')
@@ -60,12 +60,12 @@ def merge(head, tail, sep=' '):
     separator.
 
     Args:
-        head (str): the string to concatenate left
-        tail (str): the string to concatenate right
-        sep (str, optional): the separator to use for concatenation
+        head (str): The string to concatenate left.
+        tail (str): The string to concatenate right.
+        sep (str, optional): The separator to use for concatenation.
 
     Returns:
-        str: the string "head + sep + tail"
+        str: The string `head` + `sep` + `tail`.
 
     Examples:
         >>> merge('foo', 'bar')
@@ -94,11 +94,11 @@ def splithead(delimited, sep=' '):
     """Splits off the first element in a delimited string.
 
     Args:
-        delimited (str): the string to split
-        sep (str, optional): the separator to split on
+        delimited (str): The string to split.
+        sep (str, optional): The separator to split on.
 
     Returns:
-        tuple: the first element split and the rest of the string
+        tuple: The first element split and the rest of the string.
 
     Examples:
         >>> splithead('foo bar')

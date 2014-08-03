@@ -22,6 +22,16 @@ class ArgumentParser(argparse.ArgumentParser):
                           help='increase logging verbosity')
 
     def parse_args(self, *args, **kwargs):
+        """Wraps argparse.ArgumentParser.parse_args, with two key
+        modifications. First: the default '--verbose' argument is used to set
+        the logging verbosity. Second: The arguments are returned in a context
+        manager that automatically closes any file-type arguments.
+
+        Args:
+            *args: Variable-length arguments passed down to parse_args.
+            **kwargs: Keyword arguments passed down to parse_args.
+
+        """
         argv = argparse.ArgumentParser.parse_args(self, *args, **kwargs)
         logging.basicConfig(
             level=loglevel(argv.verbose),
@@ -35,14 +45,14 @@ def byte_size_type(argument,
     """Parses a string argument into a valid size in bytes.
 
     Args:
-        argument (str): the argument to convert to a byte-size
-        sizes (list, optional): the byte-size units that are accepted
+        argument (str): The argument to convert to a byte-size.
+        sizes (list, optional): The byte-size units that are accepted.
 
     Returns:
-        int: the number of bytes represented by the argument
+        int: The number of bytes represented by the argument.
 
     Raises:
-        ArgumentTypeError: if the argument does not represent a size in bytes
+        ArgumentTypeError: If the argument does not represent a size in bytes.
 
     Examples:
         >>> byte_size_type('128kb')
@@ -114,10 +124,10 @@ def loglevel(logval):
     lead to more detailed logging, lower values lead to less detailed logging.
 
     Args:
-        logval (int): the integer value to convert into a logging level
+        logval (int): The integer value to convert into a logging level.
 
     Returns:
-        int: the logging level corresponding to the integer value
+        int: The logging level corresponding to the integer value.
 
     Examples:
         >>> loglevel(-2) == logging.CRITICAL

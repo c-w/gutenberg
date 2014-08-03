@@ -18,11 +18,11 @@ class Bunch(object):
         """Factory method to create a Bunch from a dictionary.
 
         Args:
-            dictionary (dict): the dictionary of attribute-(name,value) pairs
-                               to set on the Bunch
+            dictionary (dict): The dictionary of attribute-(name,value) pairs
+                to set on the Bunch.
 
         Returns:
-            Bunch: a Bunch where Bunch.k = v for all (k,v) in dictionary
+            Bunch: A Bunch where Bunch.k = v for all (k,v) in dictionary.
 
         Examples:
             >>> bunch = Bunch.from_dict({'foo': 1})
@@ -40,12 +40,12 @@ class Bunch(object):
         """Factory method to create a Bunch copying an object's attribute.
 
         Args:
-            instance (object): the object to copy from
-            attribute (str): the attribute to copy
+            instance (object): The object to copy from.
+            attribute (str): The attribute to copy.
 
         Returns:
-            Bunch: a Bunch copying instance.attribute (or an empty Bunch if
-                   instance has no such attribute)
+            Bunch: A Bunch copying instance.attribute (or an empty Bunch if
+                instance has no such attribute).
 
         """
         return (Bunch() if not hasattr(instance, attribute)
@@ -64,13 +64,13 @@ class ConfigMapping(object):
         """Factory method to create a ConfigMapping from a config-file.
 
         Args:
-            path (str): the path of the config-file to read
+            path (str): The path of the config-file to read.
 
         Returns:
-            ConfigMapping: an object reflecting the values in the config-file
+            ConfigMapping: An object reflecting the values in the config-file.
 
         Raises:
-            IOError: if `path` does not exist
+            IOError: If `path` does not exist
 
         """
         if not os.path.isfile(path):
@@ -92,7 +92,7 @@ class ConfigMapping(object):
         """Dumps the ConfigMapping object to a config-file on disk.
 
         Args:
-            path (str): the location to which to write the config-file
+            path (str): The location to which to write the config-file.
 
         """
         config = ConfigParser.SafeConfigParser()
@@ -113,7 +113,7 @@ class ConfigMapping(object):
         are kept.
 
         Args:
-            other (ConfigMapping): the ConfigMapping to merge with
+            other (ConfigMapping): The ConfigMapping to merge with.
 
         """
         if not isinstance(other, ConfigMapping):

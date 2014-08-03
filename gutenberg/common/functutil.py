@@ -13,10 +13,10 @@ def nointerrupt(fun):
     Windows could implement a similar function using threads.
 
     Args:
-        fun (callable): the function to make un-interruptable
+        fun (function): The function to make un-interruptable.
 
     Returns:
-        callable: the un-interruptable version of the function
+        function: The un-interruptable version of the function.
 
     """
 
@@ -36,10 +36,10 @@ def ignore(*exceptions):
     throwing errors on them.
 
     Args:
-        exceptions (list): the exceptions to ignore
+        exceptions (list): The exceptions to ignore.
 
     Returns:
-        callable: the function with exception ignoring enabled
+        function: The function with exception ignoring enabled.
 
     Examples:
         >>> d = {1: '1', 2: '2'}
@@ -85,10 +85,10 @@ def memoize(fun):
     size.
 
     Args:
-        fun (callable): the function to decorate
+        fun (function): The function to decorate.
 
     Returns:
-        callable: the function with memoization enabled
+        function: The function with memoization enabled.
 
     """
     cache = fun._cache = {}

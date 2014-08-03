@@ -83,14 +83,14 @@ FOOTERS = [
 def strip_headers(lines):
     """Remove lines that are part of the Project Gutenberg header or footer.
 
-    This is a port of the C++ version by Johannes Krugel
-    Link: http://www14.in.tum.de/spp1307/src/strip_headers.cpp
+    This is a port of the C++ version by Johannes Krugel (link:
+    http://www14.in.tum.de/spp1307/src/strip_headers.cpp)
 
     Args:
-        lines (list): the lines of text to filter
+        lines (list): The lines of text to filter.
 
     Returns:
-        list: the lines of text that don't belong to a header or footer
+        list: The lines of text that don't belong to a header or footer.
 
     """
     out = []
@@ -138,10 +138,10 @@ def clean_and_compress(etext_path):
     the etext will be destroyed by this operation.
 
     Args:
-        etext_path (str): the path of the etext to beautify and compress
+        etext_path (str): The path of the etext to beautify and compress.
 
     Returns:
-        str: the location of the beautified and compressed etext
+        str: The location of the beautified and compressed etext.
 
     """
     temp_path = osutil.mkstemp(suffix='.gz')

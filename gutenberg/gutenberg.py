@@ -27,8 +27,8 @@ class GutenbergCorpusConfigMapping(configutil.ConfigMapping):
         """Corpus downloading configuration options.
 
         Attributes:
-            data_path (str): the path to which to dump the downloaded data
-            offset (int): the page from which to start downloading
+            data_path (str): The path to which to dump the downloaded data.
+            offset (int): The page from which to start downloading.
 
         """
         def __init__(self, basedir):
@@ -40,7 +40,7 @@ class GutenbergCorpusConfigMapping(configutil.ConfigMapping):
         """Corpus metadata configuration options.
 
         Attributes:
-            metadata (str): the path to the corpus metadata file
+            metadata (str): The path to the corpus metadata file.
 
         """
         def __init__(self, basedir):
@@ -51,12 +51,12 @@ class GutenbergCorpusConfigMapping(configutil.ConfigMapping):
         """Corpus database configuration options.
 
         Attributes:
-            drivername (str): the type of database backend that should be used
-            username (str): the user that should connect to the database
-            password (str): the database password
-            host (str): the database host
-            port (int): the database port
-            database (str): the path to the database
+            drivername (str): The type of database backend that should be used.
+            username (str): The user that should connect to the database.
+            password (str): The database password.
+            host (str): The database host.
+            port (int): The database port.
+            database (str): The path to the database.
 
         """
         def __init__(self, basedir):
@@ -81,7 +81,7 @@ class GutenbergCorpus(object):
     headers, persisting meta-data to a database, etc.
 
     Attributes:
-        cfg (GutenbergCorpusConfigMapping): corpus configuration options
+        cfg (GutenbergCorpusConfigMapping): Corpus configuration options.
 
     """
     def __init__(self):
@@ -93,11 +93,11 @@ class GutenbergCorpus(object):
         file. Any non-specified settings are set to the default values.
 
         Args:
-            config_path (str): the path to the .cfg file
+            config_path (str): The path to the .cfg file.
 
         Returns:
-            GutenbergCorpus: a corpus respecting the settings in the
-                             configuration file
+            GutenbergCorpus: A corpus respecting the settings in the
+                configuration file.
 
         """
         corpus = cls()
@@ -109,7 +109,7 @@ class GutenbergCorpus(object):
         restoring.
 
         Args:
-            path (str): the path to which to write the configuration file
+            path (str): The path to which to write the configuration file.
 
         """
         self.cfg.write_config(path)
@@ -119,7 +119,7 @@ class GutenbergCorpus(object):
         the corpus.
 
         Returns:
-            sqlalchemy.orm.Session: a database session
+            sqlalchemy.orm.Session: A database session.
 
         """
         osutil.makedirs(os.path.dirname(self.cfg.database.database))
@@ -142,7 +142,7 @@ class GutenbergCorpus(object):
         as title, author, etc.
 
         Returns:
-            dict: a mapping from etext-identifier to etext-metadata
+            dict: A mapping from etext-identifier to etext-metadata.
 
         """
         opener = lambda path, mode: osutil.opener(path, mode, encoding='utf-8')
@@ -161,9 +161,9 @@ class GutenbergCorpus(object):
         """Downloads the Gutenberg corpus to disk.
 
         Args:
-            filetypes (str, optional): the etext formats to download
-            langs (str, optional): the etext languages to download
-            limit (int, optional): number of bytes of etexts to download
+            filetypes (str, optional): The etext formats to download.
+            langs (str, optional): The etext languages to download.
+            limit (int, optional): Number of bytes of etexts to download.
 
         """
         osutil.makedirs(self.cfg.download.data_path)
@@ -238,8 +238,8 @@ class GutenbergAuthor(object):
     is characterized by his collected works.
 
     Attributes:
-        name (str): the name of the author
-        _dbview (sqlalchemy.orm.query.Query): a database query that can be
+        name (str): The name of the author.
+        _dbview (sqlalchemy.orm.query.Query): A database query that can be
             extended for further refinement but will only consider this
             particular author.
 
@@ -289,8 +289,8 @@ class GutenbergText(object):
     """Object representing a work in the Project Gutenberg corpus.
 
     Attributes:
-        title (str): the title of the work
-        _dbview (sqlalchemy.orm.query.Query): a database query that can be
+        title (str): The title of the work.
+        _dbview (sqlalchemy.orm.query.Query): A database query that can be
             extended for further refinement but will only consider this
             particular work.
 
@@ -339,11 +339,11 @@ class EText(ORM_BASE):
         to tag the etext with author and title information.
 
         Args:
-            path (str): the path to the etext file to load
-            etext_metadata (dict): the metadata database to consult
+            path (str): The path to the etext file to load.
+            etext_metadata (dict): The metadata database to consult.
 
         Returns:
-            EText: an object representation of the etext file
+            EText: An object representation of the etext file.
 
         """
         ident = metainfo.etextno(osutil.readfile(path, encoding='latin1'))

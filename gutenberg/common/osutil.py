@@ -27,10 +27,10 @@ def stripext(path):
     """Removes the extension from a path.
 
     Args:
-        path (str): the path from which to strip the extension
+        path (str): The path from which to strip the extension.
 
     Returns:
-        str: the path without an extension
+        str: The path without an extension.
 
     Examples:
         >>> stripext('/foo/bar.ext')
@@ -62,14 +62,12 @@ def canonical(path):
     """Normalize a path.
 
     Args:
-        path (str): the path to normalize
+        path (str): The path to normalize.
 
     Returns:
-        str: an absolute version of the path with all variables expanded
+        str: An absolute version of the path with all variables expanded.
 
     Examples:
-        >>> import os
-
         >>> os.environ['BAZ'] = 'baz'
         >>> canonical('/foo/bar/$BAZ')
         '/foo/bar/baz'
@@ -94,12 +92,12 @@ def opener(path, mode='r', encoding=None):
     open-method to use by looking at the extension of the file.
 
     Args:
-        path (str): the path of the file to open
-        mode (str, optional): the mode in which to open the file
-        encoding (str, optional): the encoding with which to open the file
+        path (str): The path of the file to open.
+        mode (str, optional): The mode in which to open the file.
+        encoding (str, optional): The encoding with which to open the file.
 
     Returns:
-        file: the opened file
+        file: The opened file.
 
     """
     if path.endswith('.gz'):
@@ -121,15 +119,15 @@ def readfile(path, encoding=None):
     file's magic number.
 
     Args:
-        path (str): the path of the file to open
-        encoding (str, optional): the encoding with which to read the file
+        path (str): The path of the file to open.
+        encoding (str, optional): the encoding with which to read the file.
 
     Returns:
-        iter: an iterator over the lines in the file
+        iterator: An iterator over the lines in the file.
 
     Raises:
-        NotImplementedError: if the file has a magic number for which no
-                             opener has been implemented
+        NotImplementedError: If the file has a magic number for which no
+            opener has been implemented.
 
     """
     path = canonical(path)
@@ -160,10 +158,10 @@ def magic_number(path):
     """Retrieves the magic number of a file.
 
     Args:
-        path (str): the path from which to retrieve the magic number
+        path (str): The path from which to retrieve the magic number.
 
     Returns:
-        str: an upper-case hex-string representation of the magic number
+        str: An upper-case hex-string representation of the magic number.
 
     """
     with open(path, 'rb') as binary_file:
@@ -177,12 +175,13 @@ def listfiles(root, absolute=True):
     """Lists all the files in a directory and all of its subdirectories.
 
     Args:
-        root (str): the top-level directory from which to list files
-        absolute (bool, optional): output paths as absolute instead of relative
+        root (str): The top-level directory from which to list files.
+        absolute (bool, optional): Output paths as absolute instead of
+            relative.
 
     Returns:
-        iter: an iterator over the paths to all files under the top-level
-              directory
+        iterator: An iterator over the paths to all files under the top-level
+            directory.
 
     """
     finalize_path = canonical if absolute else lambda path: path
@@ -201,7 +200,7 @@ def makedirs(path):
     already exist.
 
     Args:
-        path (str): the path of directories to create
+        path (str): The path of directories to create.
 
     Examples:
         >>> makedirs('/tmp/foo/bar')

@@ -43,9 +43,9 @@ class CorpusDownloadContext(collections.namedtuple(
     corpus.
 
     Attributes:
-        filetypes (str): download files of these types (eg. "txt")
-        langs (str): dowload etexts in this language (eg. "en")
-        offset (int): download from this results page onwards
+        filetypes (str): Download files of these types (eg. "txt").
+        langs (str): Dowload etexts in this language (eg. "en").
+        offset (int): Download from this results page onwards.
 
     """
     pass
@@ -55,10 +55,10 @@ def gutenberg_links(download_context):
     """Crawls Project Gutenberg for etext download locations.
 
     Args:
-        download_context (CorpusDownloadContext): bag of download properties
+        download_context (CorpusDownloadContext): Bag of download properties.
 
     Yields:
-        str, int: the download location of the next etext and its offset
+        str, int: The download location of the next etext and its offset.
 
     """
     filetypes = download_context.filetypes
@@ -96,11 +96,11 @@ def canonicalize(path):
     into uri and encoding.
 
     Args:
-        path (str): the path to canonicalize
+        path (str): The path to canonicalize.
 
     Returns:
-        str, str: the resource identifier associated with the path and its
-                  encoding (or None if the file is ascii-encoded)
+        str, str: The resource identifier associated with the path and its
+            encoding (or None if the file is ascii-encoded).
 
     Examples:
         >>> canonicalize('http://www.gutenberg.lib.md.us/14639.zip')
@@ -123,14 +123,12 @@ def download_link(link, todir, seen=None):
     over ASCII encoded files.
 
     Args:
-        link (str): the link to the etext to download
-        todir (str): the directory to which to download the etext
-        seen (dict, optional): a pointer to the already downloaded etexts
+        link (str): The link to the etext to download.
+        todir (str): The directory to which to download the etext.
+        seen (dict, optional): A pointer to the already downloaded etexts.
 
     Returns:
-        LinkDownloadResult:
-            .did_download (bool) => True if the file was downloaded
-            .download_size (int) => size in bytes of the downloaded file
+        LinkDownloadResult: Link download result bag of properties.
 
     """
     osutil.makedirs(todir)
@@ -165,13 +163,13 @@ def download_corpus(todir, download_context, limit=None, delay=2):
     """Downloads the entire Project Gutenberg corpus to disk.
 
     Args:
-        todir (str): directory to which to download the corpus files
-        download_context (CorpusDownloadContext): bag of download properties
-        limit (int, optional): download at most this many bytes of content
-        delay (int, optional): in-between request wait-time (in seconds)
+        todir (str): Directory to which to download the corpus files.
+        download_context (CorpusDownloadContext): Bag of download properties.
+        limit (int, optional): Download at most this many bytes of content.
+        delay (int, optional): In-between request wait-time (in seconds).
 
     Returns:
-        int: the last offset location from which etexts were downloaded
+        int: The last offset location from which etexts were downloaded.
 
     """
     todir = osutil.canonical(todir)
