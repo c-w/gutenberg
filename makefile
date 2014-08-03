@@ -1,6 +1,6 @@
-MODULE=gutenberg
-AUTHOR=Clemens Wolff
-VERSION=0.1
+MODULE=$(shell sed -n "s@^.*name='\([^']\+\)'.*@\L\1@p" setup.py)
+AUTHOR=$(shell sed -n "s@^.*author='\([^']\+\)'.*@\1@p" setup.py)
+VERSION=$(shell sed -n "s@^.*version='\([^']\+\)'.*@\1@p" setup.py)
 
 SRC_DIR=$(MODULE)
 DOC_DIR=docs
