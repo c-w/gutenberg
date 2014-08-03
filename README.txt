@@ -3,7 +3,7 @@ Gutenberg
 =========
 
 This package contains a variety of scripts to make working with the tremendous
-NLP resource `Project Gutenberg <www.gutenberg.org>`_ easier.
+NLP resource `Project Gutenberg <http://www.gutenberg.org>`_ easier.
 
 The functionality provided by this package includes:
 
