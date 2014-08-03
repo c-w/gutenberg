@@ -34,6 +34,24 @@ dist: $(MANIFEST) docs
 	. "$(VENV_ACTIVATE)"; \
 	python setup.py sdist --dist-dir="$(DIST_DIR)"
 
+increase-major-version:
+	perl -i -p -e 's/(\d+).(\d+).(\d+)/"".($$1+1).".0.0"/e' setup.py
+
+increase-minor-version:
+	perl -i -p -e 's/(\d+).(\d+).(\d+)/"$$1.".($$2+1).".0"/e' setup.py
+
+increase-micro-version:
+	perl -i -p -e 's/(\d+).(\d+).(\d+)/"$$1.$$2.".($$3+1)/e' setup.py
+
+release-major: increase-major-version dist
+	@echo "Now at version $(VERSION)"
+
+release-minor: increase-minor-version dist
+	@echo "Now at version $(VERSION)"
+
+release-micro: increase-micro-version dist
+	@echo "Now at version $(VERSION)"
+
 clean:
 	find "$(SRC_DIR)" -name *.pyc -type f -delete
 	rm -f MANIFEST*
