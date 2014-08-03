@@ -3,7 +3,6 @@
 
 import argparse
 import contextlib
-import itertools
 import logging
 
 
@@ -31,14 +30,19 @@ class ArgumentParser(argparse.ArgumentParser):
         return managed_namespace(argv)
 
 
-def byte_size_type(argument):
+def byte_size_type(argument,
+                   sizes=(('kb', 10 ** 3), ('mb', 10 ** 6), ('gb', 10 ** 9))):
     """Parses a string argument into a valid size in bytes.
 
     Args:
         argument (str): the argument to convert to a byte-size
+        sizes (list, optional): the byte-size units that are accepted
 
     Returns:
         int: the number of bytes represented by the argument
+
+    Raises:
+        ArgumentTypeError: if the argument does not represent a size in bytes
 
     Examples:
         >>> byte_size_type('128kb')
@@ -68,20 +72,20 @@ def byte_size_type(argument):
     """
     arg = argument.strip().lower()
 
-    size_t = None
-    for size_name in byte_size_type.size_names:
+    size_t, size_mult = None, None
+    for size_name, size_multiplier in sizes:
         if arg.endswith(size_name):
-            size_t = size_name
+            size_t, size_mult = size_name, size_multiplier
             break
     else:
         raise argparse.ArgumentTypeError(
             'argument "%s" does not end with a size specifier '
             '(should be any of %s)'
-            % (argument, ', '.join(byte_size_type.size_names)))
+            % (argument, ', '.join(size_name for size_name, _ in sizes)))
 
     num_bytes = arg[:len(arg) - len(size_t)].strip()
     try:
-        num_bytes = float(num_bytes) * byte_size_type.size_conversion[size_t]
+        num_bytes = float(num_bytes) * size_mult
     except ValueError:
         raise argparse.ArgumentTypeError(
             'argument "%s" is not a valid number' % argument)
@@ -91,10 +95,6 @@ def byte_size_type(argument):
             'argument "%s" is not an integral byte number' % argument)
 
     return int(num_bytes)
-byte_size_type.size_names = ['kb', 'mb', 'gb']
-byte_size_type.size_mults = [10 ** 3, 10 ** 6, 10 ** 9]
-byte_size_type.size_conversion = \
-    dict(itertools.izip(byte_size_type.size_names, byte_size_type.size_mults))
 
 
 @contextlib.contextmanager
