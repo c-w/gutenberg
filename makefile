@@ -16,7 +16,9 @@ MANIFEST_INCLUDE=*.txt makefile
 MANIFEST_RECURSIVE_INCLUDE=$(DOC_DIR) *.txt
 
 
-.PHONY: test dist clean docs lint
+.PHONY: virtualenv test dist clean docs lint
+.PHONY: increase-major-version increase-minor-version increase-micro-version
+.PHONY: release-major-version release-minor-version release-micro-version
 
 
 virtualenv: $(VENV_ACTIVATE)
