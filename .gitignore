@@ -1,5 +1,5 @@
 # gutenberg stuff
-/ProjectGutenbergCorpus/
+/corpus/
 *.cfg
 *.log
 

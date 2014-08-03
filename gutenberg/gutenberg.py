@@ -68,7 +68,7 @@ class GutenbergCorpusConfigMapping(configutil.ConfigMapping):
             self.port = None
             self.database = os.path.join(basedir, 'gutenberg.db3')
 
-    def __init__(self, basedir='ProjectGutenbergCorpus'):
+    def __init__(self, basedir='corpus'):
         configutil.ConfigMapping.__init__(self)
         self.download = GutenbergCorpusConfigMapping.DownloadSection(basedir)
         self.metadata = GutenbergCorpusConfigMapping.MetadataSection(basedir)
