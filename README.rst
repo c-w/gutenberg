@@ -19,8 +19,23 @@ The functionality provided by this package includes:
 Installation
 ============
 
-First of all, you should probably install the dependencies for the package and
-verify your install.
+This project is on `PyPI <https://pypi.python.org/pypi/Gutenberg>`_, so I'd
+recommend that you just install everything from there using your favourite
+Python package manager.
+
+.. sourcecode :: sh
+
+    pip install gutenberg
+    easy_install gutenberg
+
+If you want to install from source, you'll need to clone this repository:
+
+.. sourcecode :: sh
+
+    git clone https://c-w@bitbucket.org/c-w/gutenberg.git && cd gutenberg
+
+Now, you should probably install the dependencies for the package and verify
+your install.
 
 * The recommended way of doing this is using the project's makefile. The
   command ``make virtualenv`` will install all the required dependencies for
