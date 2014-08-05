@@ -73,6 +73,25 @@ the following:
 
     python -m gutenberg.download ./corpus --limit=10MB
 
+The main purpose of this package is to enable the use of Project Gutenberg as a
+corpus for natural language processing work. However, you can also use the
+scripts in this package to provide you with some nice summer reading! For
+example, you can download some HTML texts using the following commands:
+
+.. sourcecode :: sh
+
+    # download the texts
+    EBOOK_DIR="./ebooks"
+    python -m gutenberg.download --limit=10MB --filetypes=html "${EBOOK_DIR}"
+
+    # unpack the texts
+    find "${EBOOK_DIR}" -name "*.zip" -type f -exec \
+        unzip -d "${EBOOK_DIR}" {} \;
+
+    # try to clean up the texts as best as possible
+    find "${EBOOK_DIR}" -name "*.html" -type f -exec \
+        sed -i '/<[pP][rR][eE]>/,/<\/[pP][rR][eE]>/d' {} \;
+
 You can find out more about how to run the scripts by appending *--help* to the
 commands listed above.
 
