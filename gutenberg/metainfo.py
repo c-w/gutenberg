@@ -2,15 +2,13 @@
 
 
 from __future__ import absolute_import
-import gutenberg.common.functutil as functutil
-import gutenberg.common.stringutil as stringutil
+import gutenberg.common.urlutil as urlutil
 import collections
 import json
 import os
+import rdflib
 import re
 import tarfile
-import urllib
-import xml.etree.cElementTree as ElementTree
 
 
 def etextno(lines):
@@ -66,7 +64,38 @@ def etextno(lines):
     raise ValueError('no etext-id found')
 
 
-@functutil.memoize
+def parse_rdf(graph):
+    """Extracts etext meta-data from an RDF graph.
+
+    Arguments:
+        graph (rdflib.Graph): The RDF graph to parse.
+
+    Returns:
+        iter: An iterator over the etext-ids, authors and titles in the graph.
+
+    """
+
+    return ((
+        int(os.path.basename(ebook_node.toPython())),
+        author_node.toPython(),
+        title_node.toPython(),
+    ) for (
+        ebook_node,
+        author_node,
+        title_node,
+    ) in graph.query("""
+        SELECT DISTINCT
+            ?ebook
+            ?author
+            ?title
+        WHERE {
+            ?ebook a pgterms:ebook.
+            ?ebook dcterms:creator [ pgterms:name ?author ].
+            ?ebook dcterms:title ?title.
+        }
+    """))
+
+
 def metainfo():
     """Retrieves a database of meta-data about Project Gutenberg etexts.  The
     meta-data always contains at least information about the title and author
@@ -77,81 +106,27 @@ def metainfo():
 
     """
     metadata = collections.defaultdict(dict)
-    for xml in raw_metainfo():
-        etext = parse_etextno(xml)
-        author = parse_author(xml)
-        title = parse_title(xml)
-        metadata[etext]['author'] = author
-        metadata[etext]['title'] = title
+    for graph in raw_metainfo():
+        for etext, author, title in parse_rdf(graph):
+            metadata[etext]['author'] = author
+            metadata[etext]['title'] = title
     return dict(metadata)
 
 
-def parse_etextno(xml):
-    """Parses an etext meta-data definition to extract the etext-id field.
-
-    Args:
-        xml (xml.etree.ElementTree.Element): An etext meta-data definition.
-
-    Returns:
-        int: The unique id of the etext or None if no id was found.
-
-    """
-    ebook = xml.find(r'{http://www.gutenberg.org/2009/pgterms/}ebook')
-    if ebook is None:
-        return None
-    about = ebook.get(r'{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about')
-    return int(os.path.basename(about))
-
-
-def parse_author(xml):
-    """Parses an etext meta-data definition to extract the author field.
-
-    Args:
-        xml (xml.etree.ElementTree.Element): An etext meta-data definition.
-
-    Returns:
-        str: The author of the etext or None if no author was found.
-
-    """
-    ebook = xml.find(r'{http://www.gutenberg.org/2009/pgterms/}ebook')
-    creator = ebook.find(r'.//{http://purl.org/dc/terms/}creator')
-    if creator is None:
-        return None
-    name = creator.find(r'.//{http://www.gutenberg.org/2009/pgterms/}name')
-    if name is None:
-        return None
-    return stringutil.safeunicode(name.text, encoding='utf-8')
-
-
-def parse_title(xml):
-    """Parses an etext meta-data definition to extract the title field.
-
-    Args:
-        xml (xml.etree.ElementTree.Element): An etext meta-data definition.
-
-    Returns:
-        str: The title of the etext or None if no title was found.
-
-    """
-    ebook = xml.find(r'{http://www.gutenberg.org/2009/pgterms/}ebook')
-    title = ebook.find(r'.//{http://purl.org/dc/terms/}title')
-    if title is None:
-        return None
-    return stringutil.safeunicode(title.text, encoding='utf-8')
-
-
 def raw_metainfo():
-    """Retrieves an XML version of the Project Gutenberg meta-data catalog.
+    """Retrieves an RDF version of the Project Gutenberg meta-data catalog.
 
     Yields:
-        xml.etree.ElementTree.Element: An etext meta-data definition.
+        rdflib.Graph: An etext meta-data definition.
 
     """
     index_url = r'http://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2'
-    filename, _ = urllib.urlretrieve(index_url)
+    filename, _ = urlutil.urlretrieve(index_url)
     with tarfile.open(filename) as archive:
         for tarinfo in archive:
-            yield ElementTree.XML('\n'.join(archive.extractfile(tarinfo)))
+            graph = rdflib.Graph()
+            graph.parse(archive.extractfile(tarinfo))
+            yield graph
 
 
 def _main():
