@@ -2,11 +2,7 @@
 """Module to process raw Project Gutenberg ETexts into a more usable format."""
 
 
-from __future__ import absolute_import
-import gutenberg.common.osutil as osutil
 import logging
-import os
-import shutil
 
 
 # Markers that indicate the Project Gutenberg headers
@@ -131,50 +127,3 @@ def strip_headers(lines):
         i += 1
 
     return out
-
-
-def clean_and_compress(etext_path):
-    """Beautifies and compresses an etext. Note that the original version of
-    the etext will be destroyed by this operation.
-
-    Args:
-        etext_path (str): The path of the etext to beautify and compress.
-
-    Returns:
-        str: The location of the beautified and compressed etext.
-
-    """
-    temp_path = osutil.mkstemp(suffix='.gz')
-    with osutil.opener(temp_path, mode='wb', encoding='utf-8') as compressed:
-        lines = osutil.readfile(etext_path, encoding='latin1')
-        for line in strip_headers(lines):
-            compressed.write(line + '\n')
-    compressed_path = osutil.stripext(etext_path) + '.gz'
-    os.remove(etext_path)
-    shutil.move(temp_path, compressed_path)
-    return compressed_path
-
-
-def _main():
-    """This function implements the main/script/command-line functionality of
-    the module and will be called from the `if __name__ == '__main__':` block.
-
-    """
-    import gutenberg.common.cliutil as cliutil
-    import argparse
-    import sys
-
-    doc = 'Removes Project Gutenberg headers and footers.'
-    parser = cliutil.ArgumentParser(description=doc)
-    parser.add_argument('infile', nargs='?', type=argparse.FileType('r'),
-                        default=sys.stdin, help='gutenberg text to clean-up')
-    parser.add_argument('outfile', nargs='?', type=argparse.FileType('w'),
-                        default=sys.stdout, help='cleaned text goes here')
-
-    with parser.parse_args() as args:
-        for inline in strip_headers(args.infile):
-            args.outfile.write(inline)
-
-
-if __name__ == '__main__':
-    _main()
