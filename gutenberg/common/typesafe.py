@@ -98,8 +98,11 @@ def namedtuple(clsname, field_info):  # pylint: disable=R0912
 
         """
         def __init__(self, *args, **kwargs):
-            self._fields = [field_name for field_name, _ in field_info]
-            self._types = [field_type for _, field_type in field_info]
+            _fields = [field_name for field_name, _ in field_info]
+            _types = [field_type for _, field_type in field_info]
+            object.__setattr__(self, '_fields', _fields)
+            object.__setattr__(self, '_types', _types)
+
             initvals = create_initvals(*args, **kwargs)
             validate_nargs(initvals)
             validate_types(initvals)
