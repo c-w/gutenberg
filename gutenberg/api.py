@@ -108,7 +108,7 @@ class TextSource(serialization.SerializableObject):
             text_info (TextInfo): Meta-data about the text to be materialized.
 
         Returns:
-            str: The full body of the text.
+            unicode: The full body of the text.
 
         """
         for uri in self._format_remote_uris(text_info):
@@ -125,15 +125,15 @@ class TextSource(serialization.SerializableObject):
 class TextInfo(typesafe.namedtuple(
         'TextInfo',
         (('uid', int),
-         ('title', str),
-         ('author', str))
+         ('title', unicode),
+         ('author', unicode))
 )):
     """Class to represent meta-data about a text.
 
     Attributes:
         uid (int): A unique identifier of the text.
-        title (str): The title of the text.
-        author (str): The author of the text.
+        title (unicode): The title of the text.
+        author (unicode): The author of the text.
 
     """
     pass
@@ -142,14 +142,14 @@ class TextInfo(typesafe.namedtuple(
 class Text(typesafe.namedtuple(
         'Text',
         (('location', str),
-         ('fulltext', str),
+         ('fulltext', unicode),
          ('textinfo', TextInfo))
 )):
     """Class to represent a text.
 
     Attributes:
         location (str): The on-disk location of the text.
-        fulltext (str): The full text of the text.
+        fulltext (unicode): The full text of the text.
         textinfo (TextInfo): Meta-data about the text.
 
     """
@@ -200,7 +200,7 @@ class Corpus(serialization.SerializableObject):
         """Retrieves all the texts from a given author from the corpus.
 
         Arguments:
-            author (str): The author whose texts to retrieve.
+            author (unicode): The author whose texts to retrieve.
 
         Yields:
             Text: The texts of the author, one at a time.
