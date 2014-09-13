@@ -38,14 +38,14 @@ class TextSource(serialization.SerializableObject):
 
     def __getmany__(self, start, stop, step):
         return itertools.imap(
-            self._textinfo_converter,
+            self.textinfo_converter,
             self._raw_source(start, stop, step))
 
     def __getsingle__(self, index):
         return next(self.__getmany__(start=index, stop=index + 1, step=1))
 
     @abc.abstractmethod
-    def _textinfo_converter(self, raw_instance):
+    def textinfo_converter(self, raw_instance):
         """Converts between the types that the TextSource implementation deals
         in and the API TextInfo type.
 

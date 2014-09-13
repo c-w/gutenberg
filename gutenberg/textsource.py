@@ -29,7 +29,7 @@ class GutenbergEbooks(api.TextSource):
             uid=text_info.uid)
         yield basic_url
 
-    def _textinfo_converter(self, rdf_graph):
+    def textinfo_converter(self, rdf_graph):
         ebook = next(iter(rdf_graph.query('''
             SELECT
                 ?ebook
