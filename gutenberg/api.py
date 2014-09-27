@@ -171,8 +171,13 @@ class Corpus(serialization.SerializableObject):
         """
         __metaclass__ = abc.ABCMeta
 
-        text_source = abc.abstractproperty()
-        basedir = abc.abstractproperty()
+        @abc.abstractproperty
+        def text_source(self):
+            raise NotImplementedError('abstract property')
+
+        @abc.abstractproperty
+        def basedir(self):
+            raise NotImplementedError('abstract property')
 
         @classmethod
         def load(cls, path):
