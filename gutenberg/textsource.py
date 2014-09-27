@@ -3,6 +3,7 @@ from . import beautify
 from . import api
 from .common import wget
 import itertools
+import logging
 import os
 import rdflib
 import tarfile
@@ -15,6 +16,7 @@ class GutenbergEbooks(api.TextSource):
         return beautify.strip_headers(lines)
 
     def _raw_source(self, start=0, stop=None, step=1):
+        logging.info('fetching meta-data archive (this might take a while)')
         filename, _ = wget.grab(GutenbergEbooks.RDF_URL)
         with tarfile.open(filename) as archive:
             for tarinfo in itertools.islice(archive, start, stop, step):

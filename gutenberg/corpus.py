@@ -24,6 +24,7 @@ class SqliteCorpus(api.Corpus):
             dbcon.close()
 
     def _build_index(self):
+        logging.info('building corpus index (this might take a while)')
         with self._dbcon() as dbcon:
             dbcon.execute('''
                 CREATE TABLE IF NOT EXISTS TextInfo(
