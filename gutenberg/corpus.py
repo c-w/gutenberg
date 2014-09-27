@@ -59,7 +59,7 @@ class SqliteCorpus(api.Corpus):
         return fulltext
 
     def texts_for_author(self, author):
-        matched_authors = collections.defaultdict(list)
+        matches = collections.defaultdict(list)
         with self._dbcon() as dbcon:
             for row in dbcon.execute('''
                 SELECT uid, author, title, location
@@ -67,17 +67,17 @@ class SqliteCorpus(api.Corpus):
                 WHERE author LIKE ?
                 ORDER BY author
             ''', ('%' + author + '%', )):
-                matched_authors[row['author']].append(row)
-        if len(matched_authors) > 1:
+                matches[row['author']].append(row)
+        if len(matches) > 1:
             logging.warning(
                 '%d authors match the query "%s": %s',
-                len(matched_authors), author,
-                ', '.join('"%s"' % author for author in matched_authors))
+                len(matches), author,
+                ', '.join('"%s"' % author for author in matches))
 
-        for matched_author, rows in matched_authors.iteritems():
-            for row in rows:
+        for matched_author, texts in matches.iteritems():
+            for text in texts:
                 text_info = api.TextInfo(
-                    uid=row['uid'],
+                    uid=text['uid'],
                     author=matched_author,
-                    title=row['title'])
-                yield text_info, self._fulltext(text_info, row['location'])
+                    title=text['title'])
+                yield text_info, self._fulltext(text_info, text['location'])
