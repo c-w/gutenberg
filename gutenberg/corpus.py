@@ -1,7 +1,9 @@
 from . import api
 import collections
 import contextlib
+import functools
 import gzip
+import jellyfish
 import logging
 import os
 import sqlite3
@@ -65,7 +67,6 @@ class SqliteCorpus(api.Corpus):
                 SELECT uid, author, title, location
                 FROM TextInfo
                 WHERE author LIKE ?
-                ORDER BY author
             ''', ('%' + author + '%', )):
                 matches[row['author']].append(row)
         if len(matches) > 1:
@@ -74,8 +75,9 @@ class SqliteCorpus(api.Corpus):
                 len(matches), author,
                 ', '.join('"%s"' % author for author in matches))
 
-        for matched_author, texts in matches.iteritems():
-            for text in texts:
+        edits = functools.partial(jellyfish.levenshtein_distance, author)
+        for matched_author in sorted(matches, key=edits):
+            for text in matches[matched_author]:
                 text_info = api.TextInfo(
                     uid=text['uid'],
                     author=matched_author,
