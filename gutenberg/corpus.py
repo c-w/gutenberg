@@ -13,11 +13,10 @@ class SqliteCorpus(api.Corpus):
         with sqlite3.connect(self._index) as dbcon:
             dbcon.execute('''
                 CREATE TABLE IF NOT EXISTS TextInfo(
-                    uid INTEGER,
+                    uid INTEGER PRIMARY KEY,
                     title TEXT,
                     author TEXT,
-                    location TEXT,
-                    PRIMARY KEY uid
+                    location TEXT
                 )''')
             dbcon.executemany('''
                 INSERT INTO TextInfo(uid, title, author, location)
