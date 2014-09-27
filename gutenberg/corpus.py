@@ -23,7 +23,7 @@ class SqliteCorpus(api.Corpus):
 
         """
         logging.info('building corpus index (this might take a while)')
-        with db.connect(self._index) as dbcon:
+        with db.connect(self._index, 'w') as dbcon:
             dbcon.execute('''
                 CREATE TABLE IF NOT EXISTS TextInfo(
                     uid INTEGER PRIMARY KEY,
