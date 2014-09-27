@@ -2,6 +2,7 @@
 
 
 from __future__ import absolute_import
+from .common import osutil
 from .common import serialization
 from .common import typesafe
 from .common import wget
@@ -213,8 +214,8 @@ class Corpus(serialization.SerializableObject):
 
     def __init__(self, text_source, basedir):
         self.text_source = text_source
-        self.basedir = basedir
-        self._textdir = os.path.join(basedir, 'texts')
+        self.basedir = osutil.makedirs(basedir)
+        self._textdir = osutil.makedirs(os.path.join(basedir, 'texts'))
 
     def _location(self, text_info):
         """This function is a one-to-one mapping between the TextInfo space and
