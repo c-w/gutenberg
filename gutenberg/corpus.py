@@ -51,9 +51,9 @@ class SqliteCorpus(api.Corpus):
             results = dbcon.execute('''
                 SELECT uid, author, title, location
                 FROM TextInfo
-                WHERE author ILIKE "%?%"
+                WHERE author LIKE ?
                 ORDER BY author
-            ''', (author, ))
+            ''', ('%' + author + '%', ))
 
         for result in results:
             text_info = api.TextInfo(
