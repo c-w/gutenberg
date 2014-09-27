@@ -1,9 +1,5 @@
 """Defines the public interfaces of the gutenberg package."""
 
-# silence some pylint false positives:
-#   - abstract-class-not-used caused by implementation being in other modules
-# pylint: disable=R0921
-
 
 from __future__ import absolute_import
 from .common import serialization
