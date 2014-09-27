@@ -116,7 +116,7 @@ class TextSource(serialization.SerializableObject):
             if success:
                 break
         else:
-            logging.error('unable to fetch fulltext for uid %s', text_info.uid)
+            logging.error('unable to fetch fulltext for %s', text_info)
             return u''
 
         return u'\n'.join(self.cleanup_text(lines))
