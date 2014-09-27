@@ -2,7 +2,7 @@
 
 
 from . import api
-from .common import db
+from .common import dbutil
 import collections
 import functools
 import jellyfish
@@ -24,7 +24,7 @@ class SqliteCorpus(api.Corpus):
 
         """
         logging.info('building corpus index (this might take a while)')
-        with db.connect(self._index, 'w') as dbcon:
+        with dbutil.connect(self._index, 'w') as dbcon:
             dbcon.execute('''
                 CREATE TABLE IF NOT EXISTS TextInfo(
                     uid INTEGER PRIMARY KEY,
@@ -41,7 +41,7 @@ class SqliteCorpus(api.Corpus):
 
     def texts_for_author(self, author):
         matches = collections.defaultdict(list)
-        with db.connect(self._index) as dbcon:
+        with dbutil.connect(self._index) as dbcon:
             for row in dbcon.execute('''
                 SELECT *
                 FROM TextInfo
