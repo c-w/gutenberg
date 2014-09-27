@@ -35,4 +35,4 @@ class SerializableObject(object):
 
         """
         with gzip.open(path, 'wb') as serialized:
-            pickle.dump(serialized, self)
+            pickle.dump(self, serialized)
