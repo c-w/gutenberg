@@ -1,9 +1,7 @@
 """Defines the public interfaces of the gutenberg package."""
 
 # silence some pylint false positives:
-#   - too-few-public-methods caused by namedtuple subclasses
 #   - abstract-class-not-used caused by implementation being in other modules
-# pylint: disable=R0903
 # pylint: disable=R0921
 
 
@@ -127,7 +125,7 @@ class TextInfo(typesafe.namedtuple(
         (('uid', int),
          ('title', unicode),
          ('author', unicode))
-)):
+)):  # pylint: disable=R0903
     """Class to represent meta-data about a text.
 
     Attributes:
@@ -144,7 +142,7 @@ class Text(typesafe.namedtuple(
         (('location', str),
          ('fulltext', unicode),
          ('textinfo', TextInfo))
-)):
+)):  # pylint: disable=R0903
     """Class to represent a text.
 
     Attributes:
