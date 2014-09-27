@@ -17,6 +17,7 @@ class SqliteCorpus(api.Corpus):
     def __init__(self, *args, **kwargs):
         api.Corpus.__init__(self, *args, **kwargs)
         self._index = os.path.join(self.basedir, 'index.sqlite3')
+        self._build_index()
 
     def _build_index(self):
         """Persist some meta-data from the TextSource to disk.
