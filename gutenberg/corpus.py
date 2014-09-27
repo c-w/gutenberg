@@ -7,10 +7,10 @@ import os
 class SqliteCorpus(api.Corpus):
     def __init__(self, *args, **kwargs):
         api.Corpus.__init__(self, *args, **kwargs)
-        self._index = 'file:%s?' % os.path.join(self.basedir, 'index.sqlite3')
+        self._index = os.path.join(self.basedir, 'index.sqlite3')
 
     def _build_index(self):
-        with sqlite3.connect(self._index + 'mode=rwc', uri=True) as dbcon:
+        with sqlite3.connect(self._index) as dbcon:
             dbcon.execute('''
                 CREATE TABLE IF NOT EXISTS TextInfo(
                     uid INTEGER,
@@ -28,7 +28,7 @@ class SqliteCorpus(api.Corpus):
 
     def _fulltext(self, text_info, location=None):
         if location is None:
-            with sqlite3.connect(self._index + 'mode=ro', uri=True) as dbcon:
+            with sqlite3.connect(self._index) as dbcon:
                 result = dbcon.execute('''
                     SELECT location
                     FROM TextInfo
@@ -48,7 +48,7 @@ class SqliteCorpus(api.Corpus):
         return fulltext
 
     def texts_for_author(self, author):
-        with sqlite3.connect(self._index + 'mode=ro', uri=True) as dbcon:
+        with sqlite3.connect(self._index) as dbcon:
             results = dbcon.execute('''
                 SELECT uid, author, title, location
                 FROM TextInfo
