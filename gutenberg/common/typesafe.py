@@ -1,6 +1,9 @@
 """Utility functions to deal with type-safety."""
 
 
+import types
+
+
 def namedtuple(clsname, field_info):  # pylint: disable=R0912
     """Factory that creates a type with a given name and fields.
     This is essentially a version of collections.namedtuple that enforces the
@@ -82,7 +85,7 @@ def namedtuple(clsname, field_info):  # pylint: disable=R0912
         """
         for field_name, field_type in field_info:
             field_value = initvals[field_name]
-            if not isinstance(field_value, field_type):
+            if not isinstance(field_value, (field_type, types.NoneType)):
                 raise TypeError(
                     'bad argument "{field_value}": field {field_name} can '
                     'only store values of type {type_required}  '
