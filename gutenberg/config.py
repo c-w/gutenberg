@@ -1,8 +1,14 @@
+"""Module providing implementations of the api.Corpus.Config interface."""
+
+
 from . import api
 import json
 
 
 class JsonConfig(api.Corpus.Config):
+    """Implementation of api.Corpus.Config backed by a JSON file.
+
+    """
     def __init__(self, path):
         with open(path, 'rb') as serialized:
             self._config = json.load(serialized)

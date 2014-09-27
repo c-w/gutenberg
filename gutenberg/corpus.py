@@ -1,3 +1,6 @@
+"""Module providing implementations of the api.Corpus interface."""
+
+
 from . import api
 from .common import db
 import collections
@@ -9,11 +12,17 @@ import os
 
 
 class SqliteCorpus(api.Corpus):
+    """Implementation of api.Corpus backed by a SQLite database.
+
+    """
     def __init__(self, *args, **kwargs):
         api.Corpus.__init__(self, *args, **kwargs)
         self._index = os.path.join(self.basedir, 'index.sqlite3')
 
     def _build_index(self):
+        """Persist some meta-data from the TextSource to disk.
+
+        """
         logging.info('building corpus index (this might take a while)')
         with db.connect(self._index) as dbcon:
             dbcon.execute('''

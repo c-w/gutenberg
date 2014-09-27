@@ -173,14 +173,29 @@ class Corpus(serialization.SerializableObject):
 
         @abc.abstractproperty
         def text_source(self):
+            """The location of the serialized text-source for the corpus.
+
+            """
             raise NotImplementedError('abstract property')
 
         @abc.abstractproperty
         def basedir(self):
+            """Some directory to which the corpus can persist files.
+
+            """
             raise NotImplementedError('abstract property')
 
         @classmethod
         def load(cls, path):
+            """Loads a configutation file from disk.
+
+            Arguments:
+                path (str): The path to the config file
+
+            Returns:
+                Corpus.Config: An object representation of the config file
+
+            """
             return cls(path)
 
     def __init__(self, text_source, basedir):

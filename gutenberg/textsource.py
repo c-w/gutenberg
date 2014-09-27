@@ -1,3 +1,6 @@
+"""Module providing implementations of the api.TextSource interface."""
+
+
 from __future__ import absolute_import
 from . import beautify
 from . import api
@@ -10,6 +13,10 @@ import tarfile
 
 
 class GutenbergEbooks(api.TextSource):
+    """Implementation of api.TextSource that fetches books from Project
+    Gutenberg.
+
+    """
     RDF_URL = r'http://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2'
 
     def cleanup_text(self, lines):
