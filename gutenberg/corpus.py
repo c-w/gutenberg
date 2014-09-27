@@ -1,4 +1,5 @@
 from . import api
+import contextlib
 import gzip
 import sqlite3
 import os
@@ -9,8 +10,17 @@ class SqliteCorpus(api.Corpus):
         api.Corpus.__init__(self, *args, **kwargs)
         self._index = os.path.join(self.basedir, 'index.sqlite3')
 
+    @contextlib.contextmanager
+    def _dbcon(self):
+        dbcon = sqlite3.connect(self._index)
+        try:
+            dbcon.row_factory = sqlite3.Row
+            yield dbcon
+        finally:
+            dbcon.close()
+
     def _build_index(self):
-        with sqlite3.connect(self._index) as dbcon:
+        with self._dbcon() as dbcon:
             dbcon.execute('''
                 CREATE TABLE IF NOT EXISTS TextInfo(
                     uid INTEGER PRIMARY KEY,
@@ -27,7 +37,7 @@ class SqliteCorpus(api.Corpus):
 
     def _fulltext(self, text_info, location=None):
         if location is None:
-            with sqlite3.connect(self._index) as dbcon:
+            with self._dbcon() as dbcon:
                 result = dbcon.execute('''
                     SELECT location
                     FROM TextInfo
@@ -47,7 +57,7 @@ class SqliteCorpus(api.Corpus):
         return fulltext
 
     def texts_for_author(self, author):
-        with sqlite3.connect(self._index) as dbcon:
+        with self._dbcon() as dbcon:
             results = dbcon.execute('''
                 SELECT uid, author, title, location
                 FROM TextInfo
