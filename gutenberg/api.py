@@ -187,7 +187,7 @@ class Corpus(serialization.SerializableObject):
         """Intializes a corpus as defined by the values in a config file.
 
         Arguments:
-            config (CorpusConfig): The config file on which to base the corpus.
+            config (Corpus.Config): The config file for the corpus.
 
         """
         return cls(text_source=config.text_source,
