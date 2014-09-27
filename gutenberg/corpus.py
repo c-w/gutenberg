@@ -1,8 +1,8 @@
 from . import api
 import contextlib
 import gzip
-import sqlite3
 import os
+import sqlite3
 
 
 class SqliteCorpus(api.Corpus):
