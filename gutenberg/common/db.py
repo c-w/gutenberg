@@ -7,11 +7,12 @@ import sqlite3
 
 
 @contextlib.contextmanager
-def connect(uri):
+def connect(uri, mode='r'):
     """Connects to a SQL database (for use in a with-statement).
 
     Arguments:
         uri (str): The URI of the database
+        mode (str): Set to 'w' to commit changes on connection close
 
     Returns:
         contextmanager: A connection to the database
@@ -28,4 +29,6 @@ def connect(uri):
     try:
         yield dbcon
     finally:
+        if mode == 'w':
+            dbcon.commit()
         dbcon.close()
