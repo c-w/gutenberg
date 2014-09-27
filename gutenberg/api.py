@@ -6,8 +6,10 @@ from .common import serialization
 from .common import typesafe
 from .common import wget
 import abc
+import gzip
 import itertools
 import logging
+import os
 
 
 class TextSource(serialization.SerializableObject):
@@ -201,6 +203,21 @@ class Corpus(serialization.SerializableObject):
     def __init__(self, text_source, basedir):
         self.text_source = text_source
         self.basedir = basedir
+        self._textdir = os.path.join(basedir, 'texts')
+
+    def _location(self, text_info):
+        """This function is a one-to-one mapping between the TextInfo space and
+        paths on the file-system that belong to the Corpus object (i.e.
+        subpaths of Corpus.basedir).
+
+        Arguments:
+            TextInfo: The descriptor of the text to read/write
+
+        Returns:
+            str: A unique location at which the text can be read/written
+
+        """
+        return os.path.join(self._textdir, '%s.gz' % text_info.uid)
 
     @classmethod
     def from_config(cls, config):
@@ -212,6 +229,28 @@ class Corpus(serialization.SerializableObject):
         """
         return cls(text_source=config.text_source,
                    basedir=config.basedir)
+
+    def _fulltext(self, text_info):
+        """Wrapper around TextSource.fulltext that caches texts on disk.
+
+        Arguments:
+            text_info (TextInfo): Meta-data about the text to be materialized.
+
+        Returns:
+            unicode: The full body of the text.
+
+        """
+        location = self._location(text_info)
+
+        try:
+            with gzip.open(location, 'rb') as gzipped:
+                fulltext = gzipped.read()
+        except IOError:
+            fulltext = self.text_source.fulltext(text_info)
+            if fulltext:
+                with gzip.open(location, 'wb') as gzipped:
+                    gzipped.write(fulltext)
+        return fulltext
 
     @abc.abstractmethod
     def texts_for_author(self, author):

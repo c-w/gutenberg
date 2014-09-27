@@ -5,7 +5,6 @@ from . import api
 from .common import db
 import collections
 import functools
-import gzip
 import jellyfish
 import logging
 import os
@@ -36,29 +35,8 @@ class SqliteCorpus(api.Corpus):
                 INSERT INTO TextInfo(uid, title, author, location)
                 VALUES(?, ?, ?, ?)
             ''', ((text_info.uid, text_info.title, text_info.author,
-                   os.path.join(self.basedir, '%s.gz' % text_info.uid))
+                   self._location(text_info))
                   for text_info in iter(self.text_source)))
-
-    def _fulltext(self, text_info, location=None):
-        if location is None:
-            with db.connect(self._index) as dbcon:
-                result = dbcon.execute('''
-                    SELECT location
-                    FROM TextInfo
-                    WHERE uid = ?
-                    LIMIT 1
-                ''', (text_info.uid, )).fetchone()
-            location = result['location']
-
-        try:
-            with gzip.open(location, 'rb') as gzipped:
-                fulltext = gzipped.read()
-        except IOError:
-            fulltext = self.text_source.fulltext(text_info)
-            if fulltext:
-                with gzip.open(location, 'wb') as gzipped:
-                    gzipped.write(fulltext)
-        return fulltext
 
     def texts_for_author(self, author):
         matches = collections.defaultdict(list)
@@ -82,4 +60,4 @@ class SqliteCorpus(api.Corpus):
                     uid=text['uid'],
                     author=matched_author,
                     title=text['title'])
-                yield text_info, self._fulltext(text_info, text['location'])
+                yield text_info, self._fulltext(text_info)
