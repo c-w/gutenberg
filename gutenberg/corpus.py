@@ -1,12 +1,11 @@
 from . import api
+from .common import db
 import collections
-import contextlib
 import functools
 import gzip
 import jellyfish
 import logging
 import os
-import sqlite3
 
 
 class SqliteCorpus(api.Corpus):
@@ -14,18 +13,9 @@ class SqliteCorpus(api.Corpus):
         api.Corpus.__init__(self, *args, **kwargs)
         self._index = os.path.join(self.basedir, 'index.sqlite3')
 
-    @contextlib.contextmanager
-    def _dbcon(self):
-        dbcon = sqlite3.connect(self._index)
-        try:
-            dbcon.row_factory = sqlite3.Row
-            yield dbcon
-        finally:
-            dbcon.close()
-
     def _build_index(self):
         logging.info('building corpus index (this might take a while)')
-        with self._dbcon() as dbcon:
+        with db.connect(self._index) as dbcon:
             dbcon.execute('''
                 CREATE TABLE IF NOT EXISTS TextInfo(
                     uid INTEGER PRIMARY KEY,
@@ -42,7 +32,7 @@ class SqliteCorpus(api.Corpus):
 
     def _fulltext(self, text_info, location=None):
         if location is None:
-            with self._dbcon() as dbcon:
+            with db.connect(self._index) as dbcon:
                 result = dbcon.execute('''
                     SELECT location
                     FROM TextInfo
@@ -63,7 +53,7 @@ class SqliteCorpus(api.Corpus):
 
     def texts_for_author(self, author):
         matches = collections.defaultdict(list)
-        with self._dbcon() as dbcon:
+        with db.connect(self._index) as dbcon:
             for row in dbcon.execute('''
                 SELECT *
                 FROM TextInfo
