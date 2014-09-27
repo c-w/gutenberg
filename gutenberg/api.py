@@ -180,6 +180,10 @@ class Corpus(serialization.SerializableObject):
         text_source = abc.abstractproperty()
         basedir = abc.abstractproperty()
 
+        @classmethod
+        def load(cls, path):
+            return cls(path)
+
     def __init__(self, text_source, basedir):
         self.text_source = text_source
         self.basedir = basedir
