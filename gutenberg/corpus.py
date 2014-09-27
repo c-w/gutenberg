@@ -64,7 +64,7 @@ class SqliteCorpus(api.Corpus):
         matches = collections.defaultdict(list)
         with self._dbcon() as dbcon:
             for row in dbcon.execute('''
-                SELECT uid, author, title, location
+                SELECT *
                 FROM TextInfo
                 WHERE author LIKE ?
             ''', ('%' + author + '%', )):
