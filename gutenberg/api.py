@@ -173,6 +173,19 @@ class Corpus(serialization.SerializableObject):
         """
         __metaclass__ = abc.ABCMeta
 
+        @classmethod
+        def load(cls, path):
+            """Loads a configutation file from disk.
+
+            Arguments:
+                path (str): The path to the config file
+
+            Returns:
+                Corpus.Config: An object representation of the config file
+
+            """
+            return cls(path)
+
         @abc.abstractproperty
         def text_source(self):
             """The location of the serialized text-source for the corpus.
@@ -187,18 +200,16 @@ class Corpus(serialization.SerializableObject):
             """
             raise NotImplementedError('abstract property')
 
-        @classmethod
-        def load(cls, path):
-            """Loads a configutation file from disk.
+    @classmethod
+    def from_config(cls, config):
+        """Intializes a corpus as defined by the values in a config file.
 
-            Arguments:
-                path (str): The path to the config file
+        Arguments:
+            config (Corpus.Config): The config file for the corpus.
 
-            Returns:
-                Corpus.Config: An object representation of the config file
-
-            """
-            return cls(path)
+        """
+        return cls(text_source=config.text_source,
+                   basedir=config.basedir)
 
     def __init__(self, text_source, basedir):
         self.text_source = text_source
@@ -218,17 +229,6 @@ class Corpus(serialization.SerializableObject):
 
         """
         return os.path.join(self._textdir, '%s.gz' % text_info.uid)
-
-    @classmethod
-    def from_config(cls, config):
-        """Intializes a corpus as defined by the values in a config file.
-
-        Arguments:
-            config (Corpus.Config): The config file for the corpus.
-
-        """
-        return cls(text_source=config.text_source,
-                   basedir=config.basedir)
 
     def _fulltext(self, text_info):
         """Wrapper around TextSource.fulltext that caches texts on disk.
