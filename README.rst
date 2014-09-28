@@ -57,7 +57,26 @@ There are a number of programs demonstrating how to use this library in the
 *scripts* directory.
 
 
+How to help
+===========
 
+* **(Good first fix)**
+  Currently this library only makes use of the *author* and *title* meta-data
+  exposed by Project Gutenberg and does not leverage information such as
+  *genre*, *publication date*, etc. Making this information usable by the
+  library is a pretty straight forward three-step process. First, the
+  ``TextSource.textinfo_converter`` method needs to be extended to parse the new
+  meta-data attributes. Second, the new attributes need to be wired through to
+  the ``TextInfo`` class. Lastly, a new method leveraging the new meta-data
+  source should be added to the ``Corpus`` class (such as ``texts_for_genre`` or
+  ``texts_for_year``).
+* It would be great if there was an option to make the text retrieval functions
+  on the ``Corpus`` class (like ``texts_for_author``) perform fuzzy matching so
+  that small spelling mistakes can automatically be corrected.
+* The ``TextSource`` object should probably track its state so that it only
+  yields every text once (unless explicitly requested to re-yield all texts from
+  the start).
+* The library is in dire need of more tests and robustness fixes.
 
 
 Limitations
