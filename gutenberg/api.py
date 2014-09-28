@@ -165,53 +165,6 @@ class Corpus(serialization.SerializableObject):
     """
     __metaclass__ = abc.ABCMeta
 
-    class Config(object):
-        """Class to extenally set all the non-inferable attributes on for a
-        Corpus object.  See the Corpus class for a description of the
-        attributes that should be set via the configuration object.
-        For implementations of the class, refer to the gutenberg.config module.
-
-        """
-        __metaclass__ = abc.ABCMeta
-
-        @classmethod
-        def load(cls, path):
-            """Loads a configutation file from disk.
-
-            Arguments:
-                path (str): The path to the config file
-
-            Returns:
-                Corpus.Config: An object representation of the config file
-
-            """
-            return cls(path)
-
-        @abc.abstractproperty
-        def text_source(self):
-            """The location of the serialized text-source for the corpus.
-
-            """
-            raise NotImplementedError('abstract property')
-
-        @abc.abstractproperty
-        def basedir(self):
-            """Some directory to which the corpus can persist files.
-
-            """
-            raise NotImplementedError('abstract property')
-
-    @classmethod
-    def from_config(cls, config):
-        """Intializes a corpus as defined by the values in a config file.
-
-        Arguments:
-            config (Corpus.Config): The config file for the corpus.
-
-        """
-        return cls(text_source=config.text_source,
-                   basedir=config.basedir)
-
     def __init__(self, text_source, basedir):
         self.text_source = text_source
         self.basedir = osutil.makedirs(basedir)
