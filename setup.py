@@ -1,3 +1,4 @@
+from glob import glob
 from distutils.core import setup
 
 setup(
@@ -6,7 +7,7 @@ setup(
     author='Clemens Wolff',
     author_email='clemens.wolff+pypi@gmail.com',
     packages=['gutenberg', 'gutenberg.common'],
-    scripts=[],
+    scripts=glob('scripts/*.py'),
     url='https://bitbucket.org/c-w/gutenberg/',
     download_url='http://pypi.python.org/pypi/Gutenberg',
     license='LICENSE.txt',
