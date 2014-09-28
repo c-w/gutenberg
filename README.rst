@@ -70,13 +70,17 @@ How to help
   the ``TextInfo`` class. Lastly, a new method leveraging the new meta-data
   source should be added to the ``Corpus`` class (such as ``texts_for_genre`` or
   ``texts_for_year``).
+  See `#2 <https://github.com/c-w/Gutenberg/issues/2>`_.
 * It would be great if there was an option to make the text retrieval functions
   on the ``Corpus`` class (like ``texts_for_author``) perform fuzzy matching so
   that small spelling mistakes can automatically be corrected.
+  See `#3 <https://github.com/c-w/Gutenberg/issues/3>`_.
 * The ``TextSource`` object should probably track its state so that it only
   yields every text once (unless explicitly requested to re-yield all texts from
   the start).
+  See `#4 <https://github.com/c-w/Gutenberg/issues/4>`_.
 * The library is in dire need of more tests and robustness fixes.
+  See `#5 <https://github.com/c-w/Gutenberg/issues/5>`_.
 
 
 Limitations
