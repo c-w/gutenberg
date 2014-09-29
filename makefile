@@ -29,7 +29,7 @@ $(VENV_ACTIVATE): requirements.txt
 
 test: virtualenv
 	. "$(VENV_ACTIVATE)"; \
-	nosetests --verbose --with-doctest
+	nosetests --config=.noserc
 
 $(MANIFEST):
 	echo "include $(MANIFEST_INCLUDE)" > $(MANIFEST)
