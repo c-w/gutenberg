@@ -22,7 +22,7 @@ class GutenbergEbooks(api.TextSource):
     def cleanup_text(self, lines):
         return beautify.strip_headers(lines)
 
-    def _raw_source(self, start=0, stop=None, step=1):
+    def _raw_source(self, start, stop, step):
         logging.info('fetching meta-data archive (this might take a while)')
         filename, _ = wget.grab(GutenbergEbooks.RDF_URL)
         with tarfile.open(filename) as archive:
