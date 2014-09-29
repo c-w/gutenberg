@@ -38,6 +38,7 @@ def grab(url, filename=None, cached=True):
     Returns:
         str, bool: The path to the downloaded resource and True/False depending
             on whether the resource could be fetched successfully
+
     """
     if not filename:
         cachedir = tempfile.gettempdir()
