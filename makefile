@@ -15,6 +15,9 @@ MANIFEST=MANIFEST.in
 MANIFEST_INCLUDE=*.txt makefile
 MANIFEST_RECURSIVE_INCLUDE=$(DOC_DIR) *.txt
 
+PYLINT_RC=.pylintrc
+NOSE_RC=.noserc
+
 
 .PHONY: virtualenv test publish clean docs lint setup_docs
 .PHONY: increase-major-version increase-minor-version increase-micro-version
@@ -29,7 +32,7 @@ $(VENV_ACTIVATE): requirements.txt
 
 test: virtualenv
 	. "$(VENV_ACTIVATE)"; \
-	nosetests --config=.noserc
+	nosetests --config="$(NOSE_RC)"
 
 $(MANIFEST):
 	echo "include $(MANIFEST_INCLUDE)" > $(MANIFEST)
@@ -82,5 +85,5 @@ lint: virtualenv
 	pylint "$(SRC_DIR)" \
 		--output-format=colorized \
 		--reports=no \
-		--rcfile=.pylintrc \
+		--rcfile="$(PYLINT_RC)" \
 	|| true
