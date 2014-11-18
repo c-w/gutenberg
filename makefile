@@ -1,8 +1,8 @@
 SETUP=setup.py
 
-MODULE=$(shell sed -n "s@^.*name='\([^']\+\)'.*@\L\1@p" "$(SETUP)")
-AUTHOR=$(shell sed -n "s@^.*author='\([^']\+\)'.*@\1@p" "$(SETUP)")
-VERSION=$(shell sed -n "s@^.*version='\([^']\+\)'.*@\1@p" "$(SETUP)")
+MODULE=$(shell sed -n "s/.*name='\(.*\)',/\1/p" "$(SETUP)" | tr '[:upper:]' '[:lower:]')
+AUTHOR=$(shell sed -n "s/.*author='\(.*\)',/\1/p" "$(SETUP)")
+VERSION=$(shell sed -n "s/.*version='\(.*\)',/\1/p" "$(SETUP)")
 
 SRC_DIR=$(MODULE)
 DOC_DIR=docs
