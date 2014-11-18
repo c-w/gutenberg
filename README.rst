@@ -32,7 +32,7 @@ If you want to install from source, you'll need to clone this repository:
 
 .. sourcecode :: sh
 
-    git clone https://c-w@bitbucket.org/c-w/gutenberg.git && cd gutenberg
+    git clone https://github.com/c-w/Gutenberg.git && cd Gutenberg
 
 Now, you should probably install the dependencies for the package and verify
 your install.

@@ -8,7 +8,7 @@ setup(
     author_email='clemens.wolff+pypi@gmail.com',
     packages=['gutenberg', 'gutenberg.common'],
     scripts=glob('scripts/*.py'),
-    url='https://bitbucket.org/c-w/gutenberg/',
+    url='https://github.com/c-w/Gutenberg',
     download_url='http://pypi.python.org/pypi/Gutenberg',
     license='LICENSE.txt',
     description='Project Gutenberg corpus interface',
