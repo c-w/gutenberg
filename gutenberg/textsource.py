@@ -32,10 +32,19 @@ class GutenbergEbooks(api.TextSource):
                 yield graph
 
     def _format_remote_uris(self, text_info):
-        basic_url = '{root}/{path}/{uid}/{uid}.txt'.format(
-            root=r'http://www.gutenberg.lib.md.us',
-            path='/'.join(str(text_info.uid)[:4]),
-            uid=text_info.uid)
+        if 0 < text_info.uid < 10:
+            basic_url = '{root}/{path}/{file}.txt'.format(
+                root=r'http://www.gutenberg.lib.md.us',
+                path='etext90',
+                file=["when11", "bill11", "jfk11", "getty11",
+                      "const11", "liber11", "mayfl11",
+                      "linc211", "linc111"][text_info.uid-1])
+        else:
+            uid = str(text_info.uid)
+            basic_url = '{root}/{path}/{uid}/{uid}.txt'.format(
+                root=r'http://www.gutenberg.lib.md.us',
+                path='/'.join(uid[:len(uid)-1]),
+                uid=text_info.uid)
         yield basic_url
 
     def textinfo_converter(self, rdf_graph):
