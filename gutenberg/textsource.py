@@ -13,10 +13,22 @@ import tarfile
 
 
 def _is_legacy_uid(uid):
+    """Helper function for `remote_uri_formatter`.
+
+    Returns:
+        bool: True if the UID should use the legacy URI format.
+
+    """
     return 0 < uid < 10
 
 
 def _format_uri(uid):
+    """Helper function for `remote_uri_formatter`.
+
+    Returns:
+        str: The remote URI for the UID (in standard format).
+
+    """
     if _is_legacy_uid(uid):
         raise ValueError('should use legacy URI format for UIDs in (0..10)')
 
@@ -28,6 +40,12 @@ def _format_uri(uid):
 
 
 def _format_legacy_uri(uid):
+    """Helper function for `remote_uri_formatter`.
+
+    Returns:
+        str: The remote URI for the UID (in legacy format).
+
+    """
     if not _is_legacy_uid(uid):
         raise ValueError('should use non-legacy URI format for UIDs >= 10')
 
@@ -49,6 +67,23 @@ def _format_legacy_uri(uid):
 
 
 def remote_uri_formatter(uid):
+    """Project Guttenberg has a number of different remote URI formats for its
+    ETexts - the purpose of this function is to abstract away these details.
+
+    Sample remote URI formats:
+        - Most ETexts follow the following remote URI format: `x/y/.../xyz`
+          where x,y,... are the first n-1 digits of the UID and xyz is the
+          full UID.
+        - Some ETexts follow a legacy URI format: `etext90/filename.txt` where
+          filename is some specific file name.
+
+    Arguments:
+        uid (int): The UID of the text for which to return a URI formatter.
+
+    Returns:
+        function: The appropriate remote URI formatter for the given UID.
+
+    """
     if _is_legacy_uid(uid):
         return _format_legacy_uri
 
