@@ -3,7 +3,7 @@ from distutils.core import setup
 
 setup(
     name='Gutenberg',
-    version='0.2.1',
+    version='0.2.2',
     author='Clemens Wolff',
     author_email='clemens.wolff+pypi@gmail.com',
     packages=['gutenberg', 'gutenberg.common'],
