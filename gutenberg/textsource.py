@@ -2,9 +2,9 @@
 
 
 from __future__ import absolute_import
-from . import beautify
 from . import api
 from .common import wget
+import gutenberg_cleaner
 import itertools
 import logging
 import os
@@ -98,7 +98,7 @@ class GutenbergEbooks(api.TextSource):
     RDF_URL = r'http://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2'
 
     def cleanup_text(self, lines):
-        return beautify.strip_headers(lines)
+        return gutenberg_cleaner.strip_headers(lines)
 
     def _raw_source(self, start, stop, step):
         logging.info('fetching meta-data archive (this might take a while)')
