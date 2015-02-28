@@ -1,1 +1,1 @@
-"""Module to interface with texts on Project Gutenberg."""
+"""Top-level Gutenberg package."""

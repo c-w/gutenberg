@@ -11,9 +11,9 @@ Gutenberg <http://www.gutenberg.org>`_ body of public domain texts easier.
 
 The functionality provided by this package includes:
 
-* Downloading texts using the Project Gutenberg API.
-* Cleaning up the texts: removing headers and footers.
-* Making meta-data about the texts easily accessible through a database.
+* Downloading texts from Project Gutenberg.
+* Cleaning the texts: removing all the crud, leaving just the text behind.
+* Making meta-data about the texts easily accessible.
 
 
 Installation
@@ -26,61 +26,57 @@ Python package manager.
 .. sourcecode :: sh
 
     pip install gutenberg
-    easy_install gutenberg
 
-If you want to install from source, you'll need to clone this repository:
+If you want to install from source or modify the package, you'll need to clone
+this repository:
 
 .. sourcecode :: sh
 
-    git clone https://github.com/c-w/Gutenberg.git && cd Gutenberg
+    git clone https://github.com/c-w/Gutenberg.git
 
 Now, you should probably install the dependencies for the package and verify
-your install.
+your checkout by running the tests.
 
-* The recommended way of doing this is using the project's makefile. The
-  command ``make virtualenv`` will install all the required dependencies for
-  the package in a local directory called *virtualenv*
-* You might want to run the tests to see if everything installed correctly:
-  ``make test``.
-* Now run ``source virtualenv/bin/activate`` and you're good to go.
+.. sourcecode :: sh
 
-Another setup task you might want to run is ``make docs`` to automatically
-generate some API documentation for the project. After running the command, you
-can enjoy your documentation by pointing your browser at
-*docs/_build/html/index.html*.
+    cd Gutenberg
+
+    virtualenv --no-site-packages virtualenv
+    source virtualenv/bin/activate
+    pip install -r requirements.pip
+
+    pip install nose
+    nosetests
 
 
 Usage
 =====
 
-There are a number of programs demonstrating how to use this library in the
-*scripts* directory.
+Downloading a text
+------------------
+
+.. sourcecode :: python
+
+    from gutenberg.acquire import load_etext
+    from gutenberg.cleanup import strip_headers
+
+    text = strip_headers(load_etext(2701)).strip()
+    assert text.startswith('MOBY DICK; OR THE WHALE\n\nBy Herman Melville')
 
 
-How to help
-===========
+Looking up meta-data
+--------------------
 
-* **(Good first fix)**
-  Currently this library only makes use of the *author* and *title* meta-data
-  exposed by Project Gutenberg and does not leverage information such as
-  *genre*, *publication date*, etc. Making this information usable by the
-  library is a pretty straight forward three-step process. First, the
-  ``TextSource.textinfo_converter`` method needs to be extended to parse the new
-  meta-data attributes. Second, the new attributes need to be wired through to
-  the ``TextInfo`` class. Lastly, a new method leveraging the new meta-data
-  source should be added to the ``Corpus`` class (such as ``texts_for_genre`` or
-  ``texts_for_year``).
-  See `#2 <https://github.com/c-w/Gutenberg/issues/2>`_.
-* It would be great if there was an option to make the text retrieval functions
-  on the ``Corpus`` class (like ``texts_for_author``) perform fuzzy matching so
-  that small spelling mistakes can automatically be corrected.
-  See `#3 <https://github.com/c-w/Gutenberg/issues/3>`_.
-* The ``TextSource`` object should probably track its state so that it only
-  yields every text once (unless explicitly requested to re-yield all texts from
-  the start).
-  See `#4 <https://github.com/c-w/Gutenberg/issues/4>`_.
-* The library is in dire need of more tests and robustness fixes.
-  See `#5 <https://github.com/c-w/Gutenberg/issues/5>`_.
+.. sourcecode :: python
+
+    from gutenberg.query import get_etexts
+    from gutenberg.query import get_metadata
+
+    assert get_metadata('title', 2701)  == 'Moby Dick; Or, The Whale'
+    assert get_metadata('author', 2701) == 'Melville, Hermann'
+
+    assert 2701 in get_etexts('title', 'Moby Dick; Or, The Whale')
+    assert 2701 in get_etexts('author', 'Melville, Hermann')
 
 
 Limitations

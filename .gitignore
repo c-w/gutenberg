@@ -1,21 +1,2 @@
-# gutenberg stuff
-/corpus/
-*.cfg
-*.log
-
-# documentation stuff
-/docs/*
-!/docs/conf.py
-
-# python stuff
 *.pyc
-
-# setuptools stuff
-/*.egg-info
-/build/
-/dist/
-/install/
-/MANIFEST*
-
-# virtualenv stuff
 /virtualenv/

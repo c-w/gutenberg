@@ -1,17 +1,19 @@
-from glob import glob
-from distutils.core import setup
+"""Library installer."""
+
+
+from setuptools import find_packages
+from setuptools import setup
+
 
 setup(
     name='Gutenberg',
-    version='0.2.2',
+    version='0.3',
     author='Clemens Wolff',
     author_email='clemens.wolff+pypi@gmail.com',
-    packages=['gutenberg', 'gutenberg.common'],
-    scripts=glob('scripts/*.py'),
+    packages=find_packages(exclude=['tests']),
     url='https://github.com/c-w/Gutenberg',
     download_url='http://pypi.python.org/pypi/Gutenberg',
     license='LICENSE.txt',
-    description='Project Gutenberg corpus interface',
+    description='Library to interface with Project Gutenberg',
     long_description=open('README.rst').read(),
-    install_requires=list(line.strip() for line in open('requirements.txt')),
-)
+    install_requires=list(line.strip() for line in open('requirements.pip')))
