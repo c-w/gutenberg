@@ -22,7 +22,10 @@ def strip_headers(text):
 
     """
     lines = text.splitlines()
-    sep = unicode(os.linesep)
+    try:
+        sep = unicode(os.linesep)
+    except NameError:
+        sep = str(os.linesep)
 
     out = []
     i = 0
