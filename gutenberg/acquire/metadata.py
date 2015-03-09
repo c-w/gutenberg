@@ -72,6 +72,15 @@ def _add_namespaces(graph):
     return graph
 
 
+def _populate_metadata_graph(graph):
+    """Downloads the Project Gutenberg metadata dump and persists it to disk.
+
+    """
+    with _download_metadata_archive() as metadata_archive:
+        for fact in _iter_metadata_triples(metadata_archive):
+            graph.add(fact)
+
+
 def load_metadata(refresh_cache=False):
     """Returns a graph representing meta-data for all Project Gutenberg texts.
     Pertinent information about texts or about how texts relate to each other
@@ -85,9 +94,7 @@ def load_metadata(refresh_cache=False):
         remove(_METADATA_CACHE)
     if not os.path.exists(_METADATA_CACHE):
         makedirs(os.path.dirname(_METADATA_CACHE))
-        with _download_metadata_archive() as metadata_archive:
-            for fact in _iter_metadata_triples(metadata_archive):
-                metadata_graph.add(fact)
+        _populate_metadata_graph(metadata_graph)
         with gzip.open(_METADATA_CACHE, 'wb') as metadata_file:
             metadata_file.write(metadata_graph.serialize(format='nt'))
     else:
