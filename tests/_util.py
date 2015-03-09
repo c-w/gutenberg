@@ -11,10 +11,12 @@ import os
 import shutil
 import tempfile
 
+import gutenberg.acquire.metadata
+import gutenberg.acquire.text
+
 
 class MockTextMixin(object):
     def setUp(self):
-        import gutenberg.acquire.text
         self.mock_text_cache = tempfile.mkdtemp()
         gutenberg.acquire.text._TEXT_CACHE = self.mock_text_cache
 
@@ -30,7 +32,6 @@ class MockMetadataMixin(object):
         raise NotImplementedError
 
     def setUp(self):
-        import gutenberg.acquire.metadata
         self.mock_metadata_cache = _mock_metadata_cache(self.sample_data())
         gutenberg.acquire.metadata._METADATA_CACHE = self.mock_metadata_cache
 
