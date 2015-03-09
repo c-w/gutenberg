@@ -10,7 +10,10 @@ import re
 import shutil
 import tarfile
 import tempfile
-import urllib2
+try:
+    import urllib2
+except ImportError:
+    import urllib.request as urllib2
 
 from rdflib.graph import Graph
 from rdflib.term import URIRef
