@@ -5,17 +5,16 @@
 from __future__ import absolute_import
 import unittest
 
-from gutenberg.acquire import load_etext
-from tests._sample_cleantext import SampleCleanText
+from tests._sample_text import SampleText
 
 from gutenberg.cleanup import strip_headers
 
 
 class TestStripHeaders(unittest.TestCase):
     def test_strip_headers(self):
-        for testcase in SampleCleanText.all():
-            expected = testcase.text.splitlines()
-            actual = strip_headers(load_etext(testcase.etextno)).splitlines()
+        for testcase in SampleText.all():
+            expected = testcase.clean_text.splitlines()
+            actual = strip_headers(testcase.raw_text).splitlines()
             lines = zip(actual, expected)
             for i, (actual_line, expected_line) in enumerate(lines, start=1):
                 self.assertEqual(
