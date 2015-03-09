@@ -6,8 +6,7 @@
 
 from __future__ import absolute_import
 import abc
-import gzip
-import os
+import contextlib
 import shutil
 import tempfile
 
@@ -36,12 +35,14 @@ class MockMetadataMixin(object):
         gutenberg.acquire.metadata._METADATA_CACHE = self.mock_metadata_cache
 
     def tearDown(self):
-        os.remove(self.mock_metadata_cache)
+        shutil.rmtree(self.mock_metadata_cache)
 
 
 def _mock_metadata_cache(sample_datas):
-    with tempfile.NamedTemporaryFile(delete=False) as metadata_file:
-        with gzip.GzipFile(fileobj=metadata_file, mode='wb') as gzip_file:
-            contents = u'\n'.join(item.rdf() for item in sample_datas)
-            gzip_file.write(contents.encode('utf-8'))
-    return metadata_file.name
+    data = u'\n'.join(item.rdf() for item in sample_datas)
+    metadata_directory = tempfile.mkdtemp()
+    graph = gutenberg.acquire.metadata._create_metadata_graph()
+    graph.open(metadata_directory, create=True)
+    with contextlib.closing(graph):
+        graph.parse(data=data, format='nt')
+    return metadata_directory

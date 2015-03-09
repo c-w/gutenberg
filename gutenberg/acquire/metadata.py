@@ -3,7 +3,6 @@
 
 from __future__ import absolute_import
 import contextlib
-import gzip
 import logging
 import os
 import re
@@ -26,7 +25,7 @@ from gutenberg._util.os import makedirs
 from gutenberg._util.os import remove
 
 
-_METADATA_CACHE = local_path(os.path.join('metadata', 'metadata.rdf.nt.gz'))
+_METADATA_CACHE = local_path(os.path.join('metadata', 'metadata.db'))
 
 
 @contextlib.contextmanager
@@ -76,9 +75,18 @@ def _populate_metadata_graph(graph):
     """Downloads the Project Gutenberg metadata dump and persists it to disk.
 
     """
-    with _download_metadata_archive() as metadata_archive:
-        for fact in _iter_metadata_triples(metadata_archive):
-            graph.add(fact)
+    graph.open(_METADATA_CACHE, create=True)
+    with contextlib.closing(graph):
+        with _download_metadata_archive() as metadata_archive:
+            for fact in _iter_metadata_triples(metadata_archive):
+                graph.add(fact)
+
+
+def _create_metadata_graph(store='Sleepycat'):
+    """Returns a persistable RDF graph.
+
+    """
+    return Graph(store=store, identifier='urn:gutenberg:metadata')
 
 
 def load_metadata(refresh_cache=False):
@@ -89,15 +97,11 @@ def load_metadata(refresh_cache=False):
     call to Project Gutenberg's servers, the meta-data is persisted locally.
 
     """
-    metadata_graph = Graph()
+    metadata_graph = _create_metadata_graph()
     if refresh_cache:
         remove(_METADATA_CACHE)
     if not os.path.exists(_METADATA_CACHE):
-        makedirs(os.path.dirname(_METADATA_CACHE))
+        makedirs(_METADATA_CACHE)
         _populate_metadata_graph(metadata_graph)
-        with gzip.open(_METADATA_CACHE, 'wb') as metadata_file:
-            metadata_file.write(metadata_graph.serialize(format='nt'))
-    else:
-        with gzip.open(_METADATA_CACHE, 'rb') as metadata_file:
-            metadata_graph.parse(file=metadata_file, format='nt')
+    metadata_graph.open(_METADATA_CACHE, create=False)
     return _add_namespaces(metadata_graph)
