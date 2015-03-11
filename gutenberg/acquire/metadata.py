@@ -1,4 +1,5 @@
 """Module to deal with metadata acquisition."""
+# pylint:disable=W0603
 
 
 from __future__ import absolute_import
@@ -26,6 +27,7 @@ from gutenberg._util.os import remove
 
 
 _METADATA_CACHE = local_path(os.path.join('metadata', 'metadata.db'))
+_METADATA_DATABASE_SINGLETON = None
 
 
 @contextlib.contextmanager
@@ -97,11 +99,14 @@ def load_metadata(refresh_cache=False):
     call to Project Gutenberg's servers, the meta-data is persisted locally.
 
     """
-    metadata_graph = _create_metadata_graph()
+    global _METADATA_DATABASE_SINGLETON
+    if not refresh_cache and _METADATA_DATABASE_SINGLETON is not None:
+        return _METADATA_DATABASE_SINGLETON
+    _METADATA_DATABASE_SINGLETON = _create_metadata_graph()
     if refresh_cache:
         remove(_METADATA_CACHE)
     if not os.path.exists(_METADATA_CACHE):
         makedirs(_METADATA_CACHE)
-        _populate_metadata_graph(metadata_graph)
-    metadata_graph.open(_METADATA_CACHE, create=False)
-    return _add_namespaces(metadata_graph)
+        _populate_metadata_graph(_METADATA_DATABASE_SINGLETON)
+    _METADATA_DATABASE_SINGLETON.open(_METADATA_CACHE, create=False)
+    return _add_namespaces(_METADATA_DATABASE_SINGLETON)
