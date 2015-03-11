@@ -79,6 +79,13 @@ Looking up meta-data
     assert 2701 in get_etexts('author', 'Melville, Hermann')
 
 
+Note: The first time that one of the functions from `gutenberg.query` is called,
+the library will create a rather large database of meta-data about the Project
+Gutenberg texts. This one-off process will take quite a while to complete (18
+hours on my machine) but once it is done, any subsequent calls to `get_etexts`
+or `get_metadata` will be *very* fast.
+
+
 Limitations
 ===========
 
