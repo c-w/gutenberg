@@ -1,9 +1,9 @@
 """Module to deal with metadata acquisition."""
+# pylint:disable=W0603
 
 
 from __future__ import absolute_import
 import contextlib
-import gzip
 import logging
 import os
 import re
@@ -26,7 +26,8 @@ from gutenberg._util.os import makedirs
 from gutenberg._util.os import remove
 
 
-_METADATA_CACHE = local_path(os.path.join('metadata', 'metadata.rdf.nt.gz'))
+_METADATA_CACHE = local_path(os.path.join('metadata', 'metadata.db'))
+_METADATA_DATABASE_SINGLETON = None
 
 
 @contextlib.contextmanager
@@ -72,6 +73,46 @@ def _add_namespaces(graph):
     return graph
 
 
+def _populate_metadata_graph(graph):
+    """Downloads the Project Gutenberg metadata dump and persists it to disk.
+
+    """
+    graph.open(_METADATA_CACHE, create=True)
+    with contextlib.closing(graph):
+        with _download_metadata_archive() as metadata_archive:
+            for fact in _iter_metadata_triples(metadata_archive):
+                graph.add(fact)
+
+
+def _create_metadata_graph(store='Sleepycat'):
+    """Returns a persistable RDF graph.
+
+    """
+    return Graph(store=store, identifier='urn:gutenberg:metadata')
+
+
+def _reset_metadata_graph():
+    """Removes all traces of the persistent RDF graph.
+
+    """
+    global _METADATA_DATABASE_SINGLETON
+    _METADATA_DATABASE_SINGLETON = None
+    remove(_METADATA_CACHE)
+
+
+def _open_or_create_metadata_graph():
+    """Connects to the persistent RDF graph (creating the graph if necessary).
+
+    """
+    global _METADATA_DATABASE_SINGLETON
+    _METADATA_DATABASE_SINGLETON = _create_metadata_graph()
+    if not os.path.exists(_METADATA_CACHE):
+        makedirs(_METADATA_CACHE)
+        _populate_metadata_graph(_METADATA_DATABASE_SINGLETON)
+    _METADATA_DATABASE_SINGLETON.open(_METADATA_CACHE, create=False)
+    return _add_namespaces(_METADATA_DATABASE_SINGLETON)
+
+
 def load_metadata(refresh_cache=False):
     """Returns a graph representing meta-data for all Project Gutenberg texts.
     Pertinent information about texts or about how texts relate to each other
@@ -80,17 +121,10 @@ def load_metadata(refresh_cache=False):
     call to Project Gutenberg's servers, the meta-data is persisted locally.
 
     """
-    metadata_graph = Graph()
     if refresh_cache:
-        remove(_METADATA_CACHE)
-    if not os.path.exists(_METADATA_CACHE):
-        makedirs(os.path.dirname(_METADATA_CACHE))
-        with _download_metadata_archive() as metadata_archive:
-            for fact in _iter_metadata_triples(metadata_archive):
-                metadata_graph.add(fact)
-        with gzip.open(_METADATA_CACHE, 'wb') as metadata_file:
-            metadata_file.write(metadata_graph.serialize(format='nt'))
-    else:
-        with gzip.open(_METADATA_CACHE, 'rb') as metadata_file:
-            metadata_graph.parse(file=metadata_file, format='nt')
-    return _add_namespaces(metadata_graph)
+        _reset_metadata_graph()
+
+    if _METADATA_DATABASE_SINGLETON is not None:
+        return _METADATA_DATABASE_SINGLETON
+
+    return _open_or_create_metadata_graph()
