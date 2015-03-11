@@ -7,7 +7,7 @@ from setuptools import setup
 
 setup(
     name='Gutenberg',
-    version='0.3.3',
+    version='0.4.0',
     author='Clemens Wolff',
     author_email='clemens.wolff+pypi@gmail.com',
     packages=find_packages(exclude=['tests']),
