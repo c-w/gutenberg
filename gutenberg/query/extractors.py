@@ -3,6 +3,8 @@
 
 from __future__ import absolute_import
 
+from rdflib.term import Literal
+
 from gutenberg._domain_model.vocabulary import DCTERMS
 from gutenberg._domain_model.vocabulary import PGTERMS
 from gutenberg._util.abc import abstractclassmethod
@@ -30,10 +32,8 @@ class _SimplePredicateRelationshipExtractor(MetadataExtractor):
 
     @classmethod
     def get_etexts(cls, requested_value):
-        query = cls._metadata()[:cls.predicate():]
-        return frozenset(cls._uri_to_etext(uri)
-                         for uri, feature_value in query
-                         if feature_value.toPython() == requested_value)
+        query = cls._metadata()[:cls.predicate():Literal(requested_value)]
+        return frozenset(cls._uri_to_etext(result) for result in query)
 
 
 class AuthorExtractor(_SimplePredicateRelationshipExtractor):
