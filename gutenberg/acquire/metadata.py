@@ -91,6 +91,28 @@ def _create_metadata_graph(store='Sleepycat'):
     return Graph(store=store, identifier='urn:gutenberg:metadata')
 
 
+def _reset_metadata_graph():
+    """Removes all traces of the persistent RDF graph.
+
+    """
+    global _METADATA_DATABASE_SINGLETON
+    _METADATA_DATABASE_SINGLETON = None
+    remove(_METADATA_CACHE)
+
+
+def _open_or_create_metadata_graph():
+    """Connects to the persistent RDF graph (creating the graph if necessary).
+
+    """
+    global _METADATA_DATABASE_SINGLETON
+    _METADATA_DATABASE_SINGLETON = _create_metadata_graph()
+    if not os.path.exists(_METADATA_CACHE):
+        makedirs(_METADATA_CACHE)
+        _populate_metadata_graph(_METADATA_DATABASE_SINGLETON)
+    _METADATA_DATABASE_SINGLETON.open(_METADATA_CACHE, create=False)
+    return _add_namespaces(_METADATA_DATABASE_SINGLETON)
+
+
 def load_metadata(refresh_cache=False):
     """Returns a graph representing meta-data for all Project Gutenberg texts.
     Pertinent information about texts or about how texts relate to each other
@@ -99,14 +121,10 @@ def load_metadata(refresh_cache=False):
     call to Project Gutenberg's servers, the meta-data is persisted locally.
 
     """
-    global _METADATA_DATABASE_SINGLETON
-    if not refresh_cache and _METADATA_DATABASE_SINGLETON is not None:
-        return _METADATA_DATABASE_SINGLETON
-    _METADATA_DATABASE_SINGLETON = _create_metadata_graph()
     if refresh_cache:
-        remove(_METADATA_CACHE)
-    if not os.path.exists(_METADATA_CACHE):
-        makedirs(_METADATA_CACHE)
-        _populate_metadata_graph(_METADATA_DATABASE_SINGLETON)
-    _METADATA_DATABASE_SINGLETON.open(_METADATA_CACHE, create=False)
-    return _add_namespaces(_METADATA_DATABASE_SINGLETON)
+        _reset_metadata_graph()
+
+    if _METADATA_DATABASE_SINGLETON is not None:
+        return _METADATA_DATABASE_SINGLETON
+
+    return _open_or_create_metadata_graph()
