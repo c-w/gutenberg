@@ -61,7 +61,7 @@ Downloading a text
     from gutenberg.cleanup import strip_headers
 
     text = strip_headers(load_etext(2701)).strip()
-    assert text.startswith('MOBY DICK; OR THE WHALE\n\nBy Herman Melville')
+    print(text)  # prints 'MOBY DICK; OR THE WHALE\n\nBy Herman Melville ...'
 
 
 Looking up meta-data
@@ -72,11 +72,11 @@ Looking up meta-data
     from gutenberg.query import get_etexts
     from gutenberg.query import get_metadata
 
-    assert get_metadata('title', 2701)  == 'Moby Dick; Or, The Whale'
-    assert get_metadata('author', 2701) == 'Melville, Hermann'
+    print(get_metadata('title', 2701))  # prints 'Moby Dick; Or, The Whale'
+    print(get_metadata('author', 2701)) # prints 'Melville, Hermann'
 
-    assert 2701 in get_etexts('title', 'Moby Dick; Or, The Whale')
-    assert 2701 in get_etexts('author', 'Melville, Hermann')
+    print(get_etexts('title', 'Moby Dick; Or, The Whale'))  # prints (2701, ...)
+    print(get_etexts('author', 'Melville, Hermann'))        # prints (2701, ...)
 
 
 Note: The first time that one of the functions from `gutenberg.query` is called,
