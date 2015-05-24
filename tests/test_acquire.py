@@ -36,6 +36,7 @@ class TestLoadEtext(MockTextMixin, unittest.TestCase):
             SampleMetaData.for_etextno(2701),   # newstyle identifier
             SampleMetaData.for_etextno(5),      # oldstyle identifier
             SampleMetaData.for_etextno(14287),  # unicode text
+            SampleMetaData.for_etextno(23962)   # UTF-8 text
         )
         for testcase, loader in itertools.product(testcases, loaders):
             text = loader(testcase.etextno)
