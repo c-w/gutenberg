@@ -42,7 +42,7 @@ def _format_download_uri(etextno):
 
     else:
         etextno = str(etextno)
-        extensions = ('.txt', '-8.txt')
+        extensions = ('.txt', '-8.txt', '-0.txt')
         for extension in extensions:
             uri = '{root}/{path}/{etextno}/{etextno}{extension}'.format(
                 root=uri_root,
@@ -70,6 +70,7 @@ def load_etext(etextno, refresh_cache=False):
         makedirs(os.path.dirname(cached))
         download_uri = _format_download_uri(etextno)
         response = requests.get(download_uri)
+        response.encoding = 'utf-8'
         text = response.text
         with gzip.open(cached, 'w') as cache:
             cache.write(text.encode('utf-8'))
