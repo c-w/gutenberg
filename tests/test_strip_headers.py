@@ -17,9 +17,8 @@ class TestStripHeaders(unittest.TestCase):
             actual = strip_headers(testcase.raw_text).splitlines()
             lines = zip(actual, expected)
             for i, (actual_line, expected_line) in enumerate(lines, start=1):
-                self.assertEqual(
-                    actual_line,
-                    expected_line,
+                self.assertTrue(
+                    actual_line == expected_line,
                     u'non-matching lines:\n'
                     u'{previous_lines}\n'
                     u'{lineno_separator}\n'

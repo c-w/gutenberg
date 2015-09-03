@@ -20,9 +20,8 @@ class TestGetMetadata(MockMetadataMixin, unittest.TestCase):
         for testcase in self.sample_data():
             expected = getattr(testcase, feature)
             actual = get_metadata(feature, testcase.etextno)
-            self.assertSetEqual(
-                actual,
-                expected,
+            self.assertTrue(
+                set(actual) == set(expected),
                 u'non-matching {feature} for book {etextno}: '
                 u'expected={expected} actual={actual}'.format(
                     feature=feature,
@@ -45,9 +44,8 @@ class TestGetEtexts(MockMetadataMixin, unittest.TestCase):
         for testcase in self.sample_data():
             for feature_value in getattr(testcase, feature):
                 actual = get_etexts(feature, feature_value)
-                self.assertIn(
-                    testcase.etextno,
-                    actual,
+                self.assertTrue(
+                    testcase.etextno in actual,
                     u"didn't retrieve {etextno} when querying for books that "
                     u'have {feature}="{feature_value}" (got {actual}).'.format(
                         etextno=testcase.etextno,

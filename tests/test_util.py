@@ -36,8 +36,8 @@ class TestAllSubclasses(unittest.TestCase):
         class ABADE(ABAD):
             pass
 
-        self.assertItemsEqual(all_subclasses(Root), [AB, ABC, AD, ABAD, ABADE])
-        self.assertSetEqual(all_subclasses(ABADE), set())
+        self.assertTrue(all_subclasses(Root), set([AB, ABC, AD, ABAD, ABADE]))
+        self.assertTrue(all_subclasses(ABADE) == set())
 
 
 class TestAbstractClassMethod(unittest.TestCase):
@@ -54,8 +54,7 @@ class TestAbstractClassMethod(unittest.TestCase):
             def method(cls):
                 pass
 
-        with self.assertRaises(TypeError):
-            ClassWithAbstractClassMethod()
+        self.assertRaises(TypeError, ClassWithAbstractClassMethod)
         ConcreteImplementation()
 
 
