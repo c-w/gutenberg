@@ -52,7 +52,7 @@ def _format_download_uri(etextno):
             response = requests.head(uri)
             if response.ok:
                 return uri
-        raise ValueError('download URI for {} not supported'.format(etextno))
+        raise ValueError('download URI for {0} not supported'.format(etextno))
 
 
 def load_etext(etextno, refresh_cache=False):
@@ -62,7 +62,7 @@ def load_etext(etextno, refresh_cache=False):
 
     """
     etextno = validate_etextno(etextno)
-    cached = os.path.join(_TEXT_CACHE, '{}.txt.gz'.format(etextno))
+    cached = os.path.join(_TEXT_CACHE, '{0}.txt.gz'.format(etextno))
 
     if refresh_cache:
         remove(cached)
