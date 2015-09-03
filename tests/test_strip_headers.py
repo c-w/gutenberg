@@ -17,9 +17,8 @@ class TestStripHeaders(unittest.TestCase):
             actual = strip_headers(testcase.raw_text).splitlines()
             lines = zip(actual, expected)
             for i, (actual_line, expected_line) in enumerate(lines, start=1):
-                self.assertEqual(
-                    actual_line,
-                    expected_line,
+                self.assertTrue(
+                    actual_line == expected_line,
                     u'non-matching lines:\n'
                     u'{previous_lines}\n'
                     u'{lineno_separator}\n'
@@ -31,21 +30,21 @@ class TestStripHeaders(unittest.TestCase):
                         next_lines=_next_lines(i, lines, amount=3),
                         actual=actual_line,
                         expected=expected_line,
-                        lineno_separator='line {}:'.format(i).center(80, '-'),
+                        lineno_separator='line {0}:'.format(i).center(80, '-'),
                         separator=''.center(80, '-')))
 
 
 def _previous_lines(i, lines, amount):
     lower = max(0, i-amount)
     prev_lines = lines[lower:i-1]
-    return u'\n'.join(u'line {}: "{}"'.format(j, line)
+    return u'\n'.join(u'line {0}: "{1}"'.format(j, line)
                       for j, (_, line) in enumerate(prev_lines, start=lower))
 
 
 def _next_lines(i, lines, amount):
     upper = min(len(lines), i+amount+1)
     next_lines = lines[i+1:upper]
-    return u'\n'.join(u'line {}: "{}"'.format(j, line)
+    return u'\n'.join(u'line {0}: "{1}"'.format(j, line)
                       for j, (_, line) in enumerate(next_lines, start=i+1))
 
 

@@ -23,9 +23,9 @@ class TestLoadMetadata(MockMetadataMixin, unittest.TestCase):
 
     def test_load_metadata(self):
         metadata = load_metadata()
-        self.assertGreater(len(list(metadata[::PGTERMS.ebook])), 0)
-        self.assertGreater(len(list(metadata[:DCTERMS.creator:])), 0)
-        self.assertGreater(len(list(metadata[:DCTERMS.title:])), 0)
+        self.assertTrue(len(list(metadata[::PGTERMS.ebook])) > 0)
+        self.assertTrue(len(list(metadata[:DCTERMS.creator:])) > 0)
+        self.assertTrue(len(list(metadata[:DCTERMS.title:])) > 0)
 
 
 class TestLoadEtext(MockTextMixin, unittest.TestCase):
@@ -40,7 +40,7 @@ class TestLoadEtext(MockTextMixin, unittest.TestCase):
         )
         for testcase, loader in itertools.product(testcases, loaders):
             text = loader(testcase.etextno)
-            self.assertIsInstance(text, unicode)
+            self.assertTrue(isinstance(text, unicode))
 
 
 if __name__ == '__main__':

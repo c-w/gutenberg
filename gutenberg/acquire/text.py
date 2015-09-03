@@ -2,6 +2,7 @@
 
 
 from __future__ import absolute_import
+import contextlib
 import gzip
 import os
 
@@ -52,7 +53,7 @@ def _format_download_uri(etextno):
             response = requests.head(uri)
             if response.ok:
                 return uri
-        raise ValueError('download URI for {} not supported'.format(etextno))
+        raise ValueError('download URI for {0} not supported'.format(etextno))
 
 
 def load_etext(etextno, refresh_cache=False):
@@ -62,7 +63,7 @@ def load_etext(etextno, refresh_cache=False):
 
     """
     etextno = validate_etextno(etextno)
-    cached = os.path.join(_TEXT_CACHE, '{}.txt.gz'.format(etextno))
+    cached = os.path.join(_TEXT_CACHE, '{0}.txt.gz'.format(etextno))
 
     if refresh_cache:
         remove(cached)
@@ -72,9 +73,9 @@ def load_etext(etextno, refresh_cache=False):
         response = requests.get(download_uri)
         response.encoding = 'utf-8'
         text = response.text
-        with gzip.open(cached, 'w') as cache:
+        with contextlib.closing(gzip.open(cached, 'w')) as cache:
             cache.write(text.encode('utf-8'))
     else:
-        with gzip.open(cached, 'r') as cache:
+        with contextlib.closing(gzip.open(cached, 'r')) as cache:
             text = cache.read().decode('utf-8')
     return text
