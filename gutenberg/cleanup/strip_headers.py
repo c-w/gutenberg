@@ -2,6 +2,7 @@
 
 
 from __future__ import absolute_import
+from builtins import str
 import os
 
 from gutenberg._domain_model.text import TEXT_END_MARKERS as _FOOTERS
@@ -22,10 +23,7 @@ def strip_headers(text):
 
     """
     lines = text.splitlines()
-    try:
-        sep = unicode(os.linesep)
-    except NameError:
-        sep = str(os.linesep)
+    sep = str(os.linesep)
 
     out = []
     i = 0

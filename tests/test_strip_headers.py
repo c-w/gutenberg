@@ -15,7 +15,7 @@ class TestStripHeaders(unittest.TestCase):
         for testcase in SampleText.all():
             expected = testcase.clean_text.splitlines()
             actual = strip_headers(testcase.raw_text).splitlines()
-            lines = zip(actual, expected)
+            lines = list(zip(actual, expected))
             for i, (actual_line, expected_line) in enumerate(lines, start=1):
                 self.assertTrue(
                     actual_line == expected_line,

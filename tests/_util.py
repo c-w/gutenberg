@@ -10,6 +10,8 @@ import contextlib
 import shutil
 import tempfile
 
+from future.utils import with_metaclass
+
 import gutenberg.acquire.metadata
 import gutenberg.acquire.text
 
@@ -23,9 +25,7 @@ class MockTextMixin(object):
         shutil.rmtree(self.mock_text_cache)
 
 
-class MockMetadataMixin(object):
-    __metaclass__ = abc.ABCMeta
-
+class MockMetadataMixin(with_metaclass(abc.ABCMeta, object)):
     @abc.abstractmethod
     def sample_data(self):
         raise NotImplementedError

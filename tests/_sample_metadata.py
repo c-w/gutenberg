@@ -4,7 +4,6 @@
 
 
 from __future__ import absolute_import
-import itertools
 import json
 import os
 import sys
@@ -54,11 +53,11 @@ class SampleMetaData(object):
             for title in self.title)
 
     def rdf(self):
-        return '\n'.join(itertools.ifilter(None, [
+        return '\n'.join(fact for fact in (
             self._rdf_etextno(),
             self._rdf_author(),
             self._rdf_title(),
-        ]))
+        ) if fact)
 
     @classmethod
     def for_etextno(cls, etextno):

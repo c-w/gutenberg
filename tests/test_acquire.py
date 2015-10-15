@@ -4,6 +4,7 @@
 
 
 from __future__ import absolute_import
+from builtins import str
 import itertools
 import unittest
 
@@ -40,7 +41,7 @@ class TestLoadEtext(MockTextMixin, unittest.TestCase):
         )
         for testcase, loader in itertools.product(testcases, loaders):
             text = loader(testcase.etextno)
-            self.assertTrue(isinstance(text, unicode))
+            self.assertTrue(isinstance(text, str))
 
 
 if __name__ == '__main__':
