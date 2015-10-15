@@ -10,6 +10,8 @@ import shutil
 import tempfile
 import unittest
 
+from future.utils import with_metaclass
+
 from gutenberg._util.abc import abstractclassmethod
 from gutenberg._util.objects import all_subclasses
 from gutenberg._util.os import makedirs
@@ -42,9 +44,7 @@ class TestAllSubclasses(unittest.TestCase):
 
 class TestAbstractClassMethod(unittest.TestCase):
     def test_abstractclassmethod(self):
-        class ClassWithAbstractClassMethod(object):
-            __metaclass__ = abc.ABCMeta
-
+        class ClassWithAbstractClassMethod(with_metaclass(abc.ABCMeta, object)):
             @abstractclassmethod
             def method(cls):
                 pass

@@ -6,6 +6,7 @@ from __future__ import absolute_import
 import abc
 import os
 
+from future.utils import with_metaclass
 from rdflib.term import URIRef
 
 from gutenberg._domain_model.types import validate_etextno
@@ -55,7 +56,7 @@ def get_etexts(feature_name, value):
     return frozenset(matching_etexts)
 
 
-class MetadataExtractor(object):
+class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
     """This class represents the interface by which the public functions in
     this API can be extended to provide access to Project Gutenberg meta-data.
     For each meta-data feature X that we want to be able to extract via the
@@ -63,8 +64,6 @@ class MetadataExtractor(object):
     MetadataExtractor implementation that returns X for its feature_name call.
 
     """
-    __metaclass__ = abc.ABCMeta
-
     @abstractclassmethod
     def feature_name(cls):
         """The keyword that will cause the top-level API methods get_metadata
