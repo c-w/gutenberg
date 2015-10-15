@@ -3,6 +3,7 @@
 
 
 from __future__ import absolute_import
+from io import open
 import os
 import sys
 
@@ -42,10 +43,10 @@ def _cleantext_data_path():
 def _load_rawtext(etextno):
     data_path = os.path.join(_rawtext_data_path(), str(etextno))
     encoding = determine_encoding(data_path, 'utf-8')
-    return open(data_path).read().decode(encoding)
+    return open(data_path, encoding=encoding).read()
 
 
 def _load_cleantext(etextno):
     data_path = os.path.join(_cleantext_data_path(), str(etextno))
     encoding = determine_encoding(data_path, 'utf-8')
-    return open(data_path).read().decode(encoding)
+    return open(data_path, encoding=encoding).read()
