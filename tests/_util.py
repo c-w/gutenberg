@@ -10,8 +10,8 @@ import contextlib
 import shutil
 import tempfile
 
-from future.utils import with_metaclass
 from six import u
+from six import with_metaclass
 
 import gutenberg.acquire.metadata
 import gutenberg.acquire.text

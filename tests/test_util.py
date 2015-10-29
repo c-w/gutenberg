@@ -10,7 +10,7 @@ import shutil
 import tempfile
 import unittest
 
-from future.utils import with_metaclass
+from six import with_metaclass
 
 from gutenberg._util.abc import abstractclassmethod
 from gutenberg._util.objects import all_subclasses
