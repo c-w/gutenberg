@@ -2,6 +2,9 @@
 Gutenberg
 *********
 
+.. image:: https://travis-ci.org/c-w/Gutenberg.svg?branch=master
+    :target: https://travis-ci.org/c-w/Gutenberg
+
 
 Overview
 ========
