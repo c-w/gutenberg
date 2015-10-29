@@ -8,6 +8,8 @@ import json
 import os
 import sys
 
+from six import u
+
 
 class SampleMetaData(object):
     __uids = {}
@@ -22,38 +24,38 @@ class SampleMetaData(object):
         return cls.__uids.setdefault(hashable, len(cls.__uids) + 1)
 
     def _rdf_etextno(self):
-        return (
-            u'<http://www.gutenberg.org/ebooks/{etextno}> '
-            u'<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> '
-            u'<http://www.gutenberg.org/2009/pgterms/ebook> '
-            u'.'
+        return u(
+            '<http://www.gutenberg.org/ebooks/{etextno}> '
+            '<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> '
+            '<http://www.gutenberg.org/2009/pgterms/ebook> '
+            '.'
         ).format(etextno=self.etextno)
 
     def _rdf_author(self):
-        return u'' if not self.author else u'\n'.join(
-            u'<http://www.gutenberg.org/ebooks/{etextno}> '
-            u'<http://purl.org/dc/terms/creator> '
-            u'<http://www.gutenberg.org/2009/agents/{agent}> '
-            u'.\n'
-            u'<http://www.gutenberg.org/2009/agents/{agent}> '
-            u'<http://www.gutenberg.org/2009/pgterms/alias> '
-            u'"{author}" '
-            u'.'
+        return u('') if not self.author else u('\n').join(
+            u('<http://www.gutenberg.org/ebooks/{etextno}> '
+              '<http://purl.org/dc/terms/creator> '
+              '<http://www.gutenberg.org/2009/agents/{agent}> '
+              '.\n'
+              '<http://www.gutenberg.org/2009/agents/{agent}> '
+              '<http://www.gutenberg.org/2009/pgterms/alias> '
+              '"{author}" '
+              '.')
             .format(etextno=self.etextno, author=author,
                     agent=self.__create_uid(author))
             for author in self.author)
 
     def _rdf_title(self):
-        return u'' if not self.title else u'\n'.join(
-            u'<http://www.gutenberg.org/ebooks/{etextno}> '
-            u'<http://purl.org/dc/terms/title> '
-            u'"{title}"'
-            u'.'
+        return u('') if not self.title else u('\n').join(
+            u('<http://www.gutenberg.org/ebooks/{etextno}> '
+              '<http://purl.org/dc/terms/title> '
+              '"{title}"'
+              '.')
             .format(etextno=self.etextno, title=title)
             for title in self.title)
 
     def rdf(self):
-        return '\n'.join(fact for fact in (
+        return u('\n').join(fact for fact in (
             self._rdf_etextno(),
             self._rdf_author(),
             self._rdf_title(),

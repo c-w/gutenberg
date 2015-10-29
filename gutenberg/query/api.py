@@ -6,7 +6,7 @@ from __future__ import absolute_import
 import abc
 import os
 
-from future.utils import with_metaclass
+from six import with_metaclass
 from rdflib.term import URIRef
 
 from gutenberg._domain_model.types import validate_etextno
