@@ -11,6 +11,7 @@ import shutil
 import tempfile
 
 from future.utils import with_metaclass
+from six import u
 
 import gutenberg.acquire.metadata
 import gutenberg.acquire.text
@@ -39,7 +40,7 @@ class MockMetadataMixin(with_metaclass(abc.ABCMeta, object)):
 
 
 def _mock_metadata_cache(sample_datas):
-    data = u'\n'.join(item.rdf() for item in sample_datas)
+    data = u('\n').join(item.rdf() for item in sample_datas)
     metadata_directory = tempfile.mkdtemp()
     graph = gutenberg.acquire.metadata._create_metadata_graph()
     graph.open(metadata_directory, create=True)
