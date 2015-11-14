@@ -21,7 +21,7 @@ class TestStripHeaders(unittest.TestCase):
             for i, (actual_line, expected_line) in enumerate(lines, start=1):
                 self.assertTrue(
                     actual_line == expected_line,
-                    u('non-matching lines:\n'
+                    u('non-matching lines for etext {etextno}:\n'
                       '{previous_lines}\n'
                       '{lineno_separator}\n'
                       'got "{actual}"\n'
@@ -29,6 +29,7 @@ class TestStripHeaders(unittest.TestCase):
                       '{separator}\n'
                       '{next_lines}')
                     .format(
+                        etextno=testcase.etextno,
                         previous_lines=_previous_lines(i, lines, amount=3),
                         next_lines=_next_lines(i, lines, amount=3),
                         actual=actual_line,
