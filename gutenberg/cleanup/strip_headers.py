@@ -5,8 +5,10 @@ from __future__ import absolute_import
 from builtins import str
 import os
 
-from gutenberg._domain_model.text import TEXT_END_MARKERS as _FOOTERS
-from gutenberg._domain_model.text import TEXT_START_MARKERS as _HEADERS
+from gutenberg._domain_model.text import TEXT_END_MARKERS
+from gutenberg._domain_model.text import TEXT_START_MARKERS
+from gutenberg._domain_model.text import LEGALESE_END_MARKERS
+from gutenberg._domain_model.text import LEGALESE_START_MARKERS
 
 
 def strip_headers(text):
@@ -29,13 +31,14 @@ def strip_headers(text):
     i = 0
     reset = True
     footer_found = False
+    ignore_section = False
 
     for line in lines:
         reset = False
 
         if i <= 600:
             # Check if the header ends here
-            if any(line.startswith(header) for header in _HEADERS):
+            if any(line.startswith(token) for token in TEXT_START_MARKERS):
                 reset = True
 
             # If it's the end of the header, delete the output produced so far.
@@ -47,14 +50,22 @@ def strip_headers(text):
 
         if i >= 100:
             # Check if the footer begins here
-            if any(line.startswith(footer) for footer in _FOOTERS):
+            if any(line.startswith(token) for token in TEXT_END_MARKERS):
                 footer_found = True
 
             # If it's the beginning of the footer, stop output
             if footer_found:
                 break
 
-        out.append(line.rstrip(sep))
-        i += 1
+        if any(line.startswith(token) for token in LEGALESE_START_MARKERS):
+            ignore_section = True
+            continue
+        elif any(line.startswith(token) for token in LEGALESE_END_MARKERS):
+            ignore_section = False
+            continue
+
+        if not ignore_section:
+            out.append(line.rstrip(sep))
+            i += 1
 
     return sep.join(out)

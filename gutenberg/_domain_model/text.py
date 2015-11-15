@@ -38,10 +38,10 @@ TEXT_START_MARKERS = frozenset((u(_) for _ in (
     "l'authorization à les utilizer pour preparer ce texte.",
     "of the etext through OCR.",
     "*****These eBooks Were Prepared By Thousands of Volunteers!*****",
-    "SERVICE THAT CHARGES FOR DOWNLOAD",
     "We need your donations more than ever!",
     " *** START OF THIS PROJECT GUTENBERG",
     "****     SMALL PRINT!",
+    '["Small Print" V.',
 )))
 
 
@@ -69,8 +69,17 @@ TEXT_END_MARKERS = frozenset((u(_) for _ in (
     "Ce document fut présenté en lecture",
     "More information about this book is at the top of this file.",
     "We need your donations more than ever!",
-    "<<THIS ELECTRONIC VERSION OF",
     "END OF PROJECT GUTENBERG",
     " End of the Project Gutenberg",
     " *** END OF THIS PROJECT GUTENBERG",
+)))
+
+
+LEGALESE_START_MARKERS = frozenset((u(_) for _ in (
+    "<<THIS ELECTRONIC VERSION OF",
+)))
+
+
+LEGALESE_END_MARKERS = frozenset((u(_) for _ in (
+    "SERVICE THAT CHARGES FOR DOWNLOAD",
 )))
