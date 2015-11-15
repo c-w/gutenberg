@@ -73,3 +73,13 @@ TEXT_END_MARKERS = frozenset((u(_) for _ in (
     " End of the Project Gutenberg",
     " *** END OF THIS PROJECT GUTENBERG",
 )))
+
+
+LEGALESE_START_MARKERS = frozenset((u(_) for _ in (
+    "<<THIS ELECTRONIC VERSION OF",
+)))
+
+
+LEGALESE_END_MARKERS = frozenset((u(_) for _ in (
+    "SERVICE THAT CHARGES FOR DOWNLOAD",
+)))

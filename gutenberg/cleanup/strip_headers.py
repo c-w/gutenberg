@@ -7,6 +7,8 @@ import os
 
 from gutenberg._domain_model.text import TEXT_END_MARKERS
 from gutenberg._domain_model.text import TEXT_START_MARKERS
+from gutenberg._domain_model.text import LEGALESE_END_MARKERS
+from gutenberg._domain_model.text import LEGALESE_START_MARKERS
 
 
 def strip_headers(text):
@@ -29,6 +31,7 @@ def strip_headers(text):
     i = 0
     reset = True
     footer_found = False
+    ignore_section = False
 
     for line in lines:
         reset = False
@@ -54,7 +57,15 @@ def strip_headers(text):
             if footer_found:
                 break
 
-        out.append(line.rstrip(sep))
-        i += 1
+        if any(line.startswith(token) for token in LEGALESE_START_MARKERS):
+            ignore_section = True
+            continue
+        elif any(line.startswith(token) for token in LEGALESE_END_MARKERS):
+            ignore_section = False
+            continue
+
+        if not ignore_section:
+            out.append(line.rstrip(sep))
+            i += 1
 
     return sep.join(out)
