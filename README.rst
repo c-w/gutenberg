@@ -72,6 +72,8 @@ Downloading a text
 Looking up meta-data
 --------------------
 
+Title and author meta-data can queried:
+
 .. sourcecode :: python
 
     from gutenberg.query import get_etexts
