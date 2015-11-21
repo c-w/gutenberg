@@ -39,6 +39,13 @@ this repository:
 
     git clone https://github.com/c-w/Gutenberg.git
 
+This package depends on Berkeley DB so you'll need to install that:
+
+.. sourcecode :: sh
+
+    sudo apt-get install libdb5.1-dev
+    export BERKELEYDB_DIR=/usr
+
 Now, you should probably install the dependencies for the package and verify
 your checkout by running the tests.
 
