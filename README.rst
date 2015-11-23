@@ -86,11 +86,11 @@ Title and author meta-data can queried:
     from gutenberg.query import get_etexts
     from gutenberg.query import get_metadata
 
-    print(get_metadata('title', 2701))  # prints 'Moby Dick; Or, The Whale'
-    print(get_metadata('author', 2701)) # prints 'Melville, Hermann'
+    print(get_metadata('title', 2701))  # prints frozenset([u'Moby Dick; Or, The Whale'])
+    print(get_metadata('author', 2701)) # prints frozenset([u'Melville, Hermann'])
 
-    print(get_etexts('title', 'Moby Dick; Or, The Whale'))  # prints (2701, ...)
-    print(get_etexts('author', 'Melville, Hermann'))        # prints (2701, ...)
+    print(get_etexts('title', 'Moby Dick; Or, The Whale'))  # prints frozenset([2701, ...])
+    print(get_etexts('author', 'Melville, Hermann'))        # prints frozenset([2701, ...])
 
 
 Note: The first time that one of the functions from `gutenberg.query` is called,
