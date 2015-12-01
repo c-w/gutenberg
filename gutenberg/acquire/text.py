@@ -79,3 +79,28 @@ def load_etext(etextno, refresh_cache=False):
         with contextlib.closing(gzip.open(cached, 'r')) as cache:
             text = cache.read().decode('utf-8')
     return text
+
+
+def _main():
+    """Command line interface to the module.
+
+    """
+    from argparse import ArgumentParser, FileType
+    from gutenberg._util.os import reopen_encoded
+
+    parser = ArgumentParser(description='Download a Project Gutenberg text')
+    parser.add_argument('etextno', type=int)
+    parser.add_argument('outfile', type=FileType('w'))
+    args = parser.parse_args()
+
+    try:
+        text = load_etext(args.etextno)
+    except ValueError as ex:
+        parser.error(str(ex))
+    else:
+        with reopen_encoded(args.outfile, 'w', 'utf8') as outfile:
+            outfile.write(text)
+
+
+if __name__ == '__main__':
+    _main()
