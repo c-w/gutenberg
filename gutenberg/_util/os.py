@@ -53,8 +53,11 @@ def determine_encoding(path, default=None):
         ('utf-32', (codecs.BOM_UTF32_LE, codecs.BOM_UTF32_BE)),
     )
 
-    with open(path, 'rb') as infile:
-        raw = infile.read(4)
+    try:
+        with open(path, 'rb') as infile:
+            raw = infile.read(4)
+    except IOError:
+        return default
 
     for encoding, boms in byte_order_marks:
         if any(raw.startswith(bom) for bom in boms):
