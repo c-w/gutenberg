@@ -2,6 +2,7 @@
 
 
 from __future__ import absolute_import
+from io import open
 import codecs
 import errno
 import os
@@ -53,11 +54,32 @@ def determine_encoding(path, default=None):
         ('utf-32', (codecs.BOM_UTF32_LE, codecs.BOM_UTF32_BE)),
     )
 
-    with open(path, 'rb') as infile:
-        raw = infile.read(4)
+    try:
+        with open(path, 'rb') as infile:
+            raw = infile.read(4)
+    except IOError:
+        return default
 
     for encoding, boms in byte_order_marks:
         if any(raw.startswith(bom) for bom in boms):
             return encoding
 
     return default
+
+
+def reopen_encoded(fileobj, mode='r', fallback_encoding=None):
+    """Makes sure that a file was opened with some valid encoding.
+
+    Arguments:
+        fileobj (file): The file-object.
+        mode (str, optional): The mode in which to re-open the file.
+        fallback_encoding (str, optional): The encoding in which to re-open
+            the file if it does not specify an encoding itself.
+
+    Returns:
+        file: The re-opened file.
+
+    """
+    encoding = determine_encoding(fileobj.name, fallback_encoding)
+    fileobj.close()
+    return open(fileobj.name, mode, encoding=encoding)
