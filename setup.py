@@ -16,4 +16,5 @@ setup(
     license='LICENSE.txt',
     description='Library to interface with Project Gutenberg',
     long_description=open('README.rst').read(),
+    data_files=[('', ['requirements.pip'])],
     install_requires=list(line.strip() for line in open('requirements.pip')))
