@@ -60,3 +60,16 @@ class TitleExtractor(_SimplePredicateRelationshipExtractor):
     @classmethod
     def predicate(cls):
         return DCTERMS.title
+
+
+class FormatURIExtractor(_SimplePredicateRelationshipExtractor):
+    """Extracts book format URIs.
+
+    """
+    @classmethod
+    def feature_name(cls):
+        return 'formaturi'
+
+    @classmethod
+    def predicate(cls):
+        return DCTERMS.hasFormat
