@@ -14,9 +14,11 @@ from six import u
 class SampleMetaData(object):
     __uids = {}
 
-    def __init__(self, etextno, authors=frozenset(), titles=frozenset()):
+    def __init__(self, etextno, authors=frozenset(), titles=frozenset(),
+            formaturi=frozenset()):
         self.author = frozenset(authors)
         self.title = frozenset(titles)
+        self.formaturi = frozenset(formaturi)
         self.etextno = etextno or self.__create_uid(self.author | self.title)
 
     @classmethod
@@ -54,11 +56,21 @@ class SampleMetaData(object):
             .format(etextno=self.etextno, title=title)
             for title in self.title)
 
+    def _rdf_formaturi(self):
+        return u('') if not self.formaturi else u('\n').join(
+            u('<http://www.gutenberg.org/ebooks/{etextno}> '
+              '<http://purl.org/dc/terms/hasFormat> '
+              '<{formaturi}>'
+              '.')
+            .format(etextno=self.etextno, formaturi=formaturi)
+            for formaturi in self.formaturi)
+
     def rdf(self):
         return u('\n').join(fact for fact in (
             self._rdf_etextno(),
             self._rdf_author(),
             self._rdf_title(),
+            self._rdf_formaturi(),
         ) if fact)
 
     @classmethod
