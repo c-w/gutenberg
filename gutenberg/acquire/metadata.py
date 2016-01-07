@@ -15,8 +15,10 @@ try:
 except ImportError:
     import urllib.request as urllib2
 
+from rdflib import plugin, Literal, URIRef
 from rdflib.graph import Graph
 from rdflib.term import URIRef
+from rdflib.store import Store
 
 from gutenberg._domain_model.persistence import local_path
 from gutenberg._domain_model.vocabulary import DCTERMS
@@ -26,23 +28,138 @@ from gutenberg._util.os import makedirs
 from gutenberg._util.os import remove
 
 
-_METADATA_CACHE = local_path(os.path.join('metadata', 'metadata.db'))
-_METADATA_DATABASE_SINGLETON = None
+_GUTENBERG_CATALOG_URL = \
+    r'http://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2'
 
 
-@contextlib.contextmanager
-def _download_metadata_archive():
-    """Makes a remote call to the Project Gutenberg servers and downloads the
-    entire Project Gutenberg meta-data catalog. The catalog describes the texts
-    on Project Gutenberg in RDF. The function returns a file-pointer to the
-    catalog.
+class CacheAlreadyExistsException(Exception):
+    pass
 
-    """
-    data_url = r'http://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2'
-    with tempfile.NamedTemporaryFile(delete=False) as metadata_archive:
-        shutil.copyfileobj(urllib2.urlopen(data_url), metadata_archive)
-    yield metadata_archive.name
-    remove(metadata_archive.name)
+class CacheDeleteException(Exception):
+    pass
+
+class InvalidCacheException(Exception):
+    pass
+
+class MetadataCacheManager(object):
+    def __init__(self, store, cache_uri):
+        self.identifier='urn:gutenberg:metadata'
+        if store == 'Sleepycat':
+            self.store = store
+            self.removable = True
+        else:
+            if cache_uri.startswith('sqlite://'):
+                self.removable = True
+            else:
+                self.removable = False
+            self.store = plugin.get(store, Store)(identifier=self.identifier)
+        self.cache_uri = cache_uri
+
+        self.graph = Graph(store=self.store, identifier=self.identifier)
+        self.cache_open = False
+
+        self.catalog_source = _GUTENBERG_CATALOG_URL
+
+    def exists(self):
+        """Detect if the cache exists.
+
+        """
+        test_graph = Graph(store=self.store, identifier=self.identifier)
+        try:
+            test_graph.open(self.cache_uri, create=False)
+            self._add_namespaces(test_graph)
+            test_graph.close()
+            return True
+        except:
+            return False
+
+    def open(self):
+        """Opens an existing cache.
+
+        """
+        try:
+            self.graph.open(self.cache_uri, create=False)
+            self._add_namespaces(self.graph)
+            self.cache_open = True
+        except:
+            raise InvalidCacheException("The cache is invalid or not created")
+
+    def close(self):
+        """Closes an opened cache.
+
+        """
+        self.graph.close()
+        self.cache_open = False
+
+    def delete(self):
+        """Delete the cache.
+
+        """
+        self.close()
+        if self.removable:
+            if self.cache_uri.startswith('sqlite://'):
+                filepath = self.cache_uri[9:]
+            else:
+                filepath = self.cache_uri
+            remove(filepath)
+        else:
+            raise CacheDeleteException("Graph store type is not removable")
+
+    def populate(self, data_override=None):
+        """Populates a new cache.
+
+        """
+        if self.exists():
+            raise CacheAlreadyExistsException(
+                    "location: %s" % self.cache_uri)
+
+        if self.store == 'Sleepycat':
+            makedirs(self.cache_uri)
+
+        self.graph.open(self.cache_uri, create=True)
+
+        if data_override:
+            # Allow callers to override the data being populated, almost
+            # exclusively for automated testing
+            (data, format) = data_override
+            with contextlib.closing(self.graph):
+                self.graph.parse(data=data, format=format)
+            return
+
+        with contextlib.closing(self.graph):
+            with self._download_metadata_archive() as metadata_archive:
+                for fact in _iter_metadata_triples(metadata_archive):
+                    self.graph.add(fact)
+
+    def refresh(self):
+        """Refresh the cache by deleting the old one and creating a new one.
+
+        """
+        if self.exists():
+            self.delete()
+        self.populate()
+        self.open()
+
+    def _add_namespaces(self, graph):
+        """Function to ensure that the graph always has some specific namespace
+        aliases set.
+
+        """
+        graph.bind('pgterms', PGTERMS)
+        graph.bind('dcterms', DCTERMS)
+
+    @contextlib.contextmanager
+    def _download_metadata_archive(self):
+        """Makes a remote call to the Project Gutenberg servers and downloads the
+        entire Project Gutenberg meta-data catalog. The catalog describes the texts
+        on Project Gutenberg in RDF. The function returns a file-pointer to the
+        catalog.
+
+        """
+        with tempfile.NamedTemporaryFile(delete=False) as metadata_archive:
+            shutil.copyfileobj(urllib2.urlopen(self.catalog_source), metadata_archive)
+        yield metadata_archive.name
+        remove(metadata_archive.name)
 
 
 def _iter_metadata_triples(metadata_archive_path):
@@ -63,54 +180,27 @@ def _iter_metadata_triples(metadata_archive_path):
                         logging.info('skipping invalid triple %s', fact)
 
 
-def _add_namespaces(graph):
-    """Function to ensure that the graph always has some specific namespace
-    aliases set.
+_METADATA_CACHE_MANAGER = MetadataCacheManager(store='Sleepycat',
+    cache_uri=local_path(os.path.join('metadata', 'metadata.db')))
+
+
+def set_metadata_cache_manager(cache_manager):
+    """Sets the metadata cache object to use.
 
     """
-    graph.bind('pgterms', PGTERMS)
-    graph.bind('dcterms', DCTERMS)
-    return graph
+    global _METADATA_CACHE_MANAGER
+    if _METADATA_CACHE_MANAGER and _METADATA_CACHE_MANAGER.cache_open:
+        _METADATA_CACHE_MANAGER.close()
+
+    _METADATA_CACHE_MANAGER = cache_manager
 
 
-def _populate_metadata_graph(graph):
-    """Downloads the Project Gutenberg metadata dump and persists it to disk.
-
-    """
-    graph.open(_METADATA_CACHE, create=True)
-    with contextlib.closing(graph):
-        with _download_metadata_archive() as metadata_archive:
-            for fact in _iter_metadata_triples(metadata_archive):
-                graph.add(fact)
-
-
-def _create_metadata_graph(store='Sleepycat'):
-    """Returns a persistable RDF graph.
+def get_metadata_cache_manager():
+    """Returns the current metadata cache manager object.
 
     """
-    return Graph(store=store, identifier='urn:gutenberg:metadata')
-
-
-def _reset_metadata_graph():
-    """Removes all traces of the persistent RDF graph.
-
-    """
-    global _METADATA_DATABASE_SINGLETON
-    _METADATA_DATABASE_SINGLETON = None
-    remove(_METADATA_CACHE)
-
-
-def _open_or_create_metadata_graph():
-    """Connects to the persistent RDF graph (creating the graph if necessary).
-
-    """
-    global _METADATA_DATABASE_SINGLETON
-    _METADATA_DATABASE_SINGLETON = _create_metadata_graph()
-    if not os.path.exists(_METADATA_CACHE):
-        makedirs(_METADATA_CACHE)
-        _populate_metadata_graph(_METADATA_DATABASE_SINGLETON)
-    _METADATA_DATABASE_SINGLETON.open(_METADATA_CACHE, create=False)
-    return _add_namespaces(_METADATA_DATABASE_SINGLETON)
+    global _METADATA_CACHE_MANAGER
+    return _METADATA_CACHE_MANAGER
 
 
 def load_metadata(refresh_cache=False):
@@ -121,10 +211,14 @@ def load_metadata(refresh_cache=False):
     call to Project Gutenberg's servers, the meta-data is persisted locally.
 
     """
+    global _METADATA_CACHE_MANAGER
+
     if refresh_cache:
-        _reset_metadata_graph()
+        _METADATA_CACHE_MANAGER.refresh()
 
-    if _METADATA_DATABASE_SINGLETON is not None:
-        return _METADATA_DATABASE_SINGLETON
+    if _METADATA_CACHE_MANAGER.cache_open:
+        return _METADATA_CACHE_MANAGER.graph
 
-    return _open_or_create_metadata_graph()
+    _METADATA_CACHE_MANAGER.open()
+
+    return _METADATA_CACHE_MANAGER.graph

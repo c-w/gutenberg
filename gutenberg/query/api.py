@@ -96,11 +96,7 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
         Gutenberg catalog.
 
         """
-        try:
-            return cls.__metadata
-        except AttributeError:
-            cls.__metadata = load_metadata()
-            return cls.__metadata
+        return load_metadata()
 
     @classmethod
     def _etext_to_uri(cls, etextno):

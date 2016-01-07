@@ -32,18 +32,13 @@ class MockMetadataMixin(with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     def setUp(self):
-        self.mock_metadata_cache = _mock_metadata_cache(self.sample_data())
-        gutenberg.acquire.metadata._METADATA_CACHE = self.mock_metadata_cache
+        metadata_directory = tempfile.mktemp()
+        self.mgr = gutenberg.acquire.metadata.MetadataCacheManager(
+                store='Sleepycat', cache_uri=metadata_directory)
+        data = u('\n').join(item.rdf() for item in self.sample_data())
+        self.mgr.populate(data_override=(data, 'nt'))
+        gutenberg.acquire.metadata.set_metadata_cache_manager(self.mgr)
 
     def tearDown(self):
-        shutil.rmtree(self.mock_metadata_cache)
-
-
-def _mock_metadata_cache(sample_datas):
-    data = u('\n').join(item.rdf() for item in sample_datas)
-    metadata_directory = tempfile.mkdtemp()
-    graph = gutenberg.acquire.metadata._create_metadata_graph()
-    graph.open(metadata_directory, create=True)
-    with contextlib.closing(graph):
-        graph.parse(data=data, format='nt')
-    return metadata_directory
+        gutenberg.acquire.metadata.set_metadata_cache_manager(None)
+        self.mgr.delete()
