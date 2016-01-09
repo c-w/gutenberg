@@ -38,6 +38,8 @@ class TestGetMetadata(MockMetadataMixin, unittest.TestCase):
     def test_get_metadata_author(self):
         self._run_get_metadata_for_feature('author')
 
+    def test_get_metadata_formaturi(self):
+        self._run_get_metadata_for_feature('formaturi')
 
 class TestGetEtexts(MockMetadataMixin, unittest.TestCase):
     def sample_data(self):
@@ -62,6 +64,9 @@ class TestGetEtexts(MockMetadataMixin, unittest.TestCase):
 
     def test_get_etexts_author(self):
         self._run_get_etexts_for_feature('author')
+
+    def test_get_etexts_formaturi(self):
+        self._run_get_etexts_for_feature('formaturi')
 
 
 if __name__ == '__main__':
