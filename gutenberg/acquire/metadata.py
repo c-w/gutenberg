@@ -64,6 +64,13 @@ class MetadataCacheManager(object):
         """Detect if the cache exists.
 
         """
+        # If the cache is removable it has some local structure we can check
+        # to see if it exists.
+        if self.removable:
+            return os.path.exists(self._get_local_storage_path())
+
+        # If there is no local structure, the best we can do is see if the
+        # storage contains a valid graph.
         test_graph = Graph(store=self.store, identifier=self.identifier)
         try:
             test_graph.open(self.cache_uri, create=False)
@@ -97,11 +104,7 @@ class MetadataCacheManager(object):
         """
         self.close()
         if self.removable:
-            if self.cache_uri.startswith('sqlite://'):
-                filepath = self.cache_uri[9:]
-            else:
-                filepath = self.cache_uri
-            remove(filepath)
+            remove(self._get_local_storage_path())
         else:
             raise CacheDeleteException("Graph store type is not removable")
 
@@ -139,6 +142,13 @@ class MetadataCacheManager(object):
             self.delete()
         self.populate()
         self.open()
+
+    def _get_local_storage_path(self):
+        if self.cache_uri.startswith('sqlite://'):
+            filepath = self.cache_uri[9:]
+        else:
+            filepath = self.cache_uri
+        return filepath
 
     def _add_namespaces(self, graph):
         """Function to ensure that the graph always has some specific namespace
