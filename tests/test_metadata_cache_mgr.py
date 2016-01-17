@@ -11,69 +11,106 @@ import urllib
 
 import gutenberg.acquire.metadata
 from gutenberg.query import get_metadata
-from gutenberg.acquire.metadata import InvalidCacheException
+from gutenberg.acquire.metadata import InvalidCacheException, CacheAlreadyExistsException
 
 from rdflib.plugin import PluginException
 
 from six import u
 
-class TestSleepycat(unittest.TestCase):
-    def _get_manager(self):
-        cache_uri = tempfile.mktemp()
-        mgr = gutenberg.acquire.metadata.MetadataCacheManager(
-                store='Sleepycat', cache_uri=cache_uri)
-        mgr.catalog_source = "file://%s" % (
-                urllib.pathname2url(_sample_metadata_rdf_file_path()))
-        return mgr
-
+class MetadataCacheManager(object):
     def test_read_unpopulated_cache(self):
-        mgr = self._get_manager()
-        gutenberg.acquire.metadata.set_metadata_cache_manager(mgr)
+        gutenberg.acquire.metadata.set_metadata_cache_manager(self.manager)
         try:
             title = get_metadata('title', 50405)
         except InvalidCacheException:
             pass
         except:
             raise
-        finally:
-            gutenberg.acquire.metadata.set_metadata_cache_manager(None)
+
+    def test_initialize(self):
+        # Simply creating the cache manager shouldn't create on-disk structures
+        if not self.local_storage:
+            self.skipTest("Storage type does not have on-disk structures")
+
+        assert(os.path.exists(self.local_storage) == False)
 
     def test_populate(self):
-        mgr = self._get_manager()
-        mgr.populate()
-        gutenberg.acquire.metadata.set_metadata_cache_manager(mgr)
+        self.manager.populate()
+        gutenberg.acquire.metadata.set_metadata_cache_manager(self.manager)
         title = get_metadata('title', 50405)
         assert(title != '')
-        gutenberg.acquire.metadata.set_metadata_cache_manager(None)
-        mgr.close()
-        mgr.delete()
 
+    def test_repopulate(self):
+        self.manager.populate()
+        gutenberg.acquire.metadata.set_metadata_cache_manager(self.manager)
+        self.manager.delete()
+        self.manager.populate()
+        title = get_metadata('title', 50405)
+        assert(title != '')
 
-class TestSqlite(unittest.TestCase):
-    def _get_manager(self):
-        sqlite_filename = "%s.sqlite" % tempfile.mktemp()
-        cache_uri = "sqlite:///%s" % sqlite_filename
+    def test_refresh(self):
+        self.manager.populate()
+        self.manager.refresh()
+
+    def test_repopulate_without_delete(self):
+        # Trying to populate an existing cache should raise an exception
+        self.manager.populate()
         try:
-            mgr = gutenberg.acquire.metadata.MetadataCacheManager(
+            self.manager.populate()
+        except CacheAlreadyExistsException:
+            pass
+        except:
+            raise
+
+    def test_delete(self):
+        if not self.manager.removable:
+            self.skipTest("Storage type is not removable")
+
+        assert(os.path.exists(self.local_storage) == False)
+        self.manager.populate()
+        assert(os.path.exists(self.local_storage) == True)
+        self.manager.delete()
+        assert(os.path.exists(self.local_storage) == False)
+
+    def test_read_deleted_cache(self):
+        self.manager.populate()
+        gutenberg.acquire.metadata.set_metadata_cache_manager(self.manager)
+        self.manager.delete()
+        try:
+            title = get_metadata('title', 50405)
+        except InvalidCacheException:
+            pass
+        except:
+            raise
+
+    def tearDown(self):
+        gutenberg.acquire.metadata.set_metadata_cache_manager(None)
+        if self.manager.cache_open:
+            self.manager.delete()
+        self.manager = None
+
+
+class TestSleepycat(MetadataCacheManager, unittest.TestCase):
+    def setUp(self):
+        self.local_storage = tempfile.mktemp()
+        self.manager = gutenberg.acquire.metadata.MetadataCacheManager(
+                store='Sleepycat', cache_uri=self.local_storage)
+        self.manager.catalog_source = "file://%s" % (
+                urllib.pathname2url(_sample_metadata_rdf_file_path()))
+
+
+class TestSqlite(MetadataCacheManager):
+    def setUp(self):
+        self.local_storage = "%s.sqlite" % tempfile.mktemp()
+        cache_uri = "sqlite:///%s" % self.local_storage
+        try:
+            self.manager = gutenberg.acquire.metadata.MetadataCacheManager(
                     store='SQLAlchemy', cache_uri=cache_uri)
         except PluginException as exception:
             self.skipTest("SQLAlchemy plugin not installed: %s" %
                     str(exception))
-        mgr.catalog_source = "file://%s" % (
+        self.manager.catalog_source = "file://%s" % (
                 urllib.pathname2url(_sample_metadata_rdf_file_path()))
-        return mgr
-
-    def test_populate(self):
-        mgr = self._get_manager()
-        mgr.populate()
-                
-        gutenberg.acquire.metadata.set_metadata_cache_manager(mgr)
-        title = get_metadata('title', 50405)
-        assert(title != '')
-        gutenberg.acquire.metadata.set_metadata_cache_manager(None)
-        mgr.close()
-        mgr.delete()
-
 
 def _sample_metadata_rdf_file_path():
     module = os.path.dirname(sys.modules['tests'].__file__)
