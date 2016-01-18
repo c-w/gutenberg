@@ -40,25 +40,31 @@ class MetadataCacheManager(object):
         if not self.local_storage:
             self.skipTest("Storage type does not have on-disk structures")
 
-        assert(os.path.exists(self.local_storage) == False)
+        self.assertFalse(os.path.exists(self.local_storage))
 
     def test_populate(self):
         self.manager.populate()
         gutenberg.acquire.metadata.set_metadata_cache_manager(self.manager)
-        title = get_metadata('title', 50405)
-        assert(title != '')
+        title = get_metadata('title', 30929)
+        self.assertTrue(u'Het loterijbriefje' in title)
 
     def test_repopulate(self):
         self.manager.populate()
         gutenberg.acquire.metadata.set_metadata_cache_manager(self.manager)
         self.manager.delete()
         self.manager.populate()
-        title = get_metadata('title', 50405)
-        assert(title != '')
+        title = get_metadata('title', 30929)
+        self.assertTrue(u'Het loterijbriefje' in title)
 
     def test_refresh(self):
         self.manager.populate()
+        gutenberg.acquire.metadata.set_metadata_cache_manager(self.manager)
+        title = get_metadata('title', 30929)
+        self.assertTrue(u'Het loterijbriefje' in title)
+
         self.manager.refresh()
+        title = get_metadata('title', 30929)
+        self.assertTrue(u'Het loterijbriefje' in title)
 
     def test_repopulate_without_delete(self):
         # Trying to populate an existing cache should raise an exception
@@ -74,11 +80,11 @@ class MetadataCacheManager(object):
         if not self.manager.removable:
             self.skipTest("Storage type is not removable")
 
-        assert(os.path.exists(self.local_storage) == False)
+        self.assertFalse(os.path.exists(self.local_storage))
         self.manager.populate()
-        assert(os.path.exists(self.local_storage) == True)
+        self.assertTrue(os.path.exists(self.local_storage))
         self.manager.delete()
-        assert(os.path.exists(self.local_storage) == False)
+        self.assertFalse(os.path.exists(self.local_storage))
 
     def test_read_deleted_cache(self):
         self.manager.populate()
