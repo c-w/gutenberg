@@ -178,10 +178,11 @@ def _iter_metadata_triples(metadata_archive_path):
 
     """
     is_invalid = lambda token: isinstance(token, URIRef) and ' ' in token
+    pg_rdf_regex = re.compile(r'pg\d+.rdf$')
     with contextlib.closing(tarfile.open(metadata_archive_path)) \
             as metadata_archive:
         for item in metadata_archive:
-            if re.match(r'^.*pg(?P<etextno>\d+).rdf$', item.name):
+            if re.search(pg_rdf_regex, item.name):
                 with disable_logging():
                     graph = Graph().parse(metadata_archive.extractfile(item))
                 for fact in graph:
