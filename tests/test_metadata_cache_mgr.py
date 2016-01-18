@@ -46,7 +46,7 @@ class MetadataCacheManager(object):
         self.manager.populate()
         gutenberg.acquire.metadata.set_metadata_cache_manager(self.manager)
         title = get_metadata('title', 30929)
-        self.assertTrue(u'Het loterijbriefje' in title)
+        self.assertTrue(u('Het loterijbriefje') in title)
 
     def test_repopulate(self):
         self.manager.populate()
@@ -54,17 +54,17 @@ class MetadataCacheManager(object):
         self.manager.delete()
         self.manager.populate()
         title = get_metadata('title', 30929)
-        self.assertTrue(u'Het loterijbriefje' in title)
+        self.assertTrue(u('Het loterijbriefje') in title)
 
     def test_refresh(self):
         self.manager.populate()
         gutenberg.acquire.metadata.set_metadata_cache_manager(self.manager)
         title = get_metadata('title', 30929)
-        self.assertTrue(u'Het loterijbriefje' in title)
+        self.assertTrue(u('Het loterijbriefje') in title)
 
         self.manager.refresh()
         title = get_metadata('title', 30929)
-        self.assertTrue(u'Het loterijbriefje' in title)
+        self.assertTrue(u('Het loterijbriefje') in title)
 
     def test_repopulate_without_delete(self):
         # Trying to populate an existing cache should raise an exception
