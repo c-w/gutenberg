@@ -3,10 +3,15 @@
 
 
 from __future__ import absolute_import
-import unittest
 import tempfile
 import os
 import sys
+
+if sys.version_info < (2, 7):
+    import unittest2 as unittest
+else:
+    import unittest
+
 try:
     from urllib import pathname2url
 except ImportError:
