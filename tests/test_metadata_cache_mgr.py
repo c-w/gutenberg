@@ -7,7 +7,10 @@ import unittest
 import tempfile
 import os
 import sys
-import urllib
+try:
+    from urllib import pathname2url
+except ImportError:
+    from urllib.request import pathname2url
 
 import gutenberg.acquire.metadata
 from gutenberg.query import get_metadata
@@ -96,10 +99,10 @@ class TestSleepycat(MetadataCacheManager, unittest.TestCase):
         self.manager = gutenberg.acquire.metadata.MetadataCacheManager(
                 store='Sleepycat', cache_uri=self.local_storage)
         self.manager.catalog_source = "file://%s" % (
-                urllib.pathname2url(_sample_metadata_rdf_file_path()))
+                pathname2url(_sample_metadata_rdf_file_path()))
 
 
-class TestSqlite(MetadataCacheManager):
+class TestSqlite(MetadataCacheManager, unittest.TestCase):
     def setUp(self):
         self.local_storage = "%s.sqlite" % tempfile.mktemp()
         cache_uri = "sqlite:///%s" % self.local_storage
@@ -110,7 +113,7 @@ class TestSqlite(MetadataCacheManager):
             self.skipTest("SQLAlchemy plugin not installed: %s" %
                     str(exception))
         self.manager.catalog_source = "file://%s" % (
-                urllib.pathname2url(_sample_metadata_rdf_file_path()))
+                pathname2url(_sample_metadata_rdf_file_path()))
 
 def _sample_metadata_rdf_file_path():
     module = os.path.dirname(sys.modules['tests'].__file__)
