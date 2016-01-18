@@ -17,6 +17,7 @@ before_install:
 
 install:
   - if [[ $TRAVIS_PYTHON_VERSION == 2.6 ]]; then pip install unittest2; fi
+  - pip install git+https://github.com/RDFLib/rdflib-sqlalchemy.git
   - pip install -r requirements.pip
 
 script: nosetests
