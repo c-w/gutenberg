@@ -178,7 +178,8 @@ def _iter_metadata_triples(metadata_archive_path):
 
     """
     is_invalid = lambda token: isinstance(token, URIRef) and ' ' in token
-    with tarfile.open(metadata_archive_path) as metadata_archive:
+    with contextlib.closing(tarfile.open(metadata_archive_path)) \
+            as metadata_archive:
         for item in metadata_archive:
             if re.match(r'^.*pg(?P<etextno>\d+).rdf$', item.name):
                 with disable_logging():
