@@ -124,9 +124,9 @@ class MetadataCacheManager(object):
         if data_override:
             # Allow callers to override the data being populated, almost
             # exclusively for automated testing
-            (data, format) = data_override
+            data, data_format = data_override
             with contextlib.closing(self.graph):
-                self.graph.parse(data=data, format=format)
+                self.graph.parse(data=data, format=data_format)
             return
 
         with contextlib.closing(self.graph):
