@@ -4,6 +4,7 @@
 # pylint: disable=W0622
 
 
+# noinspection PyPep8Naming
 class abstractclassmethod(classmethod):
     """Decorator to indicate that a class-method needs to be over-written by
     all concrete implementations of a class.

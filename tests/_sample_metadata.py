@@ -14,11 +14,10 @@ from six import u
 class SampleMetaData(object):
     __uids = {}
 
-    def __init__(self, etextno, authors=frozenset(), titles=frozenset(),
-            formaturi=frozenset()):
-        self.author = frozenset(authors)
-        self.title = frozenset(titles)
-        self.formaturi = frozenset(formaturi)
+    def __init__(self, etextno, authors=None, titles=None, formaturi=None):
+        self.author = frozenset(authors or [])
+        self.title = frozenset(titles or [])
+        self.formaturi = frozenset(formaturi or [])
         self.etextno = etextno or self.__create_uid(self.author | self.title)
 
     @classmethod

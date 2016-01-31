@@ -6,21 +6,20 @@ from __future__ import absolute_import
 import tempfile
 import os
 import sys
-
+import gutenberg.acquire.metadata
+from gutenberg.query import get_metadata
+from gutenberg.acquire.metadata import InvalidCacheException
+from gutenberg.acquire.metadata import CacheAlreadyExistsException
+from gutenberg._util.url import pathname2url
+from rdflib.plugin import PluginException
+from six import u
 if sys.version_info < (2, 7):
     import unittest2 as unittest
 else:
     import unittest
 
-import gutenberg.acquire.metadata
-from gutenberg.query import get_metadata
-from gutenberg.acquire.metadata import InvalidCacheException, CacheAlreadyExistsException
-from gutenberg._util.url import pathname2url
 
-from rdflib.plugin import PluginException
-
-from six import u
-
+# noinspection PyPep8Naming,PyAttributeOutsideInit
 class MetadataCacheManager(object):
     def test_read_unpopulated_cache(self):
         gutenberg.acquire.metadata.set_metadata_cache_manager(self.manager)
@@ -117,14 +116,15 @@ class TestSqlite(MetadataCacheManager, unittest.TestCase):
             self.manager = gutenberg.acquire.metadata.MetadataCacheManager(
                     store='SQLAlchemy', cache_uri=cache_uri)
         except PluginException as exception:
-            self.skipTest("SQLAlchemy plugin not installed: %s" %
-                    str(exception))
+            self.skipTest("SQLAlchemy plugin not installed: %s" % exception)
         self.manager.catalog_source = "file://%s" % (
                 pathname2url(_sample_metadata_rdf_file_path()))
+
 
 def _sample_metadata_rdf_file_path():
     module = os.path.dirname(sys.modules['tests'].__file__)
     return os.path.join(module, 'data', 'sample-rdf-files.tar.bz2')
+
 
 if __name__ == '__main__':
     unittest.main()

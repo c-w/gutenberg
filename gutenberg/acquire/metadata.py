@@ -32,15 +32,18 @@ _GUTENBERG_CATALOG_URL = \
 class CacheAlreadyExistsException(Exception):
     pass
 
+
 class CacheDeleteException(Exception):
     pass
+
 
 class InvalidCacheException(Exception):
     pass
 
+
 class MetadataCacheManager(object):
     def __init__(self, store, cache_uri):
-        self.identifier='urn:gutenberg:metadata'
+        self.identifier = 'urn:gutenberg:metadata'
         if store == 'Sleepycat':
             self.store = store
             self.removable = True
@@ -157,10 +160,10 @@ class MetadataCacheManager(object):
 
     @contextlib.contextmanager
     def _download_metadata_archive(self):
-        """Makes a remote call to the Project Gutenberg servers and downloads the
-        entire Project Gutenberg meta-data catalog. The catalog describes the texts
-        on Project Gutenberg in RDF. The function returns a file-pointer to the
-        catalog.
+        """Makes a remote call to the Project Gutenberg servers and downloads
+        the entire Project Gutenberg meta-data catalog. The catalog describes
+        the texts on Project Gutenberg in RDF. The function returns a
+        file-pointer to the catalog.
 
         """
         with tempfile.NamedTemporaryFile(delete=False) as metadata_archive:
@@ -169,12 +172,18 @@ class MetadataCacheManager(object):
         remove(metadata_archive.name)
 
 
+def _metadata_is_invalid(fact):
+    """Determines if the fact is not well formed.
+
+    """
+    return any(isinstance(token, URIRef) and ' ' in token for token in fact)
+
+
 def _iter_metadata_triples(metadata_archive_path):
     """Yields all meta-data of Project Gutenberg texts contained in the catalog
     dump.
 
     """
-    is_invalid = lambda token: isinstance(token, URIRef) and ' ' in token
     pg_rdf_regex = re.compile(r'pg\d+.rdf$')
     with contextlib.closing(tarfile.open(metadata_archive_path)) \
             as metadata_archive:
@@ -183,13 +192,14 @@ def _iter_metadata_triples(metadata_archive_path):
                 with disable_logging():
                     graph = Graph().parse(metadata_archive.extractfile(item))
                 for fact in graph:
-                    if not any(is_invalid(token) for token in fact):
-                        yield fact
-                    else:
+                    if _metadata_is_invalid(fact):
                         logging.info('skipping invalid triple %s', fact)
+                    else:
+                        yield fact
 
 
-_METADATA_CACHE_MANAGER = MetadataCacheManager(store='Sleepycat',
+_METADATA_CACHE_MANAGER = MetadataCacheManager(
+    store='Sleepycat',
     cache_uri=local_path(os.path.join('metadata', 'metadata.db')))
 
 

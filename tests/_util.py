@@ -17,6 +17,7 @@ import gutenberg.acquire.metadata
 import gutenberg.acquire.text
 
 
+# noinspection PyPep8Naming,PyAttributeOutsideInit
 class MockTextMixin(object):
     def setUp(self):
         self.mock_text_cache = tempfile.mkdtemp()
@@ -26,6 +27,7 @@ class MockTextMixin(object):
         shutil.rmtree(self.mock_text_cache)
 
 
+# noinspection PyPep8Naming,PyAttributeOutsideInit
 class MockMetadataMixin(with_metaclass(abc.ABCMeta, object)):
     @abc.abstractmethod
     def sample_data(self):
