@@ -97,12 +97,19 @@ Title and author meta-data can queried:
     print(get_etexts('title', 'Moby Dick; Or, The Whale'))  # prints frozenset([2701, ...])
     print(get_etexts('author', 'Melville, Hermann'))        # prints frozenset([2701, ...])
 
+Before you use one of the `gutenberg.query` functions you must populate the
+local metadata cache. This one-off process will take quite a while to complete
+(18 hours on my machine) but once it is done, any subsequent calls to
+`get_etexts` or `get_metadata` will be *very* fast. If you fail to populate the
+cache, the calls will raise an exception.
 
-Note: The first time that one of the functions from `gutenberg.query` is called,
-the library will create a rather large database of meta-data about the Project
-Gutenberg texts. This one-off process will take quite a while to complete (18
-hours on my machine) but once it is done, any subsequent calls to `get_etexts`
-or `get_metadata` will be *very* fast.
+To populate the cache:
+
+.. sourcecode :: python
+
+    from gutenberg.acquire import get_metadata_cache_manager
+    cache_mgr = get_metadata_cache_manager()
+    cache_mgr.populate()
 
 
 Limitations
