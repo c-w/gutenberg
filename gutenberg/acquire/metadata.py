@@ -10,10 +10,6 @@ import re
 import shutil
 import tarfile
 import tempfile
-try:
-    import urllib2
-except ImportError:
-    import urllib.request as urllib2
 
 from rdflib import plugin, Literal, URIRef
 from rdflib.graph import Graph
@@ -26,6 +22,7 @@ from gutenberg._domain_model.vocabulary import PGTERMS
 from gutenberg._util.logging import disable_logging
 from gutenberg._util.os import makedirs
 from gutenberg._util.os import remove
+from gutenberg._util.url import urlopen
 
 
 _GUTENBERG_CATALOG_URL = \
@@ -167,7 +164,7 @@ class MetadataCacheManager(object):
 
         """
         with tempfile.NamedTemporaryFile(delete=False) as metadata_archive:
-            shutil.copyfileobj(urllib2.urlopen(self.catalog_source), metadata_archive)
+            shutil.copyfileobj(urlopen(self.catalog_source), metadata_archive)
         yield metadata_archive.name
         remove(metadata_archive.name)
 
