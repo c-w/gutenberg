@@ -24,7 +24,7 @@ class MetadataCacheManager(object):
     def test_read_unpopulated_cache(self):
         gutenberg.acquire.metadata.set_metadata_cache_manager(self.manager)
         try:
-            title = get_metadata('title', 50405)
+            get_metadata('title', 50405)
         except InvalidCacheException:
             pass
         except:
@@ -86,7 +86,7 @@ class MetadataCacheManager(object):
         gutenberg.acquire.metadata.set_metadata_cache_manager(self.manager)
         self.manager.delete()
         try:
-            title = get_metadata('title', 50405)
+            get_metadata('title', 50405)
         except InvalidCacheException:
             pass
         except:

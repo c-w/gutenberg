@@ -29,7 +29,6 @@ def strip_headers(text):
 
     out = []
     i = 0
-    reset = True
     footer_found = False
     ignore_section = False
 

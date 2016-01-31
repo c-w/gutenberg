@@ -11,7 +11,7 @@ import shutil
 import tarfile
 import tempfile
 
-from rdflib import plugin, Literal, URIRef
+from rdflib import plugin
 from rdflib.graph import Graph
 from rdflib.term import URIRef
 from rdflib.store import Store
