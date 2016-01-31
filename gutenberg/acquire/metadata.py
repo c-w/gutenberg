@@ -150,7 +150,8 @@ class MetadataCacheManager(object):
             filepath = self.cache_uri
         return filepath
 
-    def _add_namespaces(self, graph):
+    @staticmethod
+    def _add_namespaces(graph):
         """Function to ensure that the graph always has some specific namespace
         aliases set.
 
