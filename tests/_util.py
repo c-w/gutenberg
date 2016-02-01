@@ -13,7 +13,8 @@ import tempfile
 from six import u
 from six import with_metaclass
 
-import gutenberg.acquire.metadata
+from gutenberg.acquire.metadata import MetadataCacheManager
+from gutenberg.acquire.metadata import set_metadata_cache_manager
 import gutenberg.acquire.text
 
 
@@ -35,12 +36,12 @@ class MockMetadataMixin(with_metaclass(abc.ABCMeta, object)):
 
     def setUp(self):
         metadata_directory = tempfile.mktemp()
-        self.mgr = gutenberg.acquire.metadata.MetadataCacheManager(
+        self.mgr = MetadataCacheManager(
                 store='Sleepycat', cache_uri=metadata_directory)
         data = u('\n').join(item.rdf() for item in self.sample_data())
         self.mgr.populate(data_override=(data, 'nt'))
-        gutenberg.acquire.metadata.set_metadata_cache_manager(self.mgr)
+        set_metadata_cache_manager(self.mgr)
 
     def tearDown(self):
-        gutenberg.acquire.metadata.set_metadata_cache_manager(None)
+        set_metadata_cache_manager(None)
         self.mgr.delete()
