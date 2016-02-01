@@ -15,7 +15,7 @@ from contextlib import contextmanager
 from six import u
 from six import with_metaclass
 
-from gutenberg.acquire.metadata import MetadataCache
+from gutenberg.acquire.metadata import SleepycatMetadataCache
 import gutenberg.acquire.metadata
 import gutenberg.acquire.text
 
@@ -37,7 +37,7 @@ class MockMetadataMixin(with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     def setUp(self):
-        self.cache = _TestMetadataCache(self.sample_data, data_format='nt')
+        self.cache = _SleepycatMetadataCacheForTesting(self.sample_data, 'nt')
         self.cache.populate()
         set_metadata_cache(self.cache)
 
@@ -46,14 +46,14 @@ class MockMetadataMixin(with_metaclass(abc.ABCMeta, object)):
         self.cache.delete()
 
 
-class _TestMetadataCache(MetadataCache):
+class _SleepycatMetadataCacheForTesting(SleepycatMetadataCache):
     def __init__(self, sample_data_factory, data_format):
-        MetadataCache.__init__(self, 'Sleepycat', tempfile.mktemp())
+        SleepycatMetadataCache.__init__(self, tempfile.mktemp())
         self.sample_data_factory = sample_data_factory
         self.data_format = data_format
 
     def populate(self):
-        MetadataCache.populate(self)
+        SleepycatMetadataCache.populate(self)
 
         data = u('\n').join(item.rdf() for item in self.sample_data_factory())
 
