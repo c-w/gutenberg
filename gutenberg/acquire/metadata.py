@@ -16,6 +16,9 @@ from rdflib.graph import Graph
 from rdflib.term import URIRef
 from rdflib.store import Store
 
+from gutenberg._domain_model.exceptions import CacheAlreadyExists
+from gutenberg._domain_model.exceptions import CacheNotRemovable
+from gutenberg._domain_model.exceptions import InvalidCache
 from gutenberg._domain_model.persistence import local_path
 from gutenberg._domain_model.vocabulary import DCTERMS
 from gutenberg._domain_model.vocabulary import PGTERMS
@@ -27,18 +30,6 @@ from gutenberg._util.url import urlopen
 
 _GUTENBERG_CATALOG_URL = \
     r'http://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2'
-
-
-class CacheAlreadyExistsException(Exception):
-    pass
-
-
-class CacheDeleteException(Exception):
-    pass
-
-
-class InvalidCacheException(Exception):
-    pass
 
 
 class MetadataCacheManager(object):
@@ -89,7 +80,7 @@ class MetadataCacheManager(object):
             self._add_namespaces(self.graph)
             self.cache_open = True
         except:
-            raise InvalidCacheException("The cache is invalid or not created")
+            raise InvalidCache("The cache is invalid or not created")
 
     def close(self):
         """Closes an opened cache.
@@ -106,15 +97,14 @@ class MetadataCacheManager(object):
         if self.removable:
             remove(self._get_local_storage_path())
         else:
-            raise CacheDeleteException("Graph store type is not removable")
+            raise CacheNotRemovable("Graph store type is not removable")
 
     def populate(self, data_override=None):
         """Populates a new cache.
 
         """
         if self.exists():
-            raise CacheAlreadyExistsException(
-                    "location: %s" % self.cache_uri)
+            raise CacheAlreadyExists("location: %s" % self.cache_uri)
 
         if self.store == 'Sleepycat':
             makedirs(self.cache_uri)
