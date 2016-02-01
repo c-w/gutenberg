@@ -100,11 +100,10 @@ def _main():
 
     try:
         text = load_etext(args.etextno)
-    except Error as ex:
-        parser.error(str(ex))
-    else:
         with reopen_encoded(args.outfile, 'w', 'utf8') as outfile:
             outfile.write(text)
+    except Error as error:
+        parser.error(str(error))
 
 
 if __name__ == '__main__':
