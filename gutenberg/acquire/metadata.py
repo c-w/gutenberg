@@ -230,9 +230,7 @@ def load_metadata(refresh_cache=False):
     if refresh_cache:
         cache.refresh()
 
-    if cache.is_open:
-        return cache.graph
-
-    cache.open()
+    if not cache.is_open:
+        cache.open()
 
     return cache.graph
