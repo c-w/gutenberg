@@ -8,6 +8,7 @@ import os
 
 import requests
 
+from gutenberg._domain_model.exceptions import UnknownDownloadUri
 from gutenberg._domain_model.persistence import local_path
 from gutenberg._domain_model.types import validate_etextno
 from gutenberg._util.os import makedirs
@@ -20,6 +21,9 @@ _TEXT_CACHE = local_path('text')
 def _format_download_uri(etextno):
     """Returns the download location on the Project Gutenberg servers for a
     given text.
+
+    Raises:
+        UnknownDownloadUri: If no download location can be found for the text.
 
     """
     uri_root = r'http://www.gutenberg.lib.md.us'
@@ -53,7 +57,7 @@ def _format_download_uri(etextno):
             response = requests.head(uri)
             if response.ok:
                 return uri
-        raise ValueError('download URI for {0} not supported'.format(etextno))
+        raise UnknownDownloadUri
 
 
 def load_etext(etextno, refresh_cache=False):
@@ -86,6 +90,7 @@ def _main():
 
     """
     from argparse import ArgumentParser, FileType
+    from gutenberg import Error
     from gutenberg._util.os import reopen_encoded
 
     parser = ArgumentParser(description='Download a Project Gutenberg text')
@@ -95,11 +100,10 @@ def _main():
 
     try:
         text = load_etext(args.etextno)
-    except ValueError as ex:
-        parser.error(str(ex))
-    else:
         with reopen_encoded(args.outfile, 'w', 'utf8') as outfile:
             outfile.write(text)
+    except Error as error:
+        parser.error(str(error))
 
 
 if __name__ == '__main__':

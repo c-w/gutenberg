@@ -75,6 +75,7 @@ def _main():
 
     """
     from argparse import ArgumentParser, FileType
+    from gutenberg import Error
     from gutenberg._util.os import reopen_encoded
 
     parser = ArgumentParser(description='Remove headers and footers from a '
@@ -83,12 +84,15 @@ def _main():
     parser.add_argument('outfile', type=FileType('w'))
     args = parser.parse_args()
 
-    with reopen_encoded(args.infile, 'r', 'utf8') as infile:
-        text = infile.read()
-        clean_text = strip_headers(text)
+    try:
+        with reopen_encoded(args.infile, 'r', 'utf8') as infile:
+            text = infile.read()
+            clean_text = strip_headers(text)
 
-    with reopen_encoded(args.outfile, 'w', 'utf8') as outfile:
-        outfile.write(clean_text)
+        with reopen_encoded(args.outfile, 'w', 'utf8') as outfile:
+            outfile.write(clean_text)
+    except Error as error:
+        parser.error(str(error))
 
 
 if __name__ == '__main__':

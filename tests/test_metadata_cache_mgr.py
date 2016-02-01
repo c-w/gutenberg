@@ -8,8 +8,8 @@ import os
 import sys
 import gutenberg.acquire.metadata
 from gutenberg.query import get_metadata
-from gutenberg.acquire.metadata import InvalidCacheException
-from gutenberg.acquire.metadata import CacheAlreadyExistsException
+from gutenberg.acquire.metadata import CacheAlreadyExists
+from gutenberg.acquire.metadata import InvalidCache
 from gutenberg._util.url import pathname2url
 from rdflib.plugin import PluginException
 from six import u
@@ -25,7 +25,7 @@ class MetadataCacheManager(object):
         gutenberg.acquire.metadata.set_metadata_cache_manager(self.manager)
         try:
             get_metadata('title', 50405)
-        except InvalidCacheException:
+        except InvalidCache:
             pass
         except:
             raise
@@ -66,7 +66,7 @@ class MetadataCacheManager(object):
         self.manager.populate()
         try:
             self.manager.populate()
-        except CacheAlreadyExistsException:
+        except CacheAlreadyExists:
             pass
         except:
             raise
@@ -87,7 +87,7 @@ class MetadataCacheManager(object):
         self.manager.delete()
         try:
             get_metadata('title', 50405)
-        except InvalidCacheException:
+        except InvalidCache:
             pass
         except:
             raise
