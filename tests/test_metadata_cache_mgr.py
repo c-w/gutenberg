@@ -7,6 +7,7 @@ import tempfile
 import os
 import sys
 import gutenberg.acquire.metadata
+from gutenberg.acquire.metadata import set_metadata_cache_manager
 from gutenberg.query import get_metadata
 from gutenberg.acquire.metadata import CacheAlreadyExists
 from gutenberg.acquire.metadata import InvalidCache
@@ -22,7 +23,7 @@ else:
 # noinspection PyPep8Naming,PyAttributeOutsideInit
 class MetadataCacheManager(object):
     def test_read_unpopulated_cache(self):
-        gutenberg.acquire.metadata.set_metadata_cache_manager(self.manager)
+        set_metadata_cache_manager(self.manager)
         try:
             get_metadata('title', 50405)
         except InvalidCache:
@@ -32,20 +33,17 @@ class MetadataCacheManager(object):
 
     def test_initialize(self):
         # Simply creating the cache manager shouldn't create on-disk structures
-        if not self.local_storage:
-            self.skipTest("Storage type does not have on-disk structures")
-
         self.assertFalse(os.path.exists(self.local_storage))
 
     def test_populate(self):
         self.manager.populate()
-        gutenberg.acquire.metadata.set_metadata_cache_manager(self.manager)
+        set_metadata_cache_manager(self.manager)
         title = get_metadata('title', 30929)
         self.assertTrue(u('Het loterijbriefje') in title)
 
     def test_repopulate(self):
         self.manager.populate()
-        gutenberg.acquire.metadata.set_metadata_cache_manager(self.manager)
+        set_metadata_cache_manager(self.manager)
         self.manager.delete()
         self.manager.populate()
         title = get_metadata('title', 30929)
@@ -53,7 +51,7 @@ class MetadataCacheManager(object):
 
     def test_refresh(self):
         self.manager.populate()
-        gutenberg.acquire.metadata.set_metadata_cache_manager(self.manager)
+        set_metadata_cache_manager(self.manager)
         title = get_metadata('title', 30929)
         self.assertTrue(u('Het loterijbriefje') in title)
 
@@ -80,7 +78,7 @@ class MetadataCacheManager(object):
 
     def test_read_deleted_cache(self):
         self.manager.populate()
-        gutenberg.acquire.metadata.set_metadata_cache_manager(self.manager)
+        set_metadata_cache_manager(self.manager)
         self.manager.delete()
         try:
             get_metadata('title', 50405)
@@ -90,7 +88,7 @@ class MetadataCacheManager(object):
             raise
 
     def tearDown(self):
-        gutenberg.acquire.metadata.set_metadata_cache_manager(None)
+        set_metadata_cache_manager(None)
         if self.manager.cache_open:
             self.manager.delete()
         self.manager = None
