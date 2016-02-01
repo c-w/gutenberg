@@ -43,6 +43,7 @@ class MetadataCacheManager(with_metaclass(abc.ABCMeta, object)):
         self.cache_open = False
         self.catalog_source = _GUTENBERG_CATALOG_URL
 
+    @property
     def exists(self):
         """Detect if the cache exists.
 
@@ -78,7 +79,7 @@ class MetadataCacheManager(with_metaclass(abc.ABCMeta, object)):
         """Populates a new cache.
 
         """
-        if self.exists():
+        if self.exists:
             raise CacheAlreadyExists('location: %s' % self.cache_uri)
 
         self._populate_setup()
@@ -99,7 +100,7 @@ class MetadataCacheManager(with_metaclass(abc.ABCMeta, object)):
         """Refresh the cache by deleting the old one and creating a new one.
 
         """
-        if self.exists():
+        if self.exists:
             self.delete()
         self.populate()
         self.open()
