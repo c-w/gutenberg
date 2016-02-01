@@ -4,6 +4,7 @@
 
 from __future__ import absolute_import
 
+import abc
 import logging
 import os
 import re
@@ -15,8 +16,9 @@ from contextlib import contextmanager
 
 from rdflib import plugin
 from rdflib.graph import Graph
-from rdflib.term import URIRef
 from rdflib.store import Store
+from rdflib.term import URIRef
+from six import with_metaclass
 
 from gutenberg._domain_model.exceptions import CacheAlreadyExists
 from gutenberg._domain_model.exceptions import InvalidCache
@@ -33,10 +35,8 @@ _GUTENBERG_CATALOG_URL = \
 _DB_IDENTIFIER = 'urn:gutenberg:metadata'
 
 
-class MetadataCacheManager(object):
+class MetadataCacheManager(with_metaclass(abc.ABCMeta, object)):
     def __init__(self, store, cache_uri):
-        if store != 'Sleepycat' and not cache_uri.startswith('sqlite://'):
-            raise NotImplementedError
         self.store = store
         self.cache_uri = cache_uri
         self.graph = Graph(store=self.store, identifier=_DB_IDENTIFIER)
@@ -81,14 +81,19 @@ class MetadataCacheManager(object):
         if self.exists():
             raise CacheAlreadyExists('location: %s' % self.cache_uri)
 
-        if self.store == 'Sleepycat':
-            makedirs(self.cache_uri)
+        self._populate_setup()
 
         self.graph.open(self.cache_uri, create=True)
         with closing(self.graph):
             with self._download_metadata_archive() as metadata_archive:
                 for fact in self._iter_metadata_triples(metadata_archive):
                     self.graph.add(fact)
+
+    def _populate_setup(self):
+        """Executes operations necessary before the cache can be populated.
+
+        """
+        pass
 
     def refresh(self):
         """Refresh the cache by deleting the old one and creating a new one.
@@ -151,6 +156,18 @@ class MetadataCacheManager(object):
                             yield fact
 
 
+class SleepycatMetadataCacheManager(MetadataCacheManager):
+    """Default cache manager implementation, based on Sleepycat/Berkeley DB.
+    Sleepycat is natively supported by RDFlib so this cache is reasonably fast.
+
+    """
+    def __init__(self, cache_uri):
+        MetadataCacheManager.__init__(self, 'Sleepycat', cache_uri)
+
+    def _populate_setup(self):
+        makedirs(self.cache_uri)
+
+
 class SqliteMetadataCacheManager(MetadataCacheManager):
     """Cache manager based on SQLite and the RDFlib plugin for SQLAlchemy.
     Quite slow.
@@ -168,8 +185,7 @@ class SqliteMetadataCacheManager(MetadataCacheManager):
         return self.cache_uri[len(self._CACHE_URI_PREFIX):]
 
 
-_METADATA_CACHE_MANAGER = MetadataCacheManager(
-    store='Sleepycat',
+_METADATA_CACHE_MANAGER = SleepycatMetadataCacheManager(
     cache_uri=local_path(os.path.join('metadata', 'metadata.db')))
 
 

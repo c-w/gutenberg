@@ -6,7 +6,7 @@ from __future__ import absolute_import
 import tempfile
 import os
 import sys
-import gutenberg.acquire.metadata
+from gutenberg.acquire.metadata import SleepycatMetadataCacheManager
 from gutenberg.acquire.metadata import SqliteMetadataCacheManager
 from gutenberg.acquire.metadata import set_metadata_cache_manager
 from gutenberg.query import get_metadata
@@ -98,8 +98,7 @@ class MetadataCacheManager(object):
 class TestSleepycat(MetadataCacheManager, unittest.TestCase):
     def setUp(self):
         self.local_storage = tempfile.mktemp()
-        self.manager = gutenberg.acquire.metadata.MetadataCacheManager(
-                store='Sleepycat', cache_uri=self.local_storage)
+        self.manager = SleepycatMetadataCacheManager(self.local_storage)
         self.manager.catalog_source = "file://%s" % (
                 pathname2url(_sample_metadata_rdf_file_path()))
 
