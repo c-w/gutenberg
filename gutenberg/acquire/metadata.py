@@ -48,7 +48,7 @@ class MetadataCacheManager(with_metaclass(abc.ABCMeta, object)):
         """Detect if the cache exists.
 
         """
-        return os.path.exists(self._get_local_storage_path())
+        return os.path.exists(self._local_storage_path)
 
     def open(self):
         """Opens an existing cache.
@@ -73,7 +73,7 @@ class MetadataCacheManager(with_metaclass(abc.ABCMeta, object)):
 
         """
         self.close()
-        remove(self._get_local_storage_path())
+        remove(self._local_storage_path)
 
     def populate(self):
         """Populates a new cache.
@@ -105,7 +105,11 @@ class MetadataCacheManager(with_metaclass(abc.ABCMeta, object)):
         self.populate()
         self.open()
 
-    def _get_local_storage_path(self):
+    @property
+    def _local_storage_path(self):
+        """Returns a path to the on-disk structure of the cache.
+
+        """
         return self.cache_uri
 
     @staticmethod
@@ -182,7 +186,8 @@ class SqliteMetadataCacheManager(MetadataCacheManager):
         store = plugin.get('SQLAlchemy', Store)(identifier=_DB_IDENTIFIER)
         MetadataCacheManager.__init__(self, store, cache_uri)
 
-    def _get_local_storage_path(self):
+    @property
+    def _local_storage_path(self):
         return self.cache_uri[len(self._CACHE_URI_PREFIX):]
 
 
