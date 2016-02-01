@@ -121,7 +121,7 @@ class MetadataCacheManager(object):
 
         with contextlib.closing(self.graph):
             with self._download_metadata_archive() as metadata_archive:
-                for fact in _iter_metadata_triples(metadata_archive):
+                for fact in self._iter_metadata_triples(metadata_archive):
                     self.graph.add(fact)
 
     def refresh(self):
@@ -162,31 +162,32 @@ class MetadataCacheManager(object):
         yield metadata_archive.name
         remove(metadata_archive.name)
 
+    @staticmethod
+    def _metadata_is_invalid(fact):
+        """Determines if the fact is not well formed.
 
-def _metadata_is_invalid(fact):
-    """Determines if the fact is not well formed.
+        """
+        return any(isinstance(token, URIRef) and ' ' in token for token in fact)
 
-    """
-    return any(isinstance(token, URIRef) and ' ' in token for token in fact)
+    @classmethod
+    def _iter_metadata_triples(cls, metadata_archive_path):
+        """Yields all meta-data of Project Gutenberg texts contained in the
+        catalog dump.
 
-
-def _iter_metadata_triples(metadata_archive_path):
-    """Yields all meta-data of Project Gutenberg texts contained in the catalog
-    dump.
-
-    """
-    pg_rdf_regex = re.compile(r'pg\d+.rdf$')
-    with contextlib.closing(tarfile.open(metadata_archive_path)) \
-            as metadata_archive:
-        for item in metadata_archive:
-            if re.search(pg_rdf_regex, item.name):
-                with disable_logging():
-                    graph = Graph().parse(metadata_archive.extractfile(item))
-                for fact in graph:
-                    if _metadata_is_invalid(fact):
-                        logging.info('skipping invalid triple %s', fact)
-                    else:
-                        yield fact
+        """
+        pg_rdf_regex = re.compile(r'pg\d+.rdf$')
+        with contextlib.closing(tarfile.open(metadata_archive_path)) \
+                as metadata_archive:
+            for item in metadata_archive:
+                if re.search(pg_rdf_regex, item.name):
+                    with disable_logging():
+                        extracted = metadata_archive.extractfile(item)
+                        graph = Graph().parse(extracted)
+                    for fact in graph:
+                        if cls._metadata_is_invalid(fact):
+                            logging.info('skipping invalid triple %s', fact)
+                        else:
+                            yield fact
 
 
 _METADATA_CACHE_MANAGER = MetadataCacheManager(
