@@ -9,6 +9,7 @@ import os
 from six import with_metaclass
 from rdflib.term import URIRef
 
+from gutenberg._domain_model.exceptions import UnsupportedFeature
 from gutenberg._domain_model.types import validate_etextno
 from gutenberg._util.abc import abstractclassmethod
 from gutenberg._util.objects import all_subclasses
@@ -28,7 +29,7 @@ def get_metadata(feature_name, etextno):
             the text does not have meta-data associated with the feature.
 
     Raises:
-        NotImplementedError: If there is no MetadataExtractor registered that
+        UnsupportedFeature: If there is no MetadataExtractor registered that
             can extract meta-data for the given feature name.
 
     """
@@ -48,7 +49,7 @@ def get_etexts(feature_name, value):
             match the provided query.
 
     Raises:
-        NotImplementedError: If there is no MetadataExtractor registered that
+        UnsupportedFeature: If there is no MetadataExtractor registered that
             can extract meta-data for the given feature name.
 
     """
@@ -131,15 +132,17 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
     @staticmethod
     def get(feature_name):
         """Returns the MetadataExtractor that can extract information about the
-        provided feature name or raises a NotImplementedError if no extractor
-        exists that can handle the feature.
+        provided feature name.
+
+        Raises:
+            UnsupportedFeature: If no extractor exists for the feature name.
 
         """
         implementations = MetadataExtractor.__find_implementations()
         try:
             return implementations[feature_name]
         except KeyError:
-            raise NotImplementedError(
+            raise UnsupportedFeature(
                 'no MetadataExtractor registered for feature "{feature_name}" '
                 '(try any of the following: {supported_features})'
                 .format(feature_name=feature_name,

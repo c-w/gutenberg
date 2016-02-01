@@ -5,6 +5,7 @@
 from __future__ import absolute_import
 import unittest
 
+from gutenberg._domain_model.exceptions import InvalidEtextId
 from gutenberg._domain_model.types import validate_etextno
 
 
@@ -16,10 +17,10 @@ class TestValidateEtextno(unittest.TestCase):
         self.assertTrue(validate_etextno(1234) is not None)
 
     def test_is_invalid_etext(self):
-        self.assertRaises(ValueError, validate_etextno, 'not-an-integer')
-        self.assertRaises(ValueError, validate_etextno, -123)
-        self.assertRaises(ValueError, validate_etextno, 0)
-        self.assertRaises(ValueError, validate_etextno, 12.3)
+        self.assertRaises(InvalidEtextId, validate_etextno, 'not-an-integer')
+        self.assertRaises(InvalidEtextId, validate_etextno, -123)
+        self.assertRaises(InvalidEtextId, validate_etextno, 0)
+        self.assertRaises(InvalidEtextId, validate_etextno, 12.3)
 
 
 if __name__ == '__main__':
