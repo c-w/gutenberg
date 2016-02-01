@@ -39,13 +39,6 @@ this repository:
 
     git clone https://github.com/c-w/Gutenberg.git
 
-This package depends on Berkeley DB so you'll need to install that:
-
-.. sourcecode :: sh
-
-    sudo apt-get install libdb5.1-dev
-    export BERKELEYDB_DIR=/usr
-
 Now, you should probably install the dependencies for the package and verify
 your checkout by running the tests.
 
@@ -59,6 +52,24 @@ your checkout by running the tests.
 
     pip install nose
     nosetests
+
+
+Python 3
+--------
+
+This package depends on BSD-DB. The bsddb module was removed from the Python
+standard library since version 2.7. This means that if you wish to use gutenberg
+on Python 3, you will need to manually install BSD-DB.
+
+.. sourcecode :: sh
+
+    sudo apt-get install libdb5.1-dev
+    export BERKELEYDB_DIR=/usr
+    pip install -r requirements-py3.pip
+
+If you are unable to install BSD-DB manually (e.g. on Windows), the library
+provides a SQLite-based fallback to the default BSD-DB implementation. However,
+be warned that this backend is much slower.
 
 
 Usage

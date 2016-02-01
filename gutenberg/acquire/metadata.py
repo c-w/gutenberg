@@ -171,12 +171,26 @@ class SleepycatMetadataCache(MetadataCache):
 
     """
     def __init__(self, cache_location):
+        self._check_can_be_instantiated()
         cache_uri = cache_location
         store = 'Sleepycat'
         MetadataCache.__init__(self, store, cache_uri)
 
     def _populate_setup(self):
         makedirs(self.cache_uri)
+
+    @classmethod
+    def _check_can_be_instantiated(cls):
+        try:
+            from bsddb import db
+        except ImportError:
+            try:
+                from bsddb3 import db
+            except ImportError:
+                db = None
+        if db is None:
+            raise InvalidCache('no install of bsddb/bsddb3 found')
+        del db
 
 
 class SqliteMetadataCache(MetadataCache):
@@ -196,7 +210,7 @@ class SqliteMetadataCache(MetadataCache):
         return self.cache_uri[len(self._CACHE_URI_PREFIX):]
 
 
-_METADATA_CACHE = SleepycatMetadataCache(cache_location=_DB_PATH)
+_METADATA_CACHE = None
 
 
 def get_metadata_cache():
@@ -204,7 +218,24 @@ def get_metadata_cache():
 
     """
     global _METADATA_CACHE
+
+    if _METADATA_CACHE is None:
+        _METADATA_CACHE = _create_metadata_cache(_DB_PATH)
+
     return _METADATA_CACHE
+
+
+def _create_metadata_cache(cache_location):
+    """Creates a new metadata cache instance appropriate for this platform.
+
+    """
+    try:
+        return SleepycatMetadataCache(cache_location)
+    except InvalidCache:
+        logging.warning('Unable to create cache based on BSD-DB. '
+                        'Falling back to SQLite backend. '
+                        'Performance may be degraded significantly.')
+        return SqliteMetadataCache(cache_location)
 
 
 def load_metadata(refresh_cache=False):

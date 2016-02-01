@@ -1,1 +1,2 @@
 include requirements.pip
+include requirements-py3.pip
