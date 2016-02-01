@@ -80,7 +80,7 @@ class MetadataCacheManager(object):
             self._add_namespaces(self.graph)
             self.cache_open = True
         except:
-            raise InvalidCache("The cache is invalid or not created")
+            raise InvalidCache('The cache is invalid or not created')
 
     def close(self):
         """Closes an opened cache.
@@ -97,14 +97,14 @@ class MetadataCacheManager(object):
         if self.removable:
             remove(self._get_local_storage_path())
         else:
-            raise CacheNotRemovable("Graph store type is not removable")
+            raise CacheNotRemovable('Graph store type is not removable')
 
     def populate(self):
         """Populates a new cache.
 
         """
         if self.exists():
-            raise CacheAlreadyExists("location: %s" % self.cache_uri)
+            raise CacheAlreadyExists('location: %s' % self.cache_uri)
 
         if self.store == 'Sleepycat':
             makedirs(self.cache_uri)
