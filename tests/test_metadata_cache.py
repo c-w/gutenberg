@@ -3,18 +3,22 @@
 
 
 from __future__ import absolute_import
-import tempfile
+
 import os
 import sys
-from gutenberg.acquire.metadata import SleepycatMetadataCache
-from gutenberg.acquire.metadata import SqliteMetadataCache
-from gutenberg.acquire.metadata import set_metadata_cache
-from gutenberg.query import get_metadata
-from gutenberg.acquire.metadata import CacheAlreadyExists
-from gutenberg.acquire.metadata import InvalidCache
-from gutenberg._util.url import pathname2url
+import tempfile
+
 from rdflib.plugin import PluginException
 from six import u
+
+from gutenberg._util.url import pathname2url
+from gutenberg.acquire.metadata import CacheAlreadyExists
+from gutenberg.acquire.metadata import InvalidCache
+from gutenberg.acquire.metadata import SleepycatMetadataCache
+from gutenberg.acquire.metadata import SqliteMetadataCache
+from gutenberg.query import get_metadata
+from tests._util import set_metadata_cache
+
 if sys.version_info < (2, 7):
     import unittest2 as unittest
 else:
