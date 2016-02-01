@@ -15,8 +15,8 @@ from contextlib import contextmanager
 from six import u
 from six import with_metaclass
 
-from gutenberg.acquire.metadata import MetadataCacheManager
-from gutenberg.acquire.metadata import set_metadata_cache_manager
+from gutenberg.acquire.metadata import MetadataCache
+from gutenberg.acquire.metadata import set_metadata_cache
 import gutenberg.acquire.text
 
 
@@ -37,23 +37,23 @@ class MockMetadataMixin(with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     def setUp(self):
-        self.mgr = _TestMetadataCacheManager(self.sample_data, data_format='nt')
-        self.mgr.populate()
-        set_metadata_cache_manager(self.mgr)
+        self.cache = _TestMetadataCache(self.sample_data, data_format='nt')
+        self.cache.populate()
+        set_metadata_cache(self.cache)
 
     def tearDown(self):
-        set_metadata_cache_manager(None)
-        self.mgr.delete()
+        set_metadata_cache(None)
+        self.cache.delete()
 
 
-class _TestMetadataCacheManager(MetadataCacheManager):
+class _TestMetadataCache(MetadataCache):
     def __init__(self, sample_data_factory, data_format):
-        MetadataCacheManager.__init__(self, 'Sleepycat', tempfile.mktemp())
+        MetadataCache.__init__(self, 'Sleepycat', tempfile.mktemp())
         self.sample_data_factory = sample_data_factory
         self.data_format = data_format
 
     def populate(self):
-        MetadataCacheManager.populate(self)
+        MetadataCache.populate(self)
 
         data = u('\n').join(item.rdf() for item in self.sample_data_factory())
 

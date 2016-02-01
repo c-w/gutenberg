@@ -6,9 +6,9 @@ from __future__ import absolute_import
 import tempfile
 import os
 import sys
-from gutenberg.acquire.metadata import SleepycatMetadataCacheManager
-from gutenberg.acquire.metadata import SqliteMetadataCacheManager
-from gutenberg.acquire.metadata import set_metadata_cache_manager
+from gutenberg.acquire.metadata import SleepycatMetadataCache
+from gutenberg.acquire.metadata import SqliteMetadataCache
+from gutenberg.acquire.metadata import set_metadata_cache
 from gutenberg.query import get_metadata
 from gutenberg.acquire.metadata import CacheAlreadyExists
 from gutenberg.acquire.metadata import InvalidCache
@@ -22,9 +22,9 @@ else:
 
 
 # noinspection PyPep8Naming,PyAttributeOutsideInit
-class MetadataCacheManager(object):
+class MetadataCache(object):
     def test_read_unpopulated_cache(self):
-        set_metadata_cache_manager(self.manager)
+        set_metadata_cache(self.cache)
         try:
             get_metadata('title', 50405)
         except InvalidCache:
@@ -33,38 +33,38 @@ class MetadataCacheManager(object):
             raise
 
     def test_initialize(self):
-        # Simply creating the cache manager shouldn't create on-disk structures
+        # Simply creating the cache shouldn't create on-disk structures
         self.assertFalse(os.path.exists(self.local_storage))
 
     def test_populate(self):
-        self.manager.populate()
-        set_metadata_cache_manager(self.manager)
+        self.cache.populate()
+        set_metadata_cache(self.cache)
         title = get_metadata('title', 30929)
         self.assertTrue(u('Het loterijbriefje') in title)
 
     def test_repopulate(self):
-        self.manager.populate()
-        set_metadata_cache_manager(self.manager)
-        self.manager.delete()
-        self.manager.populate()
+        self.cache.populate()
+        set_metadata_cache(self.cache)
+        self.cache.delete()
+        self.cache.populate()
         title = get_metadata('title', 30929)
         self.assertTrue(u('Het loterijbriefje') in title)
 
     def test_refresh(self):
-        self.manager.populate()
-        set_metadata_cache_manager(self.manager)
+        self.cache.populate()
+        set_metadata_cache(self.cache)
         title = get_metadata('title', 30929)
         self.assertTrue(u('Het loterijbriefje') in title)
 
-        self.manager.refresh()
+        self.cache.refresh()
         title = get_metadata('title', 30929)
         self.assertTrue(u('Het loterijbriefje') in title)
 
     def test_repopulate_without_delete(self):
         # Trying to populate an existing cache should raise an exception
-        self.manager.populate()
+        self.cache.populate()
         try:
-            self.manager.populate()
+            self.cache.populate()
         except CacheAlreadyExists:
             pass
         except:
@@ -72,15 +72,15 @@ class MetadataCacheManager(object):
 
     def test_delete(self):
         self.assertFalse(os.path.exists(self.local_storage))
-        self.manager.populate()
+        self.cache.populate()
         self.assertTrue(os.path.exists(self.local_storage))
-        self.manager.delete()
+        self.cache.delete()
         self.assertFalse(os.path.exists(self.local_storage))
 
     def test_read_deleted_cache(self):
-        self.manager.populate()
-        set_metadata_cache_manager(self.manager)
-        self.manager.delete()
+        self.cache.populate()
+        set_metadata_cache(self.cache)
+        self.cache.delete()
         try:
             get_metadata('title', 50405)
         except InvalidCache:
@@ -89,29 +89,29 @@ class MetadataCacheManager(object):
             raise
 
     def tearDown(self):
-        set_metadata_cache_manager(None)
-        if self.manager.cache_open:
-            self.manager.delete()
-        self.manager = None
+        set_metadata_cache(None)
+        if self.cache.cache_open:
+            self.cache.delete()
+        self.cache = None
 
 
-class TestSleepycat(MetadataCacheManager, unittest.TestCase):
+class TestSleepycat(MetadataCache, unittest.TestCase):
     def setUp(self):
         self.local_storage = tempfile.mktemp()
-        self.manager = SleepycatMetadataCacheManager(self.local_storage)
-        self.manager.catalog_source = "file://%s" % (
+        self.cache = SleepycatMetadataCache(self.local_storage)
+        self.cache.catalog_source = "file://%s" % (
                 pathname2url(_sample_metadata_rdf_file_path()))
 
 
-class TestSqlite(MetadataCacheManager, unittest.TestCase):
+class TestSqlite(MetadataCache, unittest.TestCase):
     def setUp(self):
         self.local_storage = "%s.sqlite" % tempfile.mktemp()
         cache_uri = "sqlite:///%s" % self.local_storage
         try:
-            self.manager = SqliteMetadataCacheManager(cache_uri)
+            self.cache = SqliteMetadataCache(cache_uri)
         except PluginException as exception:
             self.skipTest("SQLAlchemy plugin not installed: %s" % exception)
-        self.manager.catalog_source = "file://%s" % (
+        self.cache.catalog_source = "file://%s" % (
                 pathname2url(_sample_metadata_rdf_file_path()))
 
 

@@ -33,9 +33,13 @@ from gutenberg._util.url import urlopen
 _GUTENBERG_CATALOG_URL = \
     r'http://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2'
 _DB_IDENTIFIER = 'urn:gutenberg:metadata'
+_DB_PATH = local_path(os.path.join('metadata', 'metadata.db'))
 
 
-class MetadataCacheManager(with_metaclass(abc.ABCMeta, object)):
+class MetadataCache(with_metaclass(abc.ABCMeta, object)):
+    """Super-class for all metadata cache implementations.
+
+    """
     def __init__(self, store, cache_uri):
         self.store = store
         self.cache_uri = cache_uri
@@ -161,19 +165,19 @@ class MetadataCacheManager(with_metaclass(abc.ABCMeta, object)):
                             yield fact
 
 
-class SleepycatMetadataCacheManager(MetadataCacheManager):
+class SleepycatMetadataCache(MetadataCache):
     """Default cache manager implementation, based on Sleepycat/Berkeley DB.
     Sleepycat is natively supported by RDFlib so this cache is reasonably fast.
 
     """
     def __init__(self, cache_uri):
-        MetadataCacheManager.__init__(self, 'Sleepycat', cache_uri)
+        MetadataCache.__init__(self, 'Sleepycat', cache_uri)
 
     def _populate_setup(self):
         makedirs(self.cache_uri)
 
 
-class SqliteMetadataCacheManager(MetadataCacheManager):
+class SqliteMetadataCache(MetadataCache):
     """Cache manager based on SQLite and the RDFlib plugin for SQLAlchemy.
     Quite slow.
 
@@ -184,34 +188,33 @@ class SqliteMetadataCacheManager(MetadataCacheManager):
         if not cache_uri.startswith(self._CACHE_URI_PREFIX):
             cache_uri = self._CACHE_URI_PREFIX + cache_uri
         store = plugin.get('SQLAlchemy', Store)(identifier=_DB_IDENTIFIER)
-        MetadataCacheManager.__init__(self, store, cache_uri)
+        MetadataCache.__init__(self, store, cache_uri)
 
     @property
     def _local_storage_path(self):
         return self.cache_uri[len(self._CACHE_URI_PREFIX):]
 
 
-_METADATA_CACHE_MANAGER = SleepycatMetadataCacheManager(
-    cache_uri=local_path(os.path.join('metadata', 'metadata.db')))
+_METADATA_CACHE = SleepycatMetadataCache(cache_uri=_DB_PATH)
 
 
-def set_metadata_cache_manager(cache_manager):
+def set_metadata_cache(cache):
     """Sets the metadata cache object to use.
 
     """
-    global _METADATA_CACHE_MANAGER
-    if _METADATA_CACHE_MANAGER and _METADATA_CACHE_MANAGER.cache_open:
-        _METADATA_CACHE_MANAGER.close()
+    global _METADATA_CACHE
+    if _METADATA_CACHE and _METADATA_CACHE.cache_open:
+        _METADATA_CACHE.close()
 
-    _METADATA_CACHE_MANAGER = cache_manager
+    _METADATA_CACHE = cache
 
 
-def get_metadata_cache_manager():
-    """Returns the current metadata cache manager object.
+def get_metadata_cache():
+    """Returns the current metadata cache object.
 
     """
-    global _METADATA_CACHE_MANAGER
-    return _METADATA_CACHE_MANAGER
+    global _METADATA_CACHE
+    return _METADATA_CACHE
 
 
 def load_metadata(refresh_cache=False):
@@ -222,14 +225,14 @@ def load_metadata(refresh_cache=False):
     call to Project Gutenberg's servers, the meta-data is persisted locally.
 
     """
-    global _METADATA_CACHE_MANAGER
+    global _METADATA_CACHE
 
     if refresh_cache:
-        _METADATA_CACHE_MANAGER.refresh()
+        _METADATA_CACHE.refresh()
 
-    if _METADATA_CACHE_MANAGER.cache_open:
-        return _METADATA_CACHE_MANAGER.graph
+    if _METADATA_CACHE.cache_open:
+        return _METADATA_CACHE.graph
 
-    _METADATA_CACHE_MANAGER.open()
+    _METADATA_CACHE.open()
 
-    return _METADATA_CACHE_MANAGER.graph
+    return _METADATA_CACHE.graph

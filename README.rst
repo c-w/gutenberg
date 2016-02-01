@@ -107,9 +107,9 @@ To populate the cache:
 
 .. sourcecode :: python
 
-    from gutenberg.acquire import get_metadata_cache_manager
-    cache_mgr = get_metadata_cache_manager()
-    cache_mgr.populate()
+    from gutenberg.acquire import get_metadata_cache
+    cache = get_metadata_cache()
+    cache.populate()
 
 
 Limitations
