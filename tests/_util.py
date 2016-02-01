@@ -24,7 +24,7 @@ import gutenberg.acquire.text
 class MockTextMixin(object):
     def setUp(self):
         self.mock_text_cache = tempfile.mkdtemp()
-        gutenberg.acquire.text._TEXT_CACHE = self.mock_text_cache
+        set_text_cache(self.mock_text_cache)
 
     def tearDown(self):
         shutil.rmtree(self.mock_text_cache)
@@ -68,3 +68,7 @@ class _TestMetadataCache(MetadataCache):
     @classmethod
     def _iter_metadata_triples(cls, metadata_archive_path):
         return []
+
+
+def set_text_cache(cache):
+    gutenberg.acquire.text._TEXT_CACHE = cache
