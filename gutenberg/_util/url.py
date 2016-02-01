@@ -2,14 +2,10 @@
 
 
 try:
-    import urllib2
+    from urllib2 import urlopen
 except ImportError:
-    import urllib.request as urllib2
+    from urllib.request import urlopen
 try:
-    import urllib
+    from urllib import pathname2url
 except ImportError:
-    import urllib.request as urllib
-
-
-urlopen = urllib2.urlopen
-pathname2url = urllib.pathname2url
+    from urllib.request import pathname2url
