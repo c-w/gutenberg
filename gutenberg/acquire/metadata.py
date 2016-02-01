@@ -30,22 +30,17 @@ from gutenberg._util.url import urlopen
 
 _GUTENBERG_CATALOG_URL = \
     r'http://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2'
+_DB_IDENTIFIER = 'urn:gutenberg:metadata'
 
 
 class MetadataCacheManager(object):
     def __init__(self, store, cache_uri):
-        self.identifier = 'urn:gutenberg:metadata'
-        if store == 'Sleepycat':
-            self.store = store
-        elif cache_uri.startswith('sqlite://'):
-            self.store = plugin.get(store, Store)(identifier=self.identifier)
-        else:
+        if store != 'Sleepycat' and not cache_uri.startswith('sqlite://'):
             raise NotImplementedError
+        self.store = store
         self.cache_uri = cache_uri
-
-        self.graph = Graph(store=self.store, identifier=self.identifier)
+        self.graph = Graph(store=self.store, identifier=_DB_IDENTIFIER)
         self.cache_open = False
-
         self.catalog_source = _GUTENBERG_CATALOG_URL
 
     def exists(self):
@@ -105,11 +100,7 @@ class MetadataCacheManager(object):
         self.open()
 
     def _get_local_storage_path(self):
-        if self.cache_uri.startswith('sqlite://'):
-            filepath = self.cache_uri[9:]
-        else:
-            filepath = self.cache_uri
-        return filepath
+        return self.cache_uri
 
     @staticmethod
     def _add_namespaces(graph):
@@ -158,6 +149,23 @@ class MetadataCacheManager(object):
                             logging.info('skipping invalid triple %s', fact)
                         else:
                             yield fact
+
+
+class SqliteMetadataCacheManager(MetadataCacheManager):
+    """Cache manager based on SQLite and the RDFlib plugin for SQLAlchemy.
+    Quite slow.
+
+    """
+    _CACHE_URI_PREFIX = 'sqlite://'
+
+    def __init__(self, cache_uri):
+        if not cache_uri.startswith(self._CACHE_URI_PREFIX):
+            cache_uri = self._CACHE_URI_PREFIX + cache_uri
+        store = plugin.get('SQLAlchemy', Store)(identifier=_DB_IDENTIFIER)
+        MetadataCacheManager.__init__(self, store, cache_uri)
+
+    def _get_local_storage_path(self):
+        return self.cache_uri[len(self._CACHE_URI_PREFIX):]
 
 
 _METADATA_CACHE_MANAGER = MetadataCacheManager(

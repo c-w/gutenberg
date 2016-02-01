@@ -7,6 +7,7 @@ import tempfile
 import os
 import sys
 import gutenberg.acquire.metadata
+from gutenberg.acquire.metadata import SqliteMetadataCacheManager
 from gutenberg.acquire.metadata import set_metadata_cache_manager
 from gutenberg.query import get_metadata
 from gutenberg.acquire.metadata import CacheAlreadyExists
@@ -108,8 +109,7 @@ class TestSqlite(MetadataCacheManager, unittest.TestCase):
         self.local_storage = "%s.sqlite" % tempfile.mktemp()
         cache_uri = "sqlite:///%s" % self.local_storage
         try:
-            self.manager = gutenberg.acquire.metadata.MetadataCacheManager(
-                    store='SQLAlchemy', cache_uri=cache_uri)
+            self.manager = SqliteMetadataCacheManager(cache_uri)
         except PluginException as exception:
             self.skipTest("SQLAlchemy plugin not installed: %s" % exception)
         self.manager.catalog_source = "file://%s" % (
