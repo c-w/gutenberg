@@ -109,9 +109,8 @@ class TestSleepycat(MetadataCache, unittest.TestCase):
 class TestSqlite(MetadataCache, unittest.TestCase):
     def setUp(self):
         self.local_storage = "%s.sqlite" % tempfile.mktemp()
-        cache_uri = "sqlite:///%s" % self.local_storage
         try:
-            self.cache = SqliteMetadataCache(cache_uri)
+            self.cache = SqliteMetadataCache(self.local_storage)
         except PluginException as exception:
             self.skipTest("SQLAlchemy plugin not installed: %s" % exception)
         self.cache.catalog_source = _sample_metadata_catalog_source()

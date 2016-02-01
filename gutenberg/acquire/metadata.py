@@ -170,8 +170,10 @@ class SleepycatMetadataCache(MetadataCache):
     Sleepycat is natively supported by RDFlib so this cache is reasonably fast.
 
     """
-    def __init__(self, cache_uri):
-        MetadataCache.__init__(self, 'Sleepycat', cache_uri)
+    def __init__(self, cache_location):
+        cache_uri = cache_location
+        store = 'Sleepycat'
+        MetadataCache.__init__(self, store, cache_uri)
 
     def _populate_setup(self):
         makedirs(self.cache_uri)
@@ -182,11 +184,10 @@ class SqliteMetadataCache(MetadataCache):
     Quite slow.
 
     """
-    _CACHE_URI_PREFIX = 'sqlite://'
+    _CACHE_URI_PREFIX = 'sqlite:///'
 
-    def __init__(self, cache_uri):
-        if not cache_uri.startswith(self._CACHE_URI_PREFIX):
-            cache_uri = self._CACHE_URI_PREFIX + cache_uri
+    def __init__(self, cache_location):
+        cache_uri = self._CACHE_URI_PREFIX + cache_location
         store = plugin.get('SQLAlchemy', Store)(identifier=_DB_IDENTIFIER)
         MetadataCache.__init__(self, store, cache_uri)
 
@@ -195,7 +196,7 @@ class SqliteMetadataCache(MetadataCache):
         return self.cache_uri[len(self._CACHE_URI_PREFIX):]
 
 
-_METADATA_CACHE = SleepycatMetadataCache(cache_uri=_DB_PATH)
+_METADATA_CACHE = SleepycatMetadataCache(cache_location=_DB_PATH)
 
 
 def get_metadata_cache():
