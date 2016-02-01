@@ -39,12 +39,11 @@ class MetadataCacheManager(object):
         if store == 'Sleepycat':
             self.store = store
             self.removable = True
-        else:
-            if cache_uri.startswith('sqlite://'):
-                self.removable = True
-            else:
-                self.removable = False
+        elif cache_uri.startswith('sqlite://'):
+            self.removable = True
             self.store = plugin.get(store, Store)(identifier=self.identifier)
+        else:
+            raise NotImplementedError
         self.cache_uri = cache_uri
 
         self.graph = Graph(store=self.store, identifier=self.identifier)
