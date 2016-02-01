@@ -170,7 +170,7 @@ class MetadataCacheManager(object):
         with contextlib.closing(tarfile.open(metadata_archive_path)) \
                 as metadata_archive:
             for item in metadata_archive:
-                if re.search(pg_rdf_regex, item.name):
+                if pg_rdf_regex.search(item.name):
                     with disable_logging():
                         extracted = metadata_archive.extractfile(item)
                         graph = Graph().parse(extracted)
