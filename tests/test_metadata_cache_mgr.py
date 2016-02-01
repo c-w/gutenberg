@@ -72,9 +72,6 @@ class MetadataCacheManager(object):
             raise
 
     def test_delete(self):
-        if not self.manager.removable:
-            self.skipTest("Storage type is not removable")
-
         self.assertFalse(os.path.exists(self.local_storage))
         self.manager.populate()
         self.assertTrue(os.path.exists(self.local_storage))

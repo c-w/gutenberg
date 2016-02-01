@@ -19,7 +19,6 @@ from rdflib.term import URIRef
 from rdflib.store import Store
 
 from gutenberg._domain_model.exceptions import CacheAlreadyExists
-from gutenberg._domain_model.exceptions import CacheNotRemovable
 from gutenberg._domain_model.exceptions import InvalidCache
 from gutenberg._domain_model.persistence import local_path
 from gutenberg._domain_model.vocabulary import DCTERMS
@@ -38,9 +37,7 @@ class MetadataCacheManager(object):
         self.identifier = 'urn:gutenberg:metadata'
         if store == 'Sleepycat':
             self.store = store
-            self.removable = True
         elif cache_uri.startswith('sqlite://'):
-            self.removable = True
             self.store = plugin.get(store, Store)(identifier=self.identifier)
         else:
             raise NotImplementedError
@@ -55,21 +52,7 @@ class MetadataCacheManager(object):
         """Detect if the cache exists.
 
         """
-        # If the cache is removable it has some local structure we can check
-        # to see if it exists.
-        if self.removable:
-            return os.path.exists(self._get_local_storage_path())
-
-        # If there is no local structure, the best we can do is see if the
-        # storage contains a valid graph.
-        test_graph = Graph(store=self.store, identifier=self.identifier)
-        try:
-            test_graph.open(self.cache_uri, create=False)
-            self._add_namespaces(test_graph)
-            test_graph.close()
-            return True
-        except:
-            return False
+        return os.path.exists(self._get_local_storage_path())
 
     def open(self):
         """Opens an existing cache.
@@ -94,10 +77,7 @@ class MetadataCacheManager(object):
 
         """
         self.close()
-        if self.removable:
-            remove(self._get_local_storage_path())
-        else:
-            raise CacheNotRemovable('Graph store type is not removable')
+        remove(self._get_local_storage_path())
 
     def populate(self):
         """Populates a new cache.

@@ -23,9 +23,5 @@ class CacheAlreadyExists(Error):
     pass
 
 
-class CacheNotRemovable(Error):
-    pass
-
-
 class InvalidCache(Error):
     pass
