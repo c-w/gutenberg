@@ -103,8 +103,7 @@ class TestSleepycat(MetadataCache, unittest.TestCase):
     def setUp(self):
         self.local_storage = tempfile.mktemp()
         self.cache = SleepycatMetadataCache(self.local_storage)
-        self.cache.catalog_source = "file://%s" % (
-                pathname2url(_sample_metadata_rdf_file_path()))
+        self.cache.catalog_source = _sample_metadata_catalog_source()
 
 
 class TestSqlite(MetadataCache, unittest.TestCase):
@@ -115,13 +114,13 @@ class TestSqlite(MetadataCache, unittest.TestCase):
             self.cache = SqliteMetadataCache(cache_uri)
         except PluginException as exception:
             self.skipTest("SQLAlchemy plugin not installed: %s" % exception)
-        self.cache.catalog_source = "file://%s" % (
-                pathname2url(_sample_metadata_rdf_file_path()))
+        self.cache.catalog_source = _sample_metadata_catalog_source()
 
 
-def _sample_metadata_rdf_file_path():
+def _sample_metadata_catalog_source():
     module = os.path.dirname(sys.modules['tests'].__file__)
-    return os.path.join(module, 'data', 'sample-rdf-files.tar.bz2')
+    path = os.path.join(module, 'data', 'sample-rdf-files.tar.bz2')
+    return 'file://%s' % pathname2url(path)
 
 
 if __name__ == '__main__':
