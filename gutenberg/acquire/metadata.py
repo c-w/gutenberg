@@ -99,7 +99,7 @@ class MetadataCacheManager(object):
         else:
             raise CacheNotRemovable("Graph store type is not removable")
 
-    def populate(self, data_override=None):
+    def populate(self):
         """Populates a new cache.
 
         """
@@ -110,15 +110,6 @@ class MetadataCacheManager(object):
             makedirs(self.cache_uri)
 
         self.graph.open(self.cache_uri, create=True)
-
-        if data_override:
-            # Allow callers to override the data being populated, almost
-            # exclusively for automated testing
-            data, data_format = data_override
-            with contextlib.closing(self.graph):
-                self.graph.parse(data=data, format=data_format)
-            return
-
         with contextlib.closing(self.graph):
             with self._download_metadata_archive() as metadata_archive:
                 for fact in self._iter_metadata_triples(metadata_archive):

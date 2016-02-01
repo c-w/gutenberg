@@ -35,13 +35,34 @@ class MockMetadataMixin(with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     def setUp(self):
-        metadata_directory = tempfile.mktemp()
-        self.mgr = MetadataCacheManager(
-                store='Sleepycat', cache_uri=metadata_directory)
-        data = u('\n').join(item.rdf() for item in self.sample_data())
-        self.mgr.populate(data_override=(data, 'nt'))
+        self.mgr = _TestMetadataCacheManager(self.sample_data, data_format='nt')
+        self.mgr.populate()
         set_metadata_cache_manager(self.mgr)
 
     def tearDown(self):
         set_metadata_cache_manager(None)
         self.mgr.delete()
+
+
+class _TestMetadataCacheManager(MetadataCacheManager):
+    def __init__(self, sample_data_factory, data_format):
+        MetadataCacheManager.__init__(self, 'Sleepycat', tempfile.mktemp())
+        self.sample_data_factory = sample_data_factory
+        self.data_format = data_format
+
+    def populate(self):
+        MetadataCacheManager.populate(self)
+
+        data = u('\n').join(item.rdf() for item in self.sample_data_factory())
+
+        self.graph.open(self.cache_uri, create=True)
+        with contextlib.closing(self.graph):
+            self.graph.parse(data=data, format=self.data_format)
+
+    @contextlib.contextmanager
+    def _download_metadata_archive(self):
+        yield None
+
+    @classmethod
+    def _iter_metadata_triples(cls, metadata_archive_path):
+        return []
