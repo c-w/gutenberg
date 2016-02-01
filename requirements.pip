@@ -3,3 +3,4 @@ future>=0.15.2
 rdflib>=4.2.0
 requests>=2.5.1
 six>=1.10.0
+git+https://github.com/RDFLib/rdflib-sqlalchemy.git
