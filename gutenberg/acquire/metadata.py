@@ -225,14 +225,14 @@ def load_metadata(refresh_cache=False):
     call to Project Gutenberg's servers, the meta-data is persisted locally.
 
     """
-    global _METADATA_CACHE
+    cache = get_metadata_cache()
 
     if refresh_cache:
-        _METADATA_CACHE.refresh()
+        cache.refresh()
 
-    if _METADATA_CACHE.cache_open:
-        return _METADATA_CACHE.graph
+    if cache.cache_open:
+        return cache.graph
 
-    _METADATA_CACHE.open()
+    cache.open()
 
-    return _METADATA_CACHE.graph
+    return cache.graph
