@@ -22,6 +22,9 @@ def _format_download_uri(etextno):
     """Returns the download location on the Project Gutenberg servers for a
     given text.
 
+    Raises:
+        UnknownDownloadUri: If no download location can be found for the text.
+
     """
     uri_root = r'http://www.gutenberg.lib.md.us'
 
@@ -87,6 +90,7 @@ def _main():
 
     """
     from argparse import ArgumentParser, FileType
+    from gutenberg import Error
     from gutenberg._util.os import reopen_encoded
 
     parser = ArgumentParser(description='Download a Project Gutenberg text')
@@ -96,7 +100,7 @@ def _main():
 
     try:
         text = load_etext(args.etextno)
-    except ValueError as ex:
+    except Error as ex:
         parser.error(str(ex))
     else:
         with reopen_encoded(args.outfile, 'w', 'utf8') as outfile:
