@@ -90,7 +90,7 @@ class MetadataCache(object):
 
     def tearDown(self):
         set_metadata_cache(None)
-        if self.cache.cache_open:
+        if self.cache.is_open:
             self.cache.delete()
         self.cache = None
 

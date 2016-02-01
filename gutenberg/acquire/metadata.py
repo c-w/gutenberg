@@ -44,7 +44,7 @@ class MetadataCache(with_metaclass(abc.ABCMeta, object)):
         self.store = store
         self.cache_uri = cache_uri
         self.graph = Graph(store=self.store, identifier=_DB_IDENTIFIER)
-        self.cache_open = False
+        self.is_open = False
         self.catalog_source = _GUTENBERG_CATALOG_URL
 
     @property
@@ -61,7 +61,7 @@ class MetadataCache(with_metaclass(abc.ABCMeta, object)):
         try:
             self.graph.open(self.cache_uri, create=False)
             self._add_namespaces(self.graph)
-            self.cache_open = True
+            self.is_open = True
         except:
             raise InvalidCache('The cache is invalid or not created')
 
@@ -70,7 +70,7 @@ class MetadataCache(with_metaclass(abc.ABCMeta, object)):
 
         """
         self.graph.close()
-        self.cache_open = False
+        self.is_open = False
 
     def delete(self):
         """Delete the cache.
@@ -203,7 +203,7 @@ def set_metadata_cache(cache):
 
     """
     global _METADATA_CACHE
-    if _METADATA_CACHE and _METADATA_CACHE.cache_open:
+    if _METADATA_CACHE and _METADATA_CACHE.is_open:
         _METADATA_CACHE.close()
 
     _METADATA_CACHE = cache
@@ -230,7 +230,7 @@ def load_metadata(refresh_cache=False):
     if refresh_cache:
         cache.refresh()
 
-    if cache.cache_open:
+    if cache.is_open:
         return cache.graph
 
     cache.open()
