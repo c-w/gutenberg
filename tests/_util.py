@@ -5,10 +5,12 @@
 
 
 from __future__ import absolute_import
+
 import abc
-import contextlib
 import shutil
 import tempfile
+from contextlib import closing
+from contextlib import contextmanager
 
 from six import u
 from six import with_metaclass
@@ -56,10 +58,10 @@ class _TestMetadataCacheManager(MetadataCacheManager):
         data = u('\n').join(item.rdf() for item in self.sample_data_factory())
 
         self.graph.open(self.cache_uri, create=True)
-        with contextlib.closing(self.graph):
+        with closing(self.graph):
             self.graph.parse(data=data, format=self.data_format)
 
-    @contextlib.contextmanager
+    @contextmanager
     def _download_metadata_archive(self):
         yield None
 

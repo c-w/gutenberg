@@ -3,13 +3,15 @@
 
 
 from __future__ import absolute_import
-import contextlib
+
 import logging
 import os
 import re
 import shutil
 import tarfile
 import tempfile
+from contextlib import closing
+from contextlib import contextmanager
 
 from rdflib import plugin
 from rdflib.graph import Graph
@@ -26,7 +28,6 @@ from gutenberg._util.logging import disable_logging
 from gutenberg._util.os import makedirs
 from gutenberg._util.os import remove
 from gutenberg._util.url import urlopen
-
 
 _GUTENBERG_CATALOG_URL = \
     r'http://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2'
@@ -110,7 +111,7 @@ class MetadataCacheManager(object):
             makedirs(self.cache_uri)
 
         self.graph.open(self.cache_uri, create=True)
-        with contextlib.closing(self.graph):
+        with closing(self.graph):
             with self._download_metadata_archive() as metadata_archive:
                 for fact in self._iter_metadata_triples(metadata_archive):
                     self.graph.add(fact)
@@ -140,7 +141,7 @@ class MetadataCacheManager(object):
         graph.bind('pgterms', PGTERMS)
         graph.bind('dcterms', DCTERMS)
 
-    @contextlib.contextmanager
+    @contextmanager
     def _download_metadata_archive(self):
         """Makes a remote call to the Project Gutenberg servers and downloads
         the entire Project Gutenberg meta-data catalog. The catalog describes
@@ -167,8 +168,7 @@ class MetadataCacheManager(object):
 
         """
         pg_rdf_regex = re.compile(r'pg\d+.rdf$')
-        with contextlib.closing(tarfile.open(metadata_archive_path)) \
-                as metadata_archive:
+        with closing(tarfile.open(metadata_archive_path)) as metadata_archive:
             for item in metadata_archive:
                 if pg_rdf_regex.search(item.name):
                     with disable_logging():

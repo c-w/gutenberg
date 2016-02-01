@@ -2,11 +2,12 @@
 
 
 from __future__ import absolute_import
-import contextlib
+
+from contextlib import contextmanager
 import logging
 
 
-@contextlib.contextmanager
+@contextmanager
 def disable_logging(logger=None):
     """Context manager to temporarily suppress all logging for a given logger
     or the root logger if no particular logger is specified.

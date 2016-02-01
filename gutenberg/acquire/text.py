@@ -2,9 +2,10 @@
 
 
 from __future__ import absolute_import
-import contextlib
+
 import gzip
 import os
+from contextlib import closing
 
 import requests
 
@@ -77,10 +78,10 @@ def load_etext(etextno, refresh_cache=False):
         response = requests.get(download_uri)
         response.encoding = 'utf-8'
         text = response.text
-        with contextlib.closing(gzip.open(cached, 'w')) as cache:
+        with closing(gzip.open(cached, 'w')) as cache:
             cache.write(text.encode('utf-8'))
     else:
-        with contextlib.closing(gzip.open(cached, 'r')) as cache:
+        with closing(gzip.open(cached, 'r')) as cache:
             text = cache.read().decode('utf-8')
     return text
 
