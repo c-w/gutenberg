@@ -9,7 +9,7 @@ from contextlib import closing
 
 import requests
 
-from gutenberg._domain_model.exceptions import UnknownDownloadUri
+from gutenberg._domain_model.exceptions import UnknownDownloadUriException
 from gutenberg._domain_model.persistence import local_path
 from gutenberg._domain_model.types import validate_etextno
 from gutenberg._util.os import makedirs
@@ -58,7 +58,7 @@ def _format_download_uri(etextno):
             response = requests.head(uri)
             if response.ok:
                 return uri
-        raise UnknownDownloadUri
+        raise UnknownDownloadUriException
 
 
 def load_etext(etextno, refresh_cache=False):

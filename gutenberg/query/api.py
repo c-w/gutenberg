@@ -9,7 +9,7 @@ import os
 from six import with_metaclass
 from rdflib.term import URIRef
 
-from gutenberg._domain_model.exceptions import UnsupportedFeature
+from gutenberg._domain_model.exceptions import UnsupportedFeatureException
 from gutenberg._domain_model.types import validate_etextno
 from gutenberg._util.abc import abstractclassmethod
 from gutenberg._util.objects import all_subclasses
@@ -142,7 +142,7 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
         try:
             return implementations[feature_name]
         except KeyError:
-            raise UnsupportedFeature(
+            raise UnsupportedFeatureException(
                 'no MetadataExtractor registered for feature "{feature_name}" '
                 '(try any of the following: {supported_features})'
                 .format(feature_name=feature_name,

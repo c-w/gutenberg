@@ -20,8 +20,8 @@ from rdflib.store import Store
 from rdflib.term import URIRef
 from six import with_metaclass
 
-from gutenberg._domain_model.exceptions import CacheAlreadyExists
-from gutenberg._domain_model.exceptions import InvalidCache
+from gutenberg._domain_model.exceptions import CacheAlreadyExistsException
+from gutenberg._domain_model.exceptions import InvalidCacheException
 from gutenberg._domain_model.persistence import local_path
 from gutenberg._domain_model.vocabulary import DCTERMS
 from gutenberg._domain_model.vocabulary import PGTERMS
@@ -63,7 +63,7 @@ class MetadataCache(with_metaclass(abc.ABCMeta, object)):
             self._add_namespaces(self.graph)
             self.is_open = True
         except:
-            raise InvalidCache('The cache is invalid or not created')
+            raise InvalidCacheException('The cache is invalid or not created')
 
     def close(self):
         """Closes an opened cache.
@@ -84,7 +84,7 @@ class MetadataCache(with_metaclass(abc.ABCMeta, object)):
 
         """
         if self.exists:
-            raise CacheAlreadyExists('location: %s' % self.cache_uri)
+            raise CacheAlreadyExistsException('location: %s' % self.cache_uri)
 
         self._populate_setup()
 
@@ -189,7 +189,7 @@ class SleepycatMetadataCache(MetadataCache):
             except ImportError:
                 db = None
         if db is None:
-            raise InvalidCache('no install of bsddb/bsddb3 found')
+            raise InvalidCacheException('no install of bsddb/bsddb3 found')
         del db
 
 
@@ -231,7 +231,7 @@ def _create_metadata_cache(cache_location):
     """
     try:
         return SleepycatMetadataCache(cache_location)
-    except InvalidCache:
+    except InvalidCacheException:
         logging.warning('Unable to create cache based on BSD-DB. '
                         'Falling back to SQLite backend. '
                         'Performance may be degraded significantly.')
