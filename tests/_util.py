@@ -16,7 +16,7 @@ from six import u
 from six import with_metaclass
 
 from gutenberg.acquire.metadata import SleepycatMetadataCache
-import gutenberg.acquire.metadata
+from gutenberg.acquire.metadata import set_metadata_cache
 import gutenberg.acquire.text
 
 
@@ -72,11 +72,3 @@ class _SleepycatMetadataCacheForTesting(SleepycatMetadataCache):
 
 def set_text_cache(cache):
     gutenberg.acquire.text._TEXT_CACHE = cache
-
-
-def set_metadata_cache(cache):
-    old_cache = gutenberg.acquire.metadata._METADATA_CACHE
-    if old_cache and old_cache.is_open:
-        old_cache.close()
-
-    gutenberg.acquire.metadata._METADATA_CACHE = cache

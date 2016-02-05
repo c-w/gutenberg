@@ -213,6 +213,18 @@ class SqliteMetadataCache(MetadataCache):
 _METADATA_CACHE = None
 
 
+def set_metadata_cache(cache):
+    """Sets the metadata cache object to use.
+
+    """
+    global _METADATA_CACHE
+
+    if _METADATA_CACHE and _METADATA_CACHE.is_open:
+        _METADATA_CACHE.close()
+
+    _METADATA_CACHE = cache
+
+
 def get_metadata_cache():
     """Returns the current metadata cache object.
 

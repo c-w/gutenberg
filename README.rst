@@ -123,6 +123,22 @@ To populate the cache:
     cache.populate()
 
 
+If you need more fine-grained control over the cache (e.g. where it's stored or
+which backend is used), you can use the `set_metadata_cache` function to switch
+out the backend of the cache before you populate it. For example, to use the
+Sqlite cache backend instead of the default Sleepycat backen and store the cache
+at a custom location, you'd do the following:
+
+.. sourcecode :: python
+
+    from gutenberg.acquire import set_metadata_cache
+    from gutenberg.acquire.metadata import SqliteMetadataCache
+
+    cache = SqliteMetadataCache('/my/custom/location/cache.sqlite')
+    cache.populate()
+    set_metadata_cache(cache)
+
+
 Limitations
 ===========
 
