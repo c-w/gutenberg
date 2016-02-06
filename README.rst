@@ -126,8 +126,8 @@ To populate the cache:
 If you need more fine-grained control over the cache (e.g. where it's stored or
 which backend is used), you can use the `set_metadata_cache` function to switch
 out the backend of the cache before you populate it. For example, to use the
-Sqlite cache backend instead of the default Sleepycat backen and store the cache
-at a custom location, you'd do the following:
+Sqlite cache backend instead of the default Sleepycat backend and store the
+cache at a custom location, you'd do the following:
 
 .. sourcecode :: python
 
