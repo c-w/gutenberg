@@ -1,7 +1,7 @@
 """Module to deal with type validation."""
 
 
-from gutenberg._domain_model.exceptions import InvalidEtextId
+from gutenberg._domain_model.exceptions import InvalidEtextIdException
 
 
 def validate_etextno(etextno):
@@ -12,5 +12,5 @@ def validate_etextno(etextno):
 
     """
     if not isinstance(etextno, int) or etextno <= 0:
-        raise InvalidEtextId
+        raise InvalidEtextIdException
     return etextno

@@ -39,13 +39,6 @@ this repository:
 
     git clone https://github.com/c-w/Gutenberg.git
 
-This package depends on Berkeley DB so you'll need to install that:
-
-.. sourcecode :: sh
-
-    sudo apt-get install libdb5.1-dev
-    export BERKELEYDB_DIR=/usr
-
 Now, you should probably install the dependencies for the package and verify
 your checkout by running the tests.
 
@@ -59,6 +52,24 @@ your checkout by running the tests.
 
     pip install nose
     nosetests
+
+
+Python 3
+--------
+
+This package depends on BSD-DB. The bsddb module was removed from the Python
+standard library since version 2.7. This means that if you wish to use gutenberg
+on Python 3, you will need to manually install BSD-DB.
+
+.. sourcecode :: sh
+
+    sudo apt-get install libdb5.1-dev
+    export BERKELEYDB_DIR=/usr
+    pip install -r requirements-py3.pip
+
+If you are unable to install BSD-DB manually (e.g. on Windows), the library
+provides a SQLite-based fallback to the default BSD-DB implementation. However,
+be warned that this backend is much slower.
 
 
 Usage
@@ -107,9 +118,25 @@ To populate the cache:
 
 .. sourcecode :: python
 
-    from gutenberg.acquire import get_metadata_cache_manager
-    cache_mgr = get_metadata_cache_manager()
-    cache_mgr.populate()
+    from gutenberg.acquire import get_metadata_cache
+    cache = get_metadata_cache()
+    cache.populate()
+
+
+If you need more fine-grained control over the cache (e.g. where it's stored or
+which backend is used), you can use the `set_metadata_cache` function to switch
+out the backend of the cache before you populate it. For example, to use the
+Sqlite cache backend instead of the default Sleepycat backend and store the
+cache at a custom location, you'd do the following:
+
+.. sourcecode :: python
+
+    from gutenberg.acquire import set_metadata_cache
+    from gutenberg.acquire.metadata import SqliteMetadataCache
+
+    cache = SqliteMetadataCache('/my/custom/location/cache.sqlite')
+    cache.populate()
+    set_metadata_cache(cache)
 
 
 Limitations

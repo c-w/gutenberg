@@ -7,25 +7,21 @@ class Error(Exception):
     pass
 
 
-class InvalidEtextId(Error):
+class InvalidEtextIdException(Error):
     pass
 
 
-class UnknownDownloadUri(Error):
+class UnknownDownloadUriException(Error):
     pass
 
 
-class UnsupportedFeature(Error):
+class UnsupportedFeatureException(Error):
     pass
 
 
-class CacheAlreadyExists(Error):
+class CacheAlreadyExistsException(Error):
     pass
 
 
-class CacheNotRemovable(Error):
-    pass
-
-
-class InvalidCache(Error):
+class InvalidCacheException(Error):
     pass

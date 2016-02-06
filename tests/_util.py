@@ -5,15 +5,18 @@
 
 
 from __future__ import absolute_import
+
 import abc
-import contextlib
 import shutil
 import tempfile
+from contextlib import closing
+from contextlib import contextmanager
 
 from six import u
 from six import with_metaclass
 
-import gutenberg.acquire.metadata
+from gutenberg.acquire.metadata import SleepycatMetadataCache
+from gutenberg.acquire.metadata import set_metadata_cache
 import gutenberg.acquire.text
 
 
@@ -21,7 +24,7 @@ import gutenberg.acquire.text
 class MockTextMixin(object):
     def setUp(self):
         self.mock_text_cache = tempfile.mkdtemp()
-        gutenberg.acquire.text._TEXT_CACHE = self.mock_text_cache
+        set_text_cache(self.mock_text_cache)
 
     def tearDown(self):
         shutil.rmtree(self.mock_text_cache)
@@ -34,13 +37,38 @@ class MockMetadataMixin(with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     def setUp(self):
-        metadata_directory = tempfile.mktemp()
-        self.mgr = gutenberg.acquire.metadata.MetadataCacheManager(
-                store='Sleepycat', cache_uri=metadata_directory)
-        data = u('\n').join(item.rdf() for item in self.sample_data())
-        self.mgr.populate(data_override=(data, 'nt'))
-        gutenberg.acquire.metadata.set_metadata_cache_manager(self.mgr)
+        self.cache = _SleepycatMetadataCacheForTesting(self.sample_data, 'nt')
+        self.cache.populate()
+        set_metadata_cache(self.cache)
 
     def tearDown(self):
-        gutenberg.acquire.metadata.set_metadata_cache_manager(None)
-        self.mgr.delete()
+        set_metadata_cache(None)
+        self.cache.delete()
+
+
+class _SleepycatMetadataCacheForTesting(SleepycatMetadataCache):
+    def __init__(self, sample_data_factory, data_format):
+        SleepycatMetadataCache.__init__(self, tempfile.mktemp())
+        self.sample_data_factory = sample_data_factory
+        self.data_format = data_format
+
+    def populate(self):
+        SleepycatMetadataCache.populate(self)
+
+        data = u('\n').join(item.rdf() for item in self.sample_data_factory())
+
+        self.graph.open(self.cache_uri, create=True)
+        with closing(self.graph):
+            self.graph.parse(data=data, format=self.data_format)
+
+    @contextmanager
+    def _download_metadata_archive(self):
+        yield None
+
+    @classmethod
+    def _iter_metadata_triples(cls, metadata_archive_path):
+        return []
+
+
+def set_text_cache(cache):
+    gutenberg.acquire.text._TEXT_CACHE = cache

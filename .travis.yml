@@ -1,3 +1,9 @@
+# Unfortunately, the bsddb module on Travis-CI's virtualenv is broken...
+# This means that we always need to manually install BSD-DB, even when we're
+# running the tests under Python 2 where normally we should be able to just use
+# the bsddb module in the standard library. If this wasn't the case, we'd guard
+# the manual BSD-DB installation with a TRAVIS_PYTHON_VERSION check.
+
 language: python
 
 python:
@@ -17,7 +23,7 @@ before_install:
 
 install:
   - if [[ $TRAVIS_PYTHON_VERSION == 2.6 ]]; then pip install unittest2; fi
-  - pip install git+https://github.com/RDFLib/rdflib-sqlalchemy.git
   - pip install -r requirements.pip
+  - pip install -r requirements-py3.pip
 
 script: nosetests
