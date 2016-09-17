@@ -41,6 +41,14 @@ class TestGetMetadata(MockMetadataMixin, unittest.TestCase):
     def test_get_metadata_formaturi(self):
         self._run_get_metadata_for_feature('formaturi')
 
+    def test_get_metadata_rights(self):
+        self._run_get_metadata_for_feature('rights')
+
+    def test_get_metadata_subject(self):
+        self._run_get_metadata_for_feature('subject')
+
+    def test_get_metadata_language(self):
+        self._run_get_metadata_for_feature('language')
 
 class TestGetEtexts(MockMetadataMixin, unittest.TestCase):
     def sample_data(self):
@@ -69,6 +77,14 @@ class TestGetEtexts(MockMetadataMixin, unittest.TestCase):
     def test_get_etexts_formaturi(self):
         self._run_get_etexts_for_feature('formaturi')
 
+    def test_get_etexts_language(self):
+        self._run_get_etexts_for_feature('language')
+
+    def test_get_etexts_rights(self):
+        self._run_get_etexts_for_feature('rights')
+
+    def test_get_etexts_subject(self):
+        self._run_get_etexts_for_feature('subject')
 
 if __name__ == '__main__':
     unittest.main()
