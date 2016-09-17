@@ -104,6 +104,21 @@ class RightsExtractor(_SimplePredicateRelationshipExtractor):
     def contains(cls, value):
         return Literal(value)
 
+class LanguageExtractor(_SimplePredicateRelationshipExtractor):
+    """Extracts the language.
+
+    """
+    @classmethod
+    def feature_name(cls):
+        return 'language'
+
+    @classmethod
+    def predicate(cls):
+        return DCTERMS.language / RDFTERMS.value
+
+    @classmethod
+    def contains(cls, value):
+        return Literal(value)
 
 class SubjectExtractor(_SimplePredicateRelationshipExtractor):
     """Extracts the subject(s).
