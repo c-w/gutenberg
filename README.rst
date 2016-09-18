@@ -1,5 +1,3 @@
-**This project is no longer actively maintained.** `We're looking for a new owner. <https://github.com/c-w/Gutenberg/issues/47>`_
-
 *********
 Gutenberg
 *********
