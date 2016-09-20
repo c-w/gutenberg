@@ -22,6 +22,7 @@ before_install:
   - sudo apt-get install -qq -y libdb5.1-dev
 
 install:
+  - pip install -U setuptools
   - if [[ $TRAVIS_PYTHON_VERSION == 2.6 ]]; then pip install unittest2; fi
   - pip install -r requirements.pip
   - pip install -r requirements-py3.pip
