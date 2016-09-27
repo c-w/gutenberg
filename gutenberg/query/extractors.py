@@ -8,6 +8,7 @@ from rdflib.term import URIRef
 
 from gutenberg._domain_model.vocabulary import DCTERMS
 from gutenberg._domain_model.vocabulary import PGTERMS
+from gutenberg._domain_model.vocabulary import RDFTERMS
 from gutenberg._util.abc import abstractclassmethod
 from gutenberg.query.api import MetadataExtractor
 
@@ -86,3 +87,51 @@ class FormatURIExtractor(_SimplePredicateRelationshipExtractor):
     @classmethod
     def contains(cls, value):
         return URIRef(value)
+
+class RightsExtractor(_SimplePredicateRelationshipExtractor):
+    """Extracts the copyright information.
+
+    """
+    @classmethod
+    def feature_name(cls):
+        return 'rights'
+
+    @classmethod
+    def predicate(cls):
+        return DCTERMS.rights
+
+    @classmethod
+    def contains(cls, value):
+        return Literal(value)
+
+class LanguageExtractor(_SimplePredicateRelationshipExtractor):
+    """Extracts the language.
+
+    """
+    @classmethod
+    def feature_name(cls):
+        return 'language'
+
+    @classmethod
+    def predicate(cls):
+        return DCTERMS.language / RDFTERMS.value
+
+    @classmethod
+    def contains(cls, value):
+        return Literal(value)
+
+class SubjectExtractor(_SimplePredicateRelationshipExtractor):
+    """Extracts the subject(s).
+
+    """
+    @classmethod
+    def feature_name(cls):
+        return 'subject'
+
+    @classmethod
+    def predicate(cls):
+        return DCTERMS.subject / RDFTERMS.value
+
+    @classmethod
+    def contains(cls, value):
+        return Literal(value)

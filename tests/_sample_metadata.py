@@ -14,11 +14,15 @@ from six import u
 class SampleMetaData(object):
     __uids = {}
 
-    def __init__(self, etextno, authors=None, titles=None, formaturi=None):
+    def __init__(self, etextno, authors=None, titles=None, formaturi=None, rights=None, subject=None, language=None):
         self.author = frozenset(authors or [])
         self.title = frozenset(titles or [])
         self.formaturi = frozenset(formaturi or [])
         self.etextno = etextno or self.__create_uid(self.author | self.title)
+        self.rights = frozenset(rights or [])
+        self.subject = frozenset(subject or [])
+        self.language = frozenset(language or [])
+
 
     @classmethod
     def __create_uid(cls, hashable):
@@ -54,6 +58,34 @@ class SampleMetaData(object):
               '.')
             .format(etextno=self.etextno, title=title)
             for title in self.title)
+
+    def _rdf_rights(self):
+        return u('') if not self.rights else u('\n').join(
+            u('<http://www.gutenberg.org/ebooks/{etextno}> '
+              '<http://purl.org/dc/terms/rights> '
+              '"{rights}"'
+              '.')
+            .format(etextno=self.etextno, rights=rights)
+            for rights in self.rights)
+
+    def _rdf_subject(self):
+        return u('') if not self.subject else u('\n').join(
+            u('<http://www.gutenberg.org/ebooks/{etextno}> '
+              '<http://www.w3.org/1999/02/22-rdf-syntax-ns#Description>'
+              '"{subject}"'
+              '.')
+            .format(etextno=self.etextno, subject=subject)
+            for subject in self.subject)
+
+    def _rdf_language(self):
+        return u('') if not self.language else u('\n').join(
+            u('<http://www.gutenberg.org/ebooks/{etextno}> '
+              '<http://purl.org/dc/terms/language> '
+              '<http://www.w3.org/1999/02/22-rdf-syntax-ns#Description>'
+              '"{language}"'
+              '.')
+            .format(etextno=self.etextno, language=language)
+            for subject in self.language)
 
     def _rdf_formaturi(self):
         return u('') if not self.formaturi else u('\n').join(

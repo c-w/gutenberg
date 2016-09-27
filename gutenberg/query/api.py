@@ -8,6 +8,7 @@ import os
 
 from six import with_metaclass
 from rdflib.term import URIRef
+from rdflib.term import bind
 
 from gutenberg._domain_model.exceptions import UnsupportedFeatureException
 from gutenberg._domain_model.types import validate_etextno
@@ -15,6 +16,14 @@ from gutenberg._util.abc import abstractclassmethod
 from gutenberg._util.objects import all_subclasses
 from gutenberg.acquire.metadata import load_metadata
 
+import sys
+
+
+# Add a binding for Project Gutenberg's Language datatype
+if sys.version_info < (3,):
+    bind(URIRef('http://purl.org/dc/terms/RFC4646'), unicode)
+else:
+    bind(URIRef('http://purl.org/dc/terms/RFC4646'), str)
 
 def get_metadata(feature_name, etextno):
     """Looks up the value of a meta-data feature for a given text.
