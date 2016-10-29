@@ -27,3 +27,8 @@ install:
   - pip install -r requirements-py3.pip
 
 script: nosetests
+
+after_success:
+  - pip install pyflakes pep8
+  - pyflakes . | tee >(wc -l)
+  - pep8 --statistics --count .
