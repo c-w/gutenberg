@@ -84,7 +84,7 @@ class SampleMetaData(object):
               '"{language}"'
               '.')
             .format(etextno=self.etextno, language=language)
-            for subject in self.language)
+            for language in self.language)
 
     def _rdf_formaturi(self):
         return u('') if not self.formaturi else u('\n').join(
