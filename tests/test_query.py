@@ -50,6 +50,7 @@ class TestGetMetadata(MockMetadataMixin, unittest.TestCase):
     def test_get_metadata_language(self):
         self._run_get_metadata_for_feature('language')
 
+
 class TestGetEtexts(MockMetadataMixin, unittest.TestCase):
     def sample_data(self):
         return SampleMetaData.all()

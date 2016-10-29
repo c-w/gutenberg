@@ -23,7 +23,6 @@ class SampleMetaData(object):
         self.subject = frozenset(subject or [])
         self.language = frozenset(language or [])
 
-
     @classmethod
     def __create_uid(cls, hashable):
         return cls.__uids.setdefault(hashable, len(cls.__uids) + 1)
