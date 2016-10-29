@@ -3,11 +3,11 @@
 
 
 from __future__ import absolute_import
-import unittest
 
 from six import u
 
 from tests._sample_text import SampleText
+from tests._util import unittest
 
 from gutenberg.cleanup import strip_headers
 

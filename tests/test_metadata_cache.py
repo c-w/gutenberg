@@ -17,11 +17,7 @@ from gutenberg.acquire.metadata import SleepycatMetadataCache
 from gutenberg.acquire.metadata import SqliteMetadataCache
 from gutenberg.acquire.metadata import set_metadata_cache
 from gutenberg.query import get_metadata
-
-if sys.version_info < (2, 7):
-    import unittest2 as unittest
-else:
-    import unittest
+from tests._util import unittest
 
 
 # noinspection PyPep8Naming,PyAttributeOutsideInit

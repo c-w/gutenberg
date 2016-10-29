@@ -3,10 +3,10 @@
 
 
 from __future__ import absolute_import
-import unittest
 
 from gutenberg._domain_model.exceptions import InvalidEtextIdException
 from gutenberg._domain_model.types import validate_etextno
+from tests._util import unittest
 
 
 class TestValidateEtextno(unittest.TestCase):

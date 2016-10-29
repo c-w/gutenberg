@@ -8,7 +8,6 @@ import abc
 import os
 import shutil
 import tempfile
-import unittest
 
 from six import with_metaclass
 
@@ -16,6 +15,7 @@ from gutenberg._util.abc import abstractclassmethod
 from gutenberg._util.objects import all_subclasses
 from gutenberg._util.os import makedirs
 from gutenberg._util.os import remove
+from tests._util import unittest
 
 
 class TestAllSubclasses(unittest.TestCase):

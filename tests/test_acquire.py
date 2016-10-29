@@ -6,13 +6,13 @@
 from __future__ import absolute_import
 from builtins import str
 import itertools
-import unittest
 
 from gutenberg._domain_model.vocabulary import DCTERMS
 from gutenberg._domain_model.vocabulary import PGTERMS
 from tests._sample_metadata import SampleMetaData
 from tests._util import MockMetadataMixin
 from tests._util import MockTextMixin
+from tests._util import unittest
 
 from gutenberg.acquire import load_etext
 from gutenberg.acquire import load_metadata

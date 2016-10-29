@@ -3,7 +3,6 @@
 
 
 from __future__ import absolute_import
-import unittest
 
 from six import u
 
@@ -12,6 +11,7 @@ from tests._util import MockMetadataMixin
 
 from gutenberg.query import get_etexts
 from gutenberg.query import get_metadata
+from tests._util import unittest
 
 
 class TestGetMetadata(MockMetadataMixin, unittest.TestCase):
