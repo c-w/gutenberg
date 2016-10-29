@@ -43,7 +43,7 @@ class MetadataCache(object):
         self.cache.populate()
         set_metadata_cache(self.cache)
         title = get_metadata('title', 30929)
-        self.assertTrue(u('Het loterijbriefje') in title)
+        self.assertIn(u('Het loterijbriefje'), title)
 
     def test_repopulate(self):
         self.cache.populate()
@@ -51,17 +51,17 @@ class MetadataCache(object):
         self.cache.delete()
         self.cache.populate()
         title = get_metadata('title', 30929)
-        self.assertTrue(u('Het loterijbriefje') in title)
+        self.assertIn(u('Het loterijbriefje'), title)
 
     def test_refresh(self):
         self.cache.populate()
         set_metadata_cache(self.cache)
         title = get_metadata('title', 30929)
-        self.assertTrue(u('Het loterijbriefje') in title)
+        self.assertIn(u('Het loterijbriefje'), title)
 
         self.cache.refresh()
         title = get_metadata('title', 30929)
-        self.assertTrue(u('Het loterijbriefje') in title)
+        self.assertIn(u('Het loterijbriefje'), title)
 
     def test_repopulate_without_delete(self):
         # Trying to populate an existing cache should raise an exception

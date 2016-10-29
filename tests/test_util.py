@@ -39,7 +39,7 @@ class TestAllSubclasses(unittest.TestCase):
             pass
 
         self.assertTrue(all_subclasses(Root), set([AB, ABC, AD, ABAD, ABADE]))
-        self.assertTrue(all_subclasses(ABADE) == set())
+        self.assertEqual(all_subclasses(ABADE), set())
 
 
 class TestAbstractClassMethod(unittest.TestCase):
