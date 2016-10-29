@@ -18,7 +18,7 @@ The functionality provided by this package includes:
 * Cleaning the texts: removing all the crud, leaving just the text behind.
 * Making meta-data about the texts easily accessible.
 
-The package has been tested with Python 2.6, 2.7 and 3.4
+The package has been tested with Python 2.6, 2.7, 3.3, 3.4 and 3.5.
 
 
 Installation
