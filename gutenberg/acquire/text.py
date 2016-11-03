@@ -28,37 +28,22 @@ def _format_download_uri(etextno):
 
     """
     uri_root = r'http://www.gutenberg.lib.md.us'
-
-    if 0 < etextno < 10:
-        oldstyle_files = (
-            'when11',
-            'bill11',
-            'jfk11',
-            'getty11',
-            'const11',
-            'liber11',
-            'mayfl11',
-            'linc211',
-            'linc111',
-        )
-        etextno = int(etextno)
-        return '{root}/etext90/{name}.txt'.format(
+    extensions = ('.txt', '-8.txt', '-0.txt')
+    str_etextno = str(etextno)
+    for extension in extensions:
+        if etextno > 10:
+            path = '/'.join(str_etextno[:len(str_etextno) - 1])
+        else:
+            path = '0'
+        uri = '{root}/{path}/{etextno}/{etextno}{extension}'.format(
             root=uri_root,
-            name=oldstyle_files[etextno - 1])
-
-    else:
-        etextno = str(etextno)
-        extensions = ('.txt', '-8.txt', '-0.txt')
-        for extension in extensions:
-            uri = '{root}/{path}/{etextno}/{etextno}{extension}'.format(
-                root=uri_root,
-                path='/'.join(etextno[:len(etextno) - 1]),
-                etextno=etextno,
-                extension=extension)
-            response = requests.head(uri)
-            if response.ok:
-                return uri
-        raise UnknownDownloadUriException
+            path=path,
+            etextno=str_etextno,
+            extension=extension)
+        response = requests.head(uri)
+        if response.ok:
+            return uri
+    raise UnknownDownloadUriException
 
 
 def load_etext(etextno, refresh_cache=False):
