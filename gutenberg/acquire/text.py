@@ -19,6 +19,24 @@ from gutenberg._util.os import remove
 _TEXT_CACHE = local_path('text')
 
 
+def _etextno_to_uri_subdirectory(etextno):
+    """
+    For example, ebook #1 is in subdirectory:
+    0/1
+
+    And ebook #19 is in subdirectory:
+    1/19
+
+    While ebook #15453 is in this subdirectory:
+    1/5/4/5/15453
+    """
+    str_etextno = str(etextno).zfill(2)
+    all_but_last_digit = list(str_etextno[:-1])
+    subdir_part = "/".join(all_but_last_digit)
+    subdir = "{0}/{1}".format(subdir_part, etextno)  # etextno not zfilled
+    return subdir
+
+
 def _format_download_uri(etextno):
     """Returns the download location on the Project Gutenberg servers for a
     given text.
@@ -29,16 +47,12 @@ def _format_download_uri(etextno):
     """
     uri_root = r'http://www.gutenberg.lib.md.us'
     extensions = ('.txt', '-8.txt', '-0.txt')
-    str_etextno = str(etextno)
     for extension in extensions:
-        if etextno > 10:
-            path = '/'.join(str_etextno[:len(str_etextno) - 1])
-        else:
-            path = '0'
-        uri = '{root}/{path}/{etextno}/{etextno}{extension}'.format(
+        path = _etextno_to_uri_subdirectory(etextno)
+        uri = '{root}/{path}/{etextno}{extension}'.format(
             root=uri_root,
             path=path,
-            etextno=str_etextno,
+            etextno=etextno,
             extension=extension)
         response = requests.head(uri)
         if response.ok:
