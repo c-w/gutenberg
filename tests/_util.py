@@ -8,6 +8,7 @@ from __future__ import absolute_import
 
 import abc
 import shutil
+import sys
 import tempfile
 from contextlib import closing
 from contextlib import contextmanager
@@ -18,6 +19,12 @@ from six import with_metaclass
 from gutenberg.acquire.metadata import SleepycatMetadataCache
 from gutenberg.acquire.metadata import set_metadata_cache
 import gutenberg.acquire.text
+
+if sys.version_info < (2, 7):
+    import unittest2 as unittest
+else:
+    import unittest
+assert unittest  # silence warning
 
 
 # noinspection PyPep8Naming,PyAttributeOutsideInit
