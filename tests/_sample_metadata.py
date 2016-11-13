@@ -23,7 +23,6 @@ class SampleMetaData(object):
         self.subject = frozenset(subject or [])
         self.language = frozenset(language or [])
 
-
     @classmethod
     def __create_uid(cls, hashable):
         return cls.__uids.setdefault(hashable, len(cls.__uids) + 1)
@@ -85,7 +84,7 @@ class SampleMetaData(object):
               '"{language}"'
               '.')
             .format(etextno=self.etextno, language=language)
-            for subject in self.language)
+            for language in self.language)
 
     def _rdf_formaturi(self):
         return u('') if not self.formaturi else u('\n').join(

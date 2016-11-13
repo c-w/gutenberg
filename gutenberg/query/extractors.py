@@ -88,6 +88,7 @@ class FormatURIExtractor(_SimplePredicateRelationshipExtractor):
     def contains(cls, value):
         return URIRef(value)
 
+
 class RightsExtractor(_SimplePredicateRelationshipExtractor):
     """Extracts the copyright information.
 
@@ -104,6 +105,7 @@ class RightsExtractor(_SimplePredicateRelationshipExtractor):
     def contains(cls, value):
         return Literal(value)
 
+
 class LanguageExtractor(_SimplePredicateRelationshipExtractor):
     """Extracts the language.
 
@@ -119,6 +121,7 @@ class LanguageExtractor(_SimplePredicateRelationshipExtractor):
     @classmethod
     def contains(cls, value):
         return Literal(value)
+
 
 class SubjectExtractor(_SimplePredicateRelationshipExtractor):
     """Extracts the subject(s).
