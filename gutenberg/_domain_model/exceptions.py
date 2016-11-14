@@ -1,5 +1,7 @@
 """Module to hold Gutenberg exceptions."""
 
+from __future__ import unicode_literals
+
 
 class Error(Exception):
     """Top level exception for the gutenberg library. All exceptions inherit

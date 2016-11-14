@@ -2,11 +2,10 @@
 """Data module that contains strings that mark the start and end of a Project
 Gutenberg disclaimer/header."""
 
+from __future__ import unicode_literals
 
-from six import u
 
-
-TEXT_START_MARKERS = frozenset((u(_) for _ in (
+TEXT_START_MARKERS = frozenset((_ for _ in (
     "*END*THE SMALL PRINT",
     "*** START OF THE PROJECT GUTENBERG",
     "*** START OF THIS PROJECT GUTENBERG",
@@ -63,7 +62,7 @@ TEXT_START_MARKERS = frozenset((u(_) for _ in (
 )))
 
 
-TEXT_END_MARKERS = frozenset((u(_) for _ in (
+TEXT_END_MARKERS = frozenset((_ for _ in (
     "*** END OF THE PROJECT GUTENBERG",
     "*** END OF THIS PROJECT GUTENBERG",
     "***END OF THE PROJECT GUTENBERG",
@@ -93,11 +92,11 @@ TEXT_END_MARKERS = frozenset((u(_) for _ in (
 )))
 
 
-LEGALESE_START_MARKERS = frozenset((u(_) for _ in (
+LEGALESE_START_MARKERS = frozenset((_ for _ in (
     "<<THIS ELECTRONIC VERSION OF",
 )))
 
 
-LEGALESE_END_MARKERS = frozenset((u(_) for _ in (
+LEGALESE_END_MARKERS = frozenset((_ for _ in (
     "SERVICE THAT CHARGES FOR DOWNLOAD",
 )))

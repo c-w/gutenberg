@@ -1,5 +1,6 @@
 """Library installer."""
 
+from __future__ import absolute_import, unicode_literals
 from os.path import isfile
 from sys import version_info
 

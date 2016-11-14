@@ -2,7 +2,7 @@
 # pylint: disable=R0903
 
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 from io import open
 import os
 import sys

@@ -2,7 +2,7 @@
 # pylint: disable=R0904
 
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 from gutenberg._domain_model.exceptions import InvalidEtextIdException
 from gutenberg._domain_model.types import validate_etextno
