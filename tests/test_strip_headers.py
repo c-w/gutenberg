@@ -3,11 +3,11 @@
 
 
 from __future__ import absolute_import
-import unittest
 
 from six import u
 
 from tests._sample_text import SampleText
+from tests._util import unittest
 
 from gutenberg.cleanup import strip_headers
 
@@ -19,8 +19,9 @@ class TestStripHeaders(unittest.TestCase):
             actual = strip_headers(testcase.raw_text).splitlines()
             lines = list(zip(actual, expected))
             for i, (actual_line, expected_line) in enumerate(lines, start=1):
-                self.assertTrue(
-                    actual_line == expected_line,
+                self.assertEqual(
+                    actual_line,
+                    expected_line,
                     u('non-matching lines for etext {etextno}:\n'
                       '{previous_lines}\n'
                       '{lineno_separator}\n'

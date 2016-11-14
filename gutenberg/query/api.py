@@ -25,6 +25,7 @@ if sys.version_info < (3,):
 else:
     bind(URIRef('http://purl.org/dc/terms/RFC4646'), str)
 
+
 def get_metadata(feature_name, etextno):
     """Looks up the value of a meta-data feature for a given text.
 
