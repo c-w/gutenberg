@@ -3,18 +3,18 @@
 
 
 from __future__ import absolute_import
-import unittest
 
 from gutenberg._domain_model.exceptions import InvalidEtextIdException
 from gutenberg._domain_model.types import validate_etextno
+from tests._util import unittest
 
 
 class TestValidateEtextno(unittest.TestCase):
     def test_is_valid_etext(self):
-        self.assertTrue(validate_etextno(1) is not None)
-        self.assertTrue(validate_etextno(12) is not None)
-        self.assertTrue(validate_etextno(123) is not None)
-        self.assertTrue(validate_etextno(1234) is not None)
+        self.assertIsNotNone(validate_etextno(1))
+        self.assertIsNotNone(validate_etextno(12))
+        self.assertIsNotNone(validate_etextno(123))
+        self.assertIsNotNone(validate_etextno(1234))
 
     def test_is_invalid_etext(self):
         self.assertRaises(InvalidEtextIdException, validate_etextno, 'not-int')

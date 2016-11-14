@@ -6,13 +6,13 @@
 from __future__ import absolute_import
 from builtins import str
 import itertools
-import unittest
 
 from gutenberg._domain_model.vocabulary import DCTERMS
 from gutenberg._domain_model.vocabulary import PGTERMS
 from tests._sample_metadata import SampleMetaData
 from tests._util import MockMetadataMixin
 from tests._util import MockTextMixin
+from tests._util import unittest
 
 from gutenberg.acquire import load_etext
 from gutenberg.acquire import load_metadata
@@ -24,9 +24,9 @@ class TestLoadMetadata(MockMetadataMixin, unittest.TestCase):
 
     def test_load_metadata(self):
         metadata = load_metadata()
-        self.assertTrue(len(list(metadata[::PGTERMS.ebook])) > 0)
-        self.assertTrue(len(list(metadata[:DCTERMS.creator:])) > 0)
-        self.assertTrue(len(list(metadata[:DCTERMS.title:])) > 0)
+        self.assertGreater(len(list(metadata[::PGTERMS.ebook])), 0)
+        self.assertGreater(len(list(metadata[:DCTERMS.creator:])), 0)
+        self.assertGreater(len(list(metadata[:DCTERMS.title:])), 0)
 
 
 class TestLoadEtext(MockTextMixin, unittest.TestCase):
@@ -41,7 +41,7 @@ class TestLoadEtext(MockTextMixin, unittest.TestCase):
         )
         for testcase, loader in itertools.product(testcases, loaders):
             text = loader(testcase.etextno)
-            self.assertTrue(isinstance(text, str))
+            self.assertIsInstance(text, str)
 
 
 if __name__ == '__main__':

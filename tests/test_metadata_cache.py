@@ -17,11 +17,7 @@ from gutenberg.acquire.metadata import SleepycatMetadataCache
 from gutenberg.acquire.metadata import SqliteMetadataCache
 from gutenberg.acquire.metadata import set_metadata_cache
 from gutenberg.query import get_metadata
-
-if sys.version_info < (2, 7):
-    import unittest2 as unittest
-else:
-    import unittest
+from tests._util import unittest
 
 
 # noinspection PyPep8Naming,PyAttributeOutsideInit
@@ -43,7 +39,7 @@ class MetadataCache(object):
         self.cache.populate()
         set_metadata_cache(self.cache)
         title = get_metadata('title', 30929)
-        self.assertTrue(u('Het loterijbriefje') in title)
+        self.assertIn(u('Het loterijbriefje'), title)
 
     def test_repopulate(self):
         self.cache.populate()
@@ -51,17 +47,17 @@ class MetadataCache(object):
         self.cache.delete()
         self.cache.populate()
         title = get_metadata('title', 30929)
-        self.assertTrue(u('Het loterijbriefje') in title)
+        self.assertIn(u('Het loterijbriefje'), title)
 
     def test_refresh(self):
         self.cache.populate()
         set_metadata_cache(self.cache)
         title = get_metadata('title', 30929)
-        self.assertTrue(u('Het loterijbriefje') in title)
+        self.assertIn(u('Het loterijbriefje'), title)
 
         self.cache.refresh()
         title = get_metadata('title', 30929)
-        self.assertTrue(u('Het loterijbriefje') in title)
+        self.assertIn(u('Het loterijbriefje'), title)
 
     def test_repopulate_without_delete(self):
         # Trying to populate an existing cache should raise an exception
