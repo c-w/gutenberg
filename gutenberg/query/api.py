@@ -51,7 +51,7 @@ def get_etexts(feature_name, value):
     """Looks up all the texts that have meta-data matching some criterion.
 
     Arguments:
-        feature_name (str): The the meta-data on which to select the texts.
+        feature_name (str): The meta-data on which to select the texts.
         value (str): The value of the meta-data on which to filter the texts.
 
     Returns:
@@ -120,7 +120,7 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
 
     @classmethod
     def _uri_to_etext(cls, uri_ref):
-        """Converts the the representation used to identify a text in the
+        """Converts the representation used to identify a text in the
         meta-data RDF graph to a human-friendly integer text identifier.
 
         """
