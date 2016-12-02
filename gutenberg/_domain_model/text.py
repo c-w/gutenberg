@@ -5,7 +5,7 @@ Gutenberg disclaimer/header."""
 from __future__ import unicode_literals
 
 
-TEXT_START_MARKERS = frozenset((_ for _ in (
+TEXT_START_MARKERS = frozenset((
     "*END*THE SMALL PRINT",
     "*** START OF THE PROJECT GUTENBERG",
     "*** START OF THIS PROJECT GUTENBERG",
@@ -59,10 +59,10 @@ TEXT_START_MARKERS = frozenset((_ for _ in (
     'and the Project Gutenberg Online Distributed Proofreading Team',
     'Mary Meehan, and the Project Gutenberg Online Distributed Proofreading',
     '                this Project Gutenberg edition.',
-)))
+))
 
 
-TEXT_END_MARKERS = frozenset((_ for _ in (
+TEXT_END_MARKERS = frozenset((
     "*** END OF THE PROJECT GUTENBERG",
     "*** END OF THIS PROJECT GUTENBERG",
     "***END OF THE PROJECT GUTENBERG",
@@ -89,14 +89,10 @@ TEXT_END_MARKERS = frozenset((_ for _ in (
     "END OF PROJECT GUTENBERG",
     " End of the Project Gutenberg",
     " *** END OF THIS PROJECT GUTENBERG",
-)))
+))
 
 
-LEGALESE_START_MARKERS = frozenset((_ for _ in (
-    "<<THIS ELECTRONIC VERSION OF",
-)))
+LEGALESE_START_MARKERS = frozenset(("<<THIS ELECTRONIC VERSION OF",))
 
 
-LEGALESE_END_MARKERS = frozenset((_ for _ in (
-    "SERVICE THAT CHARGES FOR DOWNLOAD",
-)))
+LEGALESE_END_MARKERS = frozenset(("SERVICE THAT CHARGES FOR DOWNLOAD",))
