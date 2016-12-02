@@ -3,3 +3,5 @@
 /dist/
 /*.egg-info
 /.idea/
+.coverage
+htmlcov/
