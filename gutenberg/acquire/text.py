@@ -76,13 +76,12 @@ def load_etext(etextno, refresh_cache=False):
         makedirs(os.path.dirname(cached))
         download_uri = _format_download_uri(etextno)
         response = requests.get(download_uri)
-        response.encoding = 'utf-8'
         text = response.text
         with closing(gzip.open(cached, 'w')) as cache:
             cache.write(text.encode('utf-8'))
-    else:
-        with closing(gzip.open(cached, 'r')) as cache:
-            text = cache.read().decode('utf-8')
+
+    with closing(gzip.open(cached, 'r')) as cache:
+        text = cache.read().decode('utf-8')
     return text
 
 
