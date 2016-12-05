@@ -3,6 +3,8 @@
 # pylint: disable=R0903
 # pylint: disable=W0622
 
+from __future__ import unicode_literals
+
 
 # noinspection PyPep8Naming
 class abstractclassmethod(classmethod):

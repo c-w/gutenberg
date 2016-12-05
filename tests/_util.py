@@ -4,7 +4,7 @@
 # pylint: disable=W0212
 
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import abc
 import shutil
@@ -13,7 +13,6 @@ import tempfile
 from contextlib import closing
 from contextlib import contextmanager
 
-from six import u
 from six import with_metaclass
 
 from gutenberg.acquire.metadata import SleepycatMetadataCache
@@ -62,7 +61,7 @@ class _SleepycatMetadataCacheForTesting(SleepycatMetadataCache):
     def populate(self):
         SleepycatMetadataCache.populate(self)
 
-        data = u('\n').join(item.rdf() for item in self.sample_data_factory())
+        data = '\n'.join(item.rdf() for item in self.sample_data_factory())
 
         self.graph.open(self.cache_uri, create=True)
         with closing(self.graph):

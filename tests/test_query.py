@@ -2,9 +2,7 @@
 # pylint: disable=R0904
 
 
-from __future__ import absolute_import
-
-from six import u
+from __future__ import absolute_import, unicode_literals
 
 from tests._sample_metadata import SampleMetaData
 from tests._util import MockMetadataMixin
@@ -25,8 +23,8 @@ class TestGetMetadata(MockMetadataMixin, unittest.TestCase):
             self.assertEqual(
                 set(actual),
                 set(expected),
-                u('non-matching {feature} for book {etextno}: '
-                  'expected={expected} actual={actual}')
+                'non-matching {feature} for book {etextno}: '
+                'expected={expected} actual={actual}'
                 .format(
                     feature=feature,
                     etextno=testcase.etextno,
@@ -63,8 +61,8 @@ class TestGetEtexts(MockMetadataMixin, unittest.TestCase):
                 self.assertIn(
                     testcase.etextno,
                     actual,
-                    u("didn't retrieve {etextno} when querying for books that "
-                      'have {feature}="{feature_value}" (got {actual}).')
+                    "didn't retrieve {etextno} when querying for books that "
+                    'have {feature}="{feature_value}" (got {actual}).'
                     .format(
                         etextno=testcase.etextno,
                         feature=feature,
