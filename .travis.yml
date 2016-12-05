@@ -25,10 +25,14 @@ install:
   - if [[ $TRAVIS_PYTHON_VERSION == 2.6 ]]; then pip install unittest2; fi
   - pip install -r requirements.pip
   - pip install -r requirements-py3.pip
+  - pip install coverage
 
-script: nosetests
+script: coverage run --source=gutenberg -m nose
 
 after_success:
+  - coverage report
+  - pip install coveralls
+  - coveralls
   - pip install pyflakes pep8
   - pyflakes . | tee >(wc -l)
   - pep8 --statistics --count .

@@ -42,6 +42,7 @@ class TestLoadEtext(MockTextMixin, unittest.TestCase):
         for testcase, loader in itertools.product(testcases, loaders):
             text = loader(testcase.etextno)
             self.assertIsInstance(text, str)
+            self.assertNotIn(u'\ufffd', text)
 
 
 if __name__ == '__main__':
