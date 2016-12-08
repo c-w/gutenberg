@@ -26,7 +26,7 @@ def install_requires():
 
 setup(
     name='Gutenberg',
-    version='0.4.2',
+    version='0.4.3',
     author='Clemens Wolff',
     author_email='clemens.wolff+pypi@gmail.com',
     packages=find_packages(exclude=['tests']),
