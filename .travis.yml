@@ -1,17 +1,12 @@
-# Unfortunately, the bsddb module on Travis-CI's virtualenv is broken...
-# This means that we always need to manually install BSD-DB, even when we're
-# running the tests under Python 2 where normally we should be able to just use
-# the bsddb module in the standard library. If this wasn't the case, we'd guard
-# the manual BSD-DB installation with a TRAVIS_PYTHON_VERSION check.
-
+sudo: false
+dist: trusty
 language: python
-
 python:
-  - "2.6"
-  - "2.7"
-  - "3.3"
-  - "3.4"
-  - "3.5"
+  - '2.6'
+  - '2.7'
+  - '3.3'
+  - '3.4'
+  - '3.5'
 
 env:
   - BERKELEYDB_DIR=/usr
@@ -36,3 +31,13 @@ after_success:
   - pip install pyflakes pep8
   - pyflakes . | tee >(wc -l)
   - pep8 --statistics --count .
+
+deploy:
+  provider: pypi
+  user: Master_Odin_Bot
+  password:
+    secure: YxFBPXslFL7F9eQIvMKz75GvKnvG87E8LisYtVlD7fifuThr4MEXhE+eqxbA0ywLN2K1/aqP9MEBS6QypVMoAwN98ZmIblsjRDa+jeOkeBQxJU/DTPXpM1dpW6CJMekVaiM/04R5+wca9Ln+jewlQVWlZWgNm4b5Y1BHxDFunCgijbiGgpPoAsdcAxmjtRvMs98BP+HoyjXOQWGIUFhqSm6J78H5aYE2SORQPYrcytC76F502kQZtUiIQRHuMhD1QvUpTbLHV2b/+UV8x0pEN9g15tnIWJt1DVpHEAoqN0jlBi2aIbc2/WW+4xfI8GNtHHswKUEB1if09p6Zq1CcRuNwSAawub2dqpodwRSasdAEl2CoORdvOmEhrhHDJZ0FrASTGP2kZp/ARuAmJEzQ5LxlhiKLOmeDPNXx273pl4iTXZ2kjdtiuHzWdyrwdnC7EXRke3nSY876Rnc/ZxMwMw/nEi4aoWFjNZW+RRh2nMtj3qkompFJ2k/fszzvqKN97ow5PowYy/ESFp7WJc/PEhQM8uAmtCHdu1A3W/bXu2KTO4jjbqTKey0YZAEQvRWwKp6moLtBp2iFLqRNv93W3USQZjYUsVJ3o4X6WTAQEsNxFC7Bx9KlWtDaROEtGqY8A0igAKdxAKn54Mt5JBj+7DIDQNLQvanonAFz780XMc8=
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
+    repo: c-w/Gutenberg
