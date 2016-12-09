@@ -17,6 +17,7 @@ from rdflib import plugin
 from rdflib.graph import Graph
 from rdflib.store import Store
 from rdflib.term import URIRef
+from rdflib_sqlalchemy import registerplugins
 from six import with_metaclass
 
 from gutenberg._domain_model.exceptions import CacheAlreadyExistsException
@@ -201,6 +202,7 @@ class SqliteMetadataCache(MetadataCache):
 
     def __init__(self, cache_location):
         cache_uri = self._CACHE_URI_PREFIX + cache_location
+        registerplugins()
         store = plugin.get('SQLAlchemy', Store)(identifier=_DB_IDENTIFIER)
         MetadataCache.__init__(self, store, cache_uri)
 
