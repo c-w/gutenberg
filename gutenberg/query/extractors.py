@@ -1,7 +1,7 @@
 """Module for implementations of the MetadataExtractor interface."""
 
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 from rdflib.term import Literal
 from rdflib.term import URIRef
