@@ -19,6 +19,24 @@ from gutenberg._util.os import remove
 _TEXT_CACHE = local_path('text')
 
 
+def _etextno_to_uri_subdirectory(etextno):
+    """
+    For example, ebook #1 is in subdirectory:
+    0/1
+
+    And ebook #19 is in subdirectory:
+    1/19
+
+    While ebook #15453 is in this subdirectory:
+    1/5/4/5/15453
+    """
+    str_etextno = str(etextno).zfill(2)
+    all_but_last_digit = list(str_etextno[:-1])
+    subdir_part = "/".join(all_but_last_digit)
+    subdir = "{0}/{1}".format(subdir_part, etextno)  # etextno not zfilled
+    return subdir
+
+
 def _format_download_uri(etextno):
     """Returns the download location on the Project Gutenberg servers for a
     given text.
@@ -28,37 +46,18 @@ def _format_download_uri(etextno):
 
     """
     uri_root = r'http://www.gutenberg.lib.md.us'
-
-    if 0 < etextno < 10:
-        oldstyle_files = (
-            'when11',
-            'bill11',
-            'jfk11',
-            'getty11',
-            'const11',
-            'liber11',
-            'mayfl11',
-            'linc211',
-            'linc111',
-        )
-        etextno = int(etextno)
-        return '{root}/etext90/{name}.txt'.format(
+    extensions = ('.txt', '-8.txt', '-0.txt')
+    for extension in extensions:
+        path = _etextno_to_uri_subdirectory(etextno)
+        uri = '{root}/{path}/{etextno}{extension}'.format(
             root=uri_root,
-            name=oldstyle_files[etextno - 1])
-
-    else:
-        etextno = str(etextno)
-        extensions = ('.txt', '-8.txt', '-0.txt')
-        for extension in extensions:
-            uri = '{root}/{path}/{etextno}/{etextno}{extension}'.format(
-                root=uri_root,
-                path='/'.join(etextno[:len(etextno) - 1]),
-                etextno=etextno,
-                extension=extension)
-            response = requests.head(uri)
-            if response.ok:
-                return uri
-        raise UnknownDownloadUriException
+            path=path,
+            etextno=etextno,
+            extension=extension)
+        response = requests.head(uri)
+        if response.ok:
+            return uri
+    raise UnknownDownloadUriException
 
 
 def load_etext(etextno, refresh_cache=False):
