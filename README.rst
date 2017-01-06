@@ -75,6 +75,16 @@ manager. For example, on Ubuntu, you can use apt-get:
     export BERKELEYDB_DIR=/usr
     pip install -r requirements-py3.pip
 
+MacOS
+*****
+
+On Mac, you can install BSD-DB using `homebrew <https://homebrew.sh/>`_:
+
+.. sourcecode :: sh
+
+    brew install berkeley-db4
+    pip install -r requirements-py3.pip
+
 Windows
 *******
 
