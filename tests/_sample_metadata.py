@@ -68,10 +68,15 @@ class SampleMetaData(object):
     def _rdf_subject(self):
         return '' if not self.subject else '\n'.join(
             '<http://www.gutenberg.org/ebooks/{etextno}> '
-            '<http://www.w3.org/1999/02/22-rdf-syntax-ns#Description>'
-            '"{subject}"'
+            '<http://purl.org/dc/terms/subject> '
+            '_:genid{genid} '
+            '.\n'
+            '_:genid{genid} '
+            '<http://www.w3.org/1999/02/22-rdf-syntax-ns#value> '
+            '"{subject}" '
             '.'
-            .format(etextno=self.etextno, subject=subject)
+            .format(etextno=self.etextno, subject=subject,
+                    genid=self.__create_uid(subject))
             for subject in self.subject)
 
     def _rdf_language(self):

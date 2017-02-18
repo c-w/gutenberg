@@ -1,7 +1,13 @@
 {
     "authors": ["Verne, Jules Gabriël"],
     "titles": ["Het loterijbriefje"],
-    "formaturi": [ "http://www.gutenberg.org/ebooks/30929.epub.noimages",
+    "subject": [
+      "Lotteries -- Fiction",
+      "PQ",
+      "Adventure stories"
+    ],
+    "formaturi": [
+        "http://www.gutenberg.org/ebooks/30929.epub.noimages",
         "http://www.gutenberg.org/ebooks/30929.kindle.images",
         "http://www.gutenberg.org/files/30929/30929-8.txt",
         "http://www.gutenberg.org/files/30929/30929-h.zip",
