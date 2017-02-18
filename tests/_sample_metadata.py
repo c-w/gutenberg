@@ -83,10 +83,14 @@ class SampleMetaData(object):
         return '' if not self.language else '\n'.join(
             '<http://www.gutenberg.org/ebooks/{etextno}> '
             '<http://purl.org/dc/terms/language> '
-            '<http://www.w3.org/1999/02/22-rdf-syntax-ns#Description>'
-            '"{language}"'
+            '_:genid{genid} '
+            '.\n'
+            '_:genid{genid} '
+            '<http://www.w3.org/1999/02/22-rdf-syntax-ns#value> '
+            '"{language}"^^<http://purl.org/dc/terms/RFC4646> '
             '.'
-            .format(etextno=self.etextno, language=language)
+            .format(etextno=self.etextno, language=language,
+                    genid=self.__create_uid(language))
             for language in self.language)
 
     def _rdf_formaturi(self):
