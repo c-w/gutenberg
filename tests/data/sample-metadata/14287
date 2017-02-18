@@ -1,4 +1,13 @@
 {
     "authors": ["Verne, Jules Gabriël"],
+    "language": ["fr"],
+    "subject": [
+      "Science fiction",
+      "Adventure stories",
+      "PQ",
+      "Castaways -- Fiction",
+      "Islands of the Pacific -- Fiction"
+    ],
+    "rights": ["Public domain in the USA."],
     "titles": ["L'îsle mystérieuse"]
 }
