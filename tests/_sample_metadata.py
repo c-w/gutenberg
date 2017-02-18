@@ -98,6 +98,9 @@ class SampleMetaData(object):
             self._rdf_etextno(),
             self._rdf_author(),
             self._rdf_title(),
+            self._rdf_rights(),
+            self._rdf_subject(),
+            self._rdf_language(),
             self._rdf_formaturi(),
         ) if fact)
 
