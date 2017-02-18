@@ -7,7 +7,7 @@ Gutenberg
 .. image:: https://coveralls.io/repos/github/c-w/Gutenberg/badge.svg?branch=master
     :target: https://coveralls.io/github/c-w/Gutenberg?branch=master
 .. image:: https://img.shields.io/pypi/v/gutenberg.svg
-  :target: https://pypi.python.org/pypi/gutenberg/
+    :target: https://pypi.python.org/pypi/gutenberg/
 
 
 Overview
