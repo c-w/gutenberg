@@ -114,6 +114,8 @@ class LanguageExtractor(_SimplePredicateRelationshipExtractor):
     """Extracts the language.
 
     """
+    _DATATYPE = URIRef('http://purl.org/dc/terms/RFC4646')
+
     @classmethod
     def feature_name(cls):
         return 'language'
@@ -124,7 +126,7 @@ class LanguageExtractor(_SimplePredicateRelationshipExtractor):
 
     @classmethod
     def contains(cls, value):
-        return Literal(value)
+        return Literal(value, datatype=cls._DATATYPE)
 
 
 class SubjectExtractor(_SimplePredicateRelationshipExtractor):
