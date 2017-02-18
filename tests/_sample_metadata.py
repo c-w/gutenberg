@@ -93,16 +93,15 @@ class SampleMetaData(object):
             .format(etextno=self.etextno, formaturi=formaturi)
             for formaturi in self.formaturi)
 
+    @property
+    def _facts(self):
+        for method_name in dir(self):
+            if method_name.startswith('_rdf_'):
+                rdf_fact = getattr(self, method_name)
+                yield rdf_fact()
+
     def rdf(self):
-        return '\n'.join(fact for fact in (
-            self._rdf_etextno(),
-            self._rdf_author(),
-            self._rdf_title(),
-            self._rdf_rights(),
-            self._rdf_subject(),
-            self._rdf_language(),
-            self._rdf_formaturi(),
-        ) if fact)
+        return '\n'.join(fact for fact in self._facts if fact)
 
     @classmethod
     def for_etextno(cls, etextno):
