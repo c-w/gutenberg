@@ -26,6 +26,10 @@ class _SimplePredicateRelationshipExtractor(MetadataExtractor):
         """
         raise NotImplementedError
 
+    @abstractclassmethod
+    def contains(cls, value):
+        raise NotImplementedError
+
     @classmethod
     def get_metadata(cls, etextno):
         etext = cls._etext_to_uri(etextno)
