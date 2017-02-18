@@ -97,6 +97,18 @@ should download `bsddb3‑6.2.1‑cp35‑cp35m‑win_amd64.whl`.
 After you download the wheel, install it and you're good to go:
 `pip install bsddb3‑6.2.1‑cp35‑cp35m‑win_amd64.whl`
 
+License conflicts
+*****************
+
+Since its v6.x releases, BSD-DB switched to the `AGPL3 <https://www.gnu.org/licenses/agpl-3.0.en.html>`_
+license which is stricter than this project's `Apache v2 <https://www.apache.org/licenses/LICENSE-2.0>`_
+license. This means that unless you're happy to comply to the `terms <https://tldrlegal.com/license/gnu-affero-general-public-license-v3-(agpl-3.0)>`_
+of the AGPL3 license, you'll have to install an ealier version of BSD-DB
+(anything between 4.8.30 and 5.x should be fine). If you are happy to use this
+project under AGPL3 (or if you have a commercial license for BSD-DB), set the
+following environment variable before attempting to install BSD-DB:
+`YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION=1`.
+
 
 Usage
 =====
