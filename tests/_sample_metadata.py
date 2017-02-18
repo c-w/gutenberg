@@ -68,20 +68,29 @@ class SampleMetaData(object):
     def _rdf_subject(self):
         return '' if not self.subject else '\n'.join(
             '<http://www.gutenberg.org/ebooks/{etextno}> '
-            '<http://www.w3.org/1999/02/22-rdf-syntax-ns#Description>'
-            '"{subject}"'
+            '<http://purl.org/dc/terms/subject> '
+            '_:genid{genid} '
+            '.\n'
+            '_:genid{genid} '
+            '<http://www.w3.org/1999/02/22-rdf-syntax-ns#value> '
+            '"{subject}" '
             '.'
-            .format(etextno=self.etextno, subject=subject)
+            .format(etextno=self.etextno, subject=subject,
+                    genid=self.__create_uid(subject))
             for subject in self.subject)
 
     def _rdf_language(self):
         return '' if not self.language else '\n'.join(
             '<http://www.gutenberg.org/ebooks/{etextno}> '
             '<http://purl.org/dc/terms/language> '
-            '<http://www.w3.org/1999/02/22-rdf-syntax-ns#Description>'
-            '"{language}"'
+            '_:genid{genid} '
+            '.\n'
+            '_:genid{genid} '
+            '<http://www.w3.org/1999/02/22-rdf-syntax-ns#value> '
+            '"{language}"^^<http://purl.org/dc/terms/RFC4646> '
             '.'
-            .format(etextno=self.etextno, language=language)
+            .format(etextno=self.etextno, language=language,
+                    genid=self.__create_uid(language))
             for language in self.language)
 
     def _rdf_formaturi(self):
@@ -93,13 +102,15 @@ class SampleMetaData(object):
             .format(etextno=self.etextno, formaturi=formaturi)
             for formaturi in self.formaturi)
 
+    @property
+    def _facts(self):
+        for method_name in dir(self):
+            if method_name.startswith('_rdf_'):
+                rdf_fact = getattr(self, method_name)
+                yield rdf_fact()
+
     def rdf(self):
-        return '\n'.join(fact for fact in (
-            self._rdf_etextno(),
-            self._rdf_author(),
-            self._rdf_title(),
-            self._rdf_formaturi(),
-        ) if fact)
+        return '\n'.join(fact for fact in self._facts if fact)
 
     @classmethod
     def for_etextno(cls, etextno):
