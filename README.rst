@@ -141,7 +141,7 @@ Downloading a text
 Looking up meta-data
 --------------------
 
-Title and author meta-data can queried:
+A bunch of meta-data about ebooks can be queried:
 
 .. sourcecode :: python
 
@@ -153,6 +153,14 @@ Title and author meta-data can queried:
 
     print(get_etexts('title', 'Moby Dick; Or, The Whale'))  # prints frozenset([2701, ...])
     print(get_etexts('author', 'Melville, Hermann'))        # prints frozenset([2701, ...])
+
+You can get a full list of the meta-data that can be queried by calling:
+
+.. sourcecode :: python
+
+    from gutenberg.query import list_supported_metadatas
+
+    print(list_supported_metadatas()) # prints (u'author', u'formaturi', u'language', ...)
 
 Before you use one of the `gutenberg.query` functions you must populate the
 local metadata cache. This one-off process will take quite a while to complete
