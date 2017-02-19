@@ -15,6 +15,7 @@ from gutenberg._util.abc import abstractclassmethod
 from gutenberg._util.objects import all_subclasses
 from gutenberg._util.os import makedirs
 from gutenberg._util.os import remove
+from tests._util import always_throw
 from tests._util import unittest
 
 
@@ -82,6 +83,13 @@ class TestMakedirs(unittest.TestCase):
         self.assertFalse(os.path.exists(path))
         makedirs(path)
         self.assertTrue(os.path.exists(path))
+
+    def test_makedirs_does_not_swallow_exception(self):
+        original_makedirs = os.makedirs
+        os.makedirs = always_throw(OSError)
+        with self.assertRaises(OSError):
+            makedirs('/some/path')
+        os.makedirs = original_makedirs
 
 
 if __name__ == '__main__':

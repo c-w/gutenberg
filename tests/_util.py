@@ -78,3 +78,19 @@ class _SleepycatMetadataCacheForTesting(SleepycatMetadataCache):
 
 def set_text_cache(cache):
     gutenberg.acquire.text._TEXT_CACHE = cache
+
+
+def always_throw(exception_type):
+    """Factory to create methods that throw exceptions.
+
+    Args:
+        exception_type: The type of exception to throw
+
+    Returns:
+        function: A function that always throws an exception when called.
+
+    """
+    # noinspection PyUnusedLocal
+    def wrapped(*args, **kwargs):
+        raise exception_type
+    return wrapped
