@@ -88,7 +88,7 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
         get_etexts(X, ...) will delegate work to this MetadataExtractor.
 
         """
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     @abstractclassmethod
     def get_metadata(cls, etextno):
@@ -96,7 +96,7 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
         feature-name for the given text.
 
         """
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     @abstractclassmethod
     def get_etexts(cls, value):
@@ -104,7 +104,7 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
         MetadataExtractor's feature name match the provided query.
 
         """
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     @classmethod
     def _metadata(cls):
