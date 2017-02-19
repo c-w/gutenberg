@@ -40,7 +40,7 @@ class MockTextMixin(object):
 class MockMetadataMixin(with_metaclass(abc.ABCMeta, object)):
     @abc.abstractmethod
     def sample_data(self):
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def setUp(self):
         self.cache = _SleepycatMetadataCacheForTesting(self.sample_data, 'nt')

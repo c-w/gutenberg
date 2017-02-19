@@ -25,11 +25,11 @@ class _SimplePredicateRelationshipExtractor(MetadataExtractor):
         meta-data value to extract. This should be a RDF Term or Path object.
 
         """
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     @abstractclassmethod
     def contains(cls, value):
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     @classmethod
     def get_metadata(cls, etextno):
