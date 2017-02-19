@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, unicode_literals
 import abc
+import codecs
 import os
 import shutil
 import tempfile
@@ -15,6 +16,8 @@ from gutenberg._util.abc import abstractclassmethod
 from gutenberg._util.objects import all_subclasses
 from gutenberg._util.os import makedirs
 from gutenberg._util.os import remove
+from gutenberg._util.os import reopen_encoded
+from tests._util import always_throw
 from tests._util import unittest
 
 
@@ -82,6 +85,30 @@ class TestMakedirs(unittest.TestCase):
         self.assertFalse(os.path.exists(path))
         makedirs(path)
         self.assertTrue(os.path.exists(path))
+
+    def test_makedirs_does_not_swallow_exception(self):
+        original_makedirs = os.makedirs
+        os.makedirs = always_throw(OSError)
+        with self.assertRaises(OSError):
+            makedirs('/some/path')
+        os.makedirs = original_makedirs
+
+
+class TestReopenEncoded(unittest.TestCase):
+    def setUp(self):
+        self.temporary_path = tempfile.mktemp()
+
+    def tearDown(self):
+        remove(self.temporary_path)
+
+    def test_reopen_encoded(self):
+        for encoding in ('utf-8', 'utf-16'):
+            with codecs.open(self.temporary_path, 'w', encoding) as fobj:
+                fobj.write('something')
+
+            with open(self.temporary_path, 'r') as fobj:
+                reopened_fobj = reopen_encoded(fobj, fobj.mode)
+                self.assertEqual(reopened_fobj.encoding.lower(), encoding)
 
 
 if __name__ == '__main__':

@@ -8,22 +8,13 @@ import os
 
 from six import with_metaclass
 from rdflib.term import URIRef
-from rdflib.term import bind
 
+from gutenberg._domain_model.exceptions import InvalidEtextIdException
 from gutenberg._domain_model.exceptions import UnsupportedFeatureException
 from gutenberg._domain_model.types import validate_etextno
 from gutenberg._util.abc import abstractclassmethod
 from gutenberg._util.objects import all_subclasses
 from gutenberg.acquire.metadata import load_metadata
-
-import sys
-
-
-# Add a binding for Project Gutenberg's Language datatype
-if sys.version_info < (3,):
-    bind(URIRef('http://purl.org/dc/terms/RFC4646'), unicode)
-else:
-    bind(URIRef('http://purl.org/dc/terms/RFC4646'), str)
 
 
 def get_metadata(feature_name, etextno):
@@ -67,6 +58,18 @@ def get_etexts(feature_name, value):
     return frozenset(matching_etexts)
 
 
+def list_supported_metadatas():
+    """Looks up the names of all the supported meta-data that can be looked up
+    via `get_metadata`.
+
+    Returns:
+        tuple: The names of all queryable meta-datas.
+
+    """
+    # noinspection PyProtectedMember
+    return tuple(sorted(MetadataExtractor._implementations().keys()))
+
+
 class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
     """This class represents the interface by which the public functions in
     this API can be extended to provide access to Project Gutenberg meta-data.
@@ -75,6 +78,8 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
     MetadataExtractor implementation that returns X for its feature_name call.
 
     """
+    __implementations = None
+
     @abstractclassmethod
     def feature_name(cls):
         """The keyword that will cause the top-level API methods get_metadata
@@ -83,7 +88,7 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
         get_etexts(X, ...) will delegate work to this MetadataExtractor.
 
         """
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     @abstractclassmethod
     def get_metadata(cls, etextno):
@@ -91,7 +96,7 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
         feature-name for the given text.
 
         """
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     @abstractclassmethod
     def get_etexts(cls, value):
@@ -99,7 +104,7 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
         MetadataExtractor's feature name match the provided query.
 
         """
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     @classmethod
     def _metadata(cls):
@@ -124,20 +129,27 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
         meta-data RDF graph to a human-friendly integer text identifier.
 
         """
-        return validate_etextno(int(os.path.basename(uri_ref.toPython())))
+        try:
+            return validate_etextno(int(os.path.basename(uri_ref.toPython())))
+        except InvalidEtextIdException:
+            return None
 
-    @staticmethod
-    def __find_implementations():
+    @classmethod
+    def _implementations(cls):
         """Returns all the concrete subclasses of MetadataExtractor.
 
         """
-        implementations = {}
+        if cls.__implementations:
+            return cls.__implementations
+
+        cls.__implementations = {}
         for implementation in all_subclasses(MetadataExtractor):
             try:
-                implementations[implementation.feature_name()] = implementation
+                feature_name = implementation.feature_name()
+                cls.__implementations[feature_name] = implementation
             except NotImplementedError:
                 pass
-        return implementations
+        return cls.__implementations
 
     @staticmethod
     def get(feature_name):
@@ -148,7 +160,7 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
             UnsupportedFeature: If no extractor exists for the feature name.
 
         """
-        implementations = MetadataExtractor.__find_implementations()
+        implementations = MetadataExtractor._implementations()
         try:
             return implementations[feature_name]
         except KeyError:

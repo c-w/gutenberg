@@ -6,6 +6,7 @@ from __future__ import absolute_import, unicode_literals
 from rdflib.term import Literal
 from rdflib.term import URIRef
 
+from gutenberg._domain_model.types import rdf_bind_to_string
 from gutenberg._domain_model.vocabulary import DCTERMS
 from gutenberg._domain_model.vocabulary import PGTERMS
 from gutenberg._domain_model.vocabulary import RDFTERMS
@@ -24,7 +25,11 @@ class _SimplePredicateRelationshipExtractor(MetadataExtractor):
         meta-data value to extract. This should be a RDF Term or Path object.
 
         """
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
+
+    @abstractclassmethod
+    def contains(cls, value):
+        raise NotImplementedError  # pragma: no cover
 
     @classmethod
     def get_metadata(cls, etextno):
@@ -35,7 +40,8 @@ class _SimplePredicateRelationshipExtractor(MetadataExtractor):
     @classmethod
     def get_etexts(cls, requested_value):
         query = cls._metadata()[:cls.predicate():cls.contains(requested_value)]
-        return frozenset(cls._uri_to_etext(result) for result in query)
+        results = (cls._uri_to_etext(result) for result in query)
+        return frozenset(result for result in results if result is not None)
 
 
 class AuthorExtractor(_SimplePredicateRelationshipExtractor):
@@ -48,7 +54,7 @@ class AuthorExtractor(_SimplePredicateRelationshipExtractor):
 
     @classmethod
     def predicate(cls):
-        return DCTERMS.creator / PGTERMS.alias
+        return DCTERMS.creator / PGTERMS.name
 
     @classmethod
     def contains(cls, value):
@@ -110,6 +116,9 @@ class LanguageExtractor(_SimplePredicateRelationshipExtractor):
     """Extracts the language.
 
     """
+    _DATATYPE = URIRef('http://purl.org/dc/terms/RFC4646')
+    rdf_bind_to_string(_DATATYPE)
+
     @classmethod
     def feature_name(cls):
         return 'language'
@@ -120,7 +129,7 @@ class LanguageExtractor(_SimplePredicateRelationshipExtractor):
 
     @classmethod
     def contains(cls, value):
-        return Literal(value)
+        return Literal(value, datatype=cls._DATATYPE)
 
 
 class SubjectExtractor(_SimplePredicateRelationshipExtractor):

@@ -6,6 +6,8 @@ Gutenberg
     :target: https://travis-ci.org/c-w/Gutenberg
 .. image:: https://coveralls.io/repos/github/c-w/Gutenberg/badge.svg?branch=master
     :target: https://coveralls.io/github/c-w/Gutenberg?branch=master
+.. image:: https://img.shields.io/pypi/v/gutenberg.svg
+    :target: https://pypi.python.org/pypi/gutenberg/
 
 
 Overview
@@ -20,7 +22,7 @@ The functionality provided by this package includes:
 * Cleaning the texts: removing all the crud, leaving just the text behind.
 * Making meta-data about the texts easily accessible.
 
-The package has been tested with Python 2.6, 2.7, 3.3, 3.4 and 3.5.
+The package has been tested with Python 2.6, 2.7, 3.3, 3.4, 3.5 and 3.6.
 
 
 Installation
@@ -63,15 +65,57 @@ This package depends on BSD-DB. The bsddb module was removed from the Python
 standard library since version 2.7. This means that if you wish to use gutenberg
 on Python 3, you will need to manually install BSD-DB.
 
+Linux
+*****
+
+On Linux, you can usually install BSD-DB using your distribution's package
+manager. For example, on Ubuntu, you can use apt-get:
+
 .. sourcecode :: sh
 
     sudo apt-get install libdb5.1-dev
     export BERKELEYDB_DIR=/usr
     pip install -r requirements-py3.pip
 
-If you are unable to install BSD-DB manually (e.g. on Windows), the library
-provides a SQLite-based fallback to the default BSD-DB implementation. However,
-be warned that this backend is much slower.
+MacOS
+*****
+
+On Mac, you can install BSD-DB using `homebrew <https://homebrew.sh/>`_:
+
+.. sourcecode :: sh
+
+    brew install berkeley-db4
+    pip install -r requirements-py3.pip
+
+Windows
+*******
+
+On Windows, it's easiest to download a pre-compiled version of BSD-DB from
+`pythonlibs <http://www.lfd.uci.edu/~gohlke/pythonlibs/>`_.
+
+For example, if you have Python 3.5 on a 64-bit version of Windows, you
+should download `bsddb3‑6.2.1‑cp35‑cp35m‑win_amd64.whl`.
+
+After you download the wheel, install it and you're good to go:
+
+.. sourcecode :: bash
+
+    pip install bsddb3‑6.2.1‑cp35‑cp35m‑win_amd64.whl
+
+License conflicts
+*****************
+
+Since its v6.x releases, BSD-DB switched to the `AGPL3 <https://www.gnu.org/licenses/agpl-3.0.en.html>`_
+license which is stricter than this project's `Apache v2 <https://www.apache.org/licenses/LICENSE-2.0>`_
+license. This means that unless you're happy to comply to the `terms <https://tldrlegal.com/license/gnu-affero-general-public-license-v3-(agpl-3.0)>`_
+of the AGPL3 license, you'll have to install an ealier version of BSD-DB
+(anything between 4.8.30 and 5.x should be fine). If you are happy to use this
+project under AGPL3 (or if you have a commercial license for BSD-DB), set the
+following environment variable before attempting to install BSD-DB:
+
+.. sourcecode :: bash
+
+    YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION=1
 
 
 Usage
@@ -97,7 +141,7 @@ Downloading a text
 Looking up meta-data
 --------------------
 
-Title and author meta-data can queried:
+A bunch of meta-data about ebooks can be queried:
 
 .. sourcecode :: python
 
@@ -109,6 +153,14 @@ Title and author meta-data can queried:
 
     print(get_etexts('title', 'Moby Dick; Or, The Whale'))  # prints frozenset([2701, ...])
     print(get_etexts('author', 'Melville, Hermann'))        # prints frozenset([2701, ...])
+
+You can get a full list of the meta-data that can be queried by calling:
+
+.. sourcecode :: python
+
+    from gutenberg.query import list_supported_metadatas
+
+    print(list_supported_metadatas()) # prints (u'author', u'formaturi', u'language', ...)
 
 Before you use one of the `gutenberg.query` functions you must populate the
 local metadata cache. This one-off process will take quite a while to complete
