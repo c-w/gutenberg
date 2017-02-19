@@ -40,7 +40,8 @@ class _SimplePredicateRelationshipExtractor(MetadataExtractor):
     @classmethod
     def get_etexts(cls, requested_value):
         query = cls._metadata()[:cls.predicate():cls.contains(requested_value)]
-        return frozenset(cls._uri_to_etext(result) for result in query)
+        results = (cls._uri_to_etext(result) for result in query)
+        return frozenset(result for result in results if result is not None)
 
 
 class AuthorExtractor(_SimplePredicateRelationshipExtractor):
