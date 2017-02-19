@@ -58,6 +58,18 @@ def get_etexts(feature_name, value):
     return frozenset(matching_etexts)
 
 
+def list_supported_metadatas():
+    """Looks up the names of all the supported meta-data that can be looked up
+    via `get_metadata`.
+
+    Returns:
+        tuple: The names of all queryable meta-datas.
+
+    """
+    # noinspection PyProtectedMember
+    return tuple(sorted(MetadataExtractor._implementations().keys()))
+
+
 class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
     """This class represents the interface by which the public functions in
     this API can be extended to provide access to Project Gutenberg meta-data.
@@ -66,6 +78,8 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
     MetadataExtractor implementation that returns X for its feature_name call.
 
     """
+    __implementations = None
+
     @abstractclassmethod
     def feature_name(cls):
         """The keyword that will cause the top-level API methods get_metadata
@@ -120,18 +134,22 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
         except InvalidEtextIdException:
             return None
 
-    @staticmethod
-    def __find_implementations():
+    @classmethod
+    def _implementations(cls):
         """Returns all the concrete subclasses of MetadataExtractor.
 
         """
-        implementations = {}
+        if cls.__implementations:
+            return cls.__implementations
+
+        cls.__implementations = {}
         for implementation in all_subclasses(MetadataExtractor):
             try:
-                implementations[implementation.feature_name()] = implementation
+                feature_name = implementation.feature_name()
+                cls.__implementations[feature_name] = implementation
             except NotImplementedError:
                 pass
-        return implementations
+        return cls.__implementations
 
     @staticmethod
     def get(feature_name):
@@ -142,7 +160,7 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
             UnsupportedFeature: If no extractor exists for the feature name.
 
         """
-        implementations = MetadataExtractor.__find_implementations()
+        implementations = MetadataExtractor._implementations()
         try:
             return implementations[feature_name]
         except KeyError:

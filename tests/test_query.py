@@ -9,7 +9,14 @@ from tests._util import MockMetadataMixin
 
 from gutenberg.query import get_etexts
 from gutenberg.query import get_metadata
+from gutenberg.query import list_supported_metadatas
 from tests._util import unittest
+
+
+class TestListSupportedMetadatas(unittest.TestCase):
+    def test_has_supported_metadatas(self):
+        metadatas = list_supported_metadatas()
+        self.assertGreater(len(metadatas), 0)
 
 
 class TestGetMetadata(MockMetadataMixin, unittest.TestCase):
