@@ -53,7 +53,7 @@ class AuthorExtractor(_SimplePredicateRelationshipExtractor):
 
     @classmethod
     def predicate(cls):
-        return DCTERMS.creator / PGTERMS.alias
+        return DCTERMS.creator / PGTERMS.name
 
     @classmethod
     def contains(cls, value):

@@ -40,7 +40,7 @@ class SampleMetaData(object):
             '<http://www.gutenberg.org/2009/agents/{agent}> '
             '.\n'
             '<http://www.gutenberg.org/2009/agents/{agent}> '
-            '<http://www.gutenberg.org/2009/pgterms/alias> '
+            '<http://www.gutenberg.org/2009/pgterms/name> '
             '"{author}" '
             '.'
             .format(etextno=self.etextno, author=author,
