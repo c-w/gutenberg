@@ -22,7 +22,7 @@ The functionality provided by this package includes:
 * Cleaning the texts: removing all the crud, leaving just the text behind.
 * Making meta-data about the texts easily accessible.
 
-The package has been tested with Python 2.6, 2.7, 3.3, 3.4 and 3.5.
+The package has been tested with Python 2.6, 2.7, 3.3, 3.4, 3.5 and 3.6.
 
 
 Installation
@@ -114,7 +114,7 @@ project under AGPL3 (or if you have a commercial license for BSD-DB), set the
 following environment variable before attempting to install BSD-DB:
 
 .. sourcecode :: bash
-    
+
     YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION=1
 
 
