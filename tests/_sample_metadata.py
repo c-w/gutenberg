@@ -16,7 +16,9 @@ class SampleMetaData(object):
         self.author = frozenset(authors or [])
         self.title = frozenset(titles or [])
         self.formaturi = frozenset(formaturi or [])
-        self.etextno = etextno or self.__create_uid(self.author | self.title)
+        self.etextno = (etextno
+                        if etextno is not None
+                        else self.__create_uid(self.author | self.title))
         self.rights = frozenset(rights or [])
         self.subject = frozenset(subject or [])
         self.language = frozenset(language or [])
