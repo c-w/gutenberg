@@ -58,16 +58,19 @@ class TestGetEtexts(MockMetadataMixin, unittest.TestCase):
         for testcase in self.sample_data():
             for feature_value in getattr(testcase, feature):
                 actual = get_etexts(feature, feature_value)
-                self.assertIn(
-                    testcase.etextno,
-                    actual,
-                    "didn't retrieve {etextno} when querying for books that "
-                    'have {feature}="{feature_value}" (got {actual}).'
-                    .format(
-                        etextno=testcase.etextno,
-                        feature=feature,
-                        feature_value=feature_value,
-                        actual=actual))
+                if testcase.is_phantom:
+                    self.assertNotIn(testcase.etextno, actual)
+                else:
+                    self.assertIn(
+                        testcase.etextno,
+                        actual,
+                        "didn't retrieve {etextno} when querying for books "
+                        'that have {feature}="{feature_value}" (got {actual}).'
+                        .format(
+                            etextno=testcase.etextno,
+                            feature=feature,
+                            feature_value=feature_value,
+                            actual=actual))
 
     def test_get_etexts_title(self):
         self._run_get_etexts_for_feature('title')

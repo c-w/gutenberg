@@ -12,14 +12,17 @@ import sys
 class SampleMetaData(object):
     __uids = {}
 
-    def __init__(self, etextno, authors=None, titles=None, formaturi=None, rights=None, subject=None, language=None):
+    def __init__(self, etextno, authors=None, titles=None, formaturi=None, rights=None, subject=None, language=None, is_phantom=False):
         self.author = frozenset(authors or [])
         self.title = frozenset(titles or [])
         self.formaturi = frozenset(formaturi or [])
-        self.etextno = etextno or self.__create_uid(self.author | self.title)
+        self.etextno = (etextno
+                        if etextno is not None
+                        else self.__create_uid(self.author | self.title))
         self.rights = frozenset(rights or [])
         self.subject = frozenset(subject or [])
         self.language = frozenset(language or [])
+        self.is_phantom = is_phantom
 
     @classmethod
     def __create_uid(cls, hashable):

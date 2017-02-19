@@ -9,6 +9,7 @@ import os
 from six import with_metaclass
 from rdflib.term import URIRef
 
+from gutenberg._domain_model.exceptions import InvalidEtextIdException
 from gutenberg._domain_model.exceptions import UnsupportedFeatureException
 from gutenberg._domain_model.types import validate_etextno
 from gutenberg._util.abc import abstractclassmethod
@@ -114,7 +115,10 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
         meta-data RDF graph to a human-friendly integer text identifier.
 
         """
-        return validate_etextno(int(os.path.basename(uri_ref.toPython())))
+        try:
+            return validate_etextno(int(os.path.basename(uri_ref.toPython())))
+        except InvalidEtextIdException:
+            return None
 
     @staticmethod
     def __find_implementations():
