@@ -13,16 +13,29 @@ def requirements_for(version=None):
     pip_path = 'requirements%s.pip' % suffix
 
     if not isfile(pip_path):
-        return set()
+        return set(), set()
 
+    requirements = set()
+    links = set()
     with open(pip_path) as pip_file:
-        requirements = set(line.strip() for line in pip_file)
-    return requirements
+        for line in pip_file:
+            line = line.strip()
+            if '#egg=' in line:
+                requirement_parts = line.split('#egg=')[-1].split('-')
+                version = requirement_parts[-1]
+                library = '-'.join(requirement_parts[:-1])
+                requirement = '%s==%s' % (library, version)
+                requirements.add(requirement)
+                links.add(line)
+            else:
+                requirements.add(line)
+    return requirements, links
 
 
-def install_requires():
-    return requirements_for() | requirements_for(version_info.major)
-
+requirements_general, links_general = requirements_for()
+requirements_version, links_version = requirements_for(version_info.major)
+install_requires = requirements_general | requirements_version
+dependency_links = links_general | links_version
 
 setup(
     name='Gutenberg',
@@ -35,4 +48,5 @@ setup(
     license='LICENSE.txt',
     description='Library to interface with Project Gutenberg',
     long_description=open('README.rst').read(),
-    install_requires=install_requires())
+    dependency_links=dependency_links,
+    install_requires=install_requires)
