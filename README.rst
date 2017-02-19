@@ -97,7 +97,10 @@ For example, if you have Python 3.5 on a 64-bit version of Windows, you
 should download `bsddb3‑6.2.1‑cp35‑cp35m‑win_amd64.whl`.
 
 After you download the wheel, install it and you're good to go:
-`pip install bsddb3‑6.2.1‑cp35‑cp35m‑win_amd64.whl`
+
+.. sourcecode :: bash
+
+    pip install bsddb3‑6.2.1‑cp35‑cp35m‑win_amd64.whl
 
 License conflicts
 *****************
@@ -109,7 +112,10 @@ of the AGPL3 license, you'll have to install an ealier version of BSD-DB
 (anything between 4.8.30 and 5.x should be fine). If you are happy to use this
 project under AGPL3 (or if you have a commercial license for BSD-DB), set the
 following environment variable before attempting to install BSD-DB:
-`YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION=1`.
+
+.. sourcecode :: bash
+    
+    YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION=1
 
 
 Usage
