@@ -15,6 +15,7 @@ from gutenberg.acquire.metadata import SleepycatMetadataCache
 from gutenberg.acquire.metadata import SqliteMetadataCache
 from gutenberg.acquire.metadata import set_metadata_cache
 from gutenberg.query import get_metadata
+from tests._util import always_throw
 from tests._util import unittest
 
 
@@ -104,6 +105,15 @@ class TestSqlite(MetadataCache, unittest.TestCase):
         self.local_storage = "%s.sqlite" % tempfile.mktemp()
         self.cache = SqliteMetadataCache(self.local_storage)
         self.cache.catalog_source = _sample_metadata_catalog_source()
+
+    def test_add_does_not_swallow_exceptions(self):
+        original_add = self.cache.graph.add
+        self.cache.graph.add = always_throw(IOError)
+        try:
+            with self.assertRaises(IOError):
+                self.test_populate()
+        finally:
+            self.cache.graph.add = original_add
 
 
 def _sample_metadata_catalog_source():
