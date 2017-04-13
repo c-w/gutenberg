@@ -57,9 +57,9 @@ def _format_download_uri(etextno, mirror=None):
     if _MIRROR_CHECK is None:
         response = requests.head(uri_root)
         if not response.ok:
-            error = "Could not reach gutenberg mirror. Try setting a different mirror " \
-                    "(https://www.gutenberg.org/MIRRORS.ALL) for GUTENBERG_MIRROR environment " \
-                    "variable."
+            error = "Could not reach Gutenberg mirror '{:s}'. Try setting a different mirror " \
+                    "(https://www.gutenberg.org/MIRRORS.ALL) for --mirror flag or " \
+                    "GUTENBERG_MIRROR environment variable.".format(uri_root)
             raise UnknownDownloadUriException(error)
         _MIRROR_CHECK = True
 
