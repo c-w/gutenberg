@@ -44,8 +44,8 @@ def _etextno_to_uri_subdirectory(etextno):
 @execute_only_once
 def _check_mirror_exists(mirror):
     response = requests.head(mirror)
-    if not response.ok:
-        error = "Could not reach Gutenberg mirror '{:s}'. Try setting a different mirror " \
+    if response.ok:
+        error = "Could not reach Gutenberg mirror '{0:s}'. Try setting a different mirror " \
                 "(https://www.gutenberg.org/MIRRORS.ALL) for --mirror flag or " \
                 "GUTENBERG_MIRROR environment variable.".format(mirror)
         raise UnknownDownloadUriException(error)
@@ -58,8 +58,9 @@ def _format_download_uri(etextno, mirror=None):
     Raises:
         UnknownDownloadUri: If no download location can be found for the text.
     """
-    uri_root = _GUTENBERG_MIRROR if mirror is None else mirror
+    uri_root = mirror or _GUTENBERG_MIRROR
     uri_root = uri_root.strip().rstrip('/')
+    print(uri_root)
     _check_mirror_exists(uri_root)
 
     extensions = ('.txt', '-8.txt', '-0.txt')
