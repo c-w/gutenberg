@@ -12,12 +12,12 @@ import requests
 from gutenberg._domain_model.exceptions import UnknownDownloadUriException
 from gutenberg._domain_model.persistence import local_path
 from gutenberg._domain_model.types import validate_etextno
+from gutenberg._util.decorators import execute_only_once
 from gutenberg._util.os import makedirs
 from gutenberg._util.os import remove
 
 _TEXT_CACHE = local_path('text')
-_GUTENBERG_MIRROR = "http://aleph.gutenberg.org"
-_MIRROR_CHECK = None
+_GUTENBERG_MIRROR = 'http://aleph.gutenberg.org'
 
 
 def _etextno_to_uri_subdirectory(etextno):
@@ -41,6 +41,16 @@ def _etextno_to_uri_subdirectory(etextno):
     return subdir
 
 
+@execute_only_once
+def _check_mirror_exists(mirror):
+    response = requests.head(mirror)
+    if not response.ok:
+        error = "Could not reach Gutenberg mirror '{:s}'. Try setting a different mirror " \
+                "(https://www.gutenberg.org/MIRRORS.ALL) for --mirror flag or " \
+                "GUTENBERG_MIRROR environment variable.".format(mirror)
+        raise UnknownDownloadUriException(error)
+
+
 def _format_download_uri(etextno, mirror=None):
     """Returns the download location on the Project Gutenberg servers for a
     given text.
@@ -48,20 +58,9 @@ def _format_download_uri(etextno, mirror=None):
     Raises:
         UnknownDownloadUri: If no download location can be found for the text.
     """
-    global _MIRROR_CHECK
-    if mirror is None:
-        uri_root = _GUTENBERG_MIRROR
-    else:
-        uri_root = mirror
-    uri_root = uri_root.strip().rstrip("/")
-    if _MIRROR_CHECK is None:
-        response = requests.head(uri_root)
-        if not response.ok:
-            error = "Could not reach Gutenberg mirror '{:s}'. Try setting a different mirror " \
-                    "(https://www.gutenberg.org/MIRRORS.ALL) for --mirror flag or " \
-                    "GUTENBERG_MIRROR environment variable.".format(uri_root)
-            raise UnknownDownloadUriException(error)
-        _MIRROR_CHECK = True
+    uri_root = _GUTENBERG_MIRROR if mirror is None else mirror
+    uri_root = uri_root.strip().rstrip('/')
+    _check_mirror_exists(uri_root)
 
     extensions = ('.txt', '-8.txt', '-0.txt')
     for extension in extensions:
@@ -74,7 +73,7 @@ def _format_download_uri(etextno, mirror=None):
         response = requests.head(uri)
         if response.ok:
             return uri
-    raise UnknownDownloadUriException("Failed to find {} on {}.".format(etextno, uri_root))
+    raise UnknownDownloadUriException('Failed to find {0} on {1}.'.format(etextno, uri_root))
 
 
 def load_etext(etextno, refresh_cache=False, mirror=None):
@@ -115,12 +114,7 @@ def _main():
     parser.add_argument('--mirror', '-m', type=str)
     args = parser.parse_args()
 
-    if args.mirror is not None:
-        mirror = args.mirror
-    elif 'GUTENBERG_MIRROR' in os.environ:
-        mirror = os.environ['GUTENBERG_MIRROR']
-    else:
-        mirror = None
+    mirror = args.mirror or os.environ.get('GUTENBERG_MIRROR')
 
     try:
         text = load_etext(args.etextno, mirror=mirror)
