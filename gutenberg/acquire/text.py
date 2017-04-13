@@ -53,7 +53,7 @@ def _format_download_uri(etextno, mirror=None):
         uri_root = _GUTENBERG_MIRROR
     else:
         uri_root = mirror
-    uri_root = uri_root.rstrip("/")
+    uri_root = uri_root.strip().rstrip("/")
     if _MIRROR_CHECK is None:
         response = requests.head(uri_root)
         if not response.ok:
