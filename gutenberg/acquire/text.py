@@ -73,7 +73,6 @@ def _format_download_uri(etextno, mirror=None):
             extension=extension)
         response = requests.head(uri)
         if response.ok:
-            print(uri)
             return uri
     raise UnknownDownloadUriException("Failed to find {} on {}.".format(etextno, uri_root))
 
@@ -124,7 +123,7 @@ def _main():
         mirror = None
 
     try:
-        text = load_etext(args.etextno, True, mirror=mirror)
+        text = load_etext(args.etextno, mirror=mirror)
         with reopen_encoded(args.outfile, 'w', 'utf8') as outfile:
             outfile.write(text)
     except Error as error:
