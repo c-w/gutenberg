@@ -1,7 +1,7 @@
 """Module to deal with metadata acquisition."""
 # pylint:disable=W0603
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import abc
 import logging
@@ -17,6 +17,8 @@ from rdflib import plugin
 from rdflib.graph import Graph
 from rdflib.store import Store
 from rdflib.term import URIRef
+from rdflib_sqlalchemy import registerplugins
+from six import text_type
 from six import with_metaclass
 
 from gutenberg._domain_model.exceptions import CacheAlreadyExistsException
@@ -91,7 +93,13 @@ class MetadataCache(with_metaclass(abc.ABCMeta, object)):
         with closing(self.graph):
             with self._download_metadata_archive() as metadata_archive:
                 for fact in self._iter_metadata_triples(metadata_archive):
-                    self.graph.add(fact)
+                    self._add_to_graph(fact)
+
+    def _add_to_graph(self, fact):
+        """Adds a (subject, predicate, object) RDF triple to the graph.
+
+        """
+        self.graph.add(fact)
 
     def _populate_setup(self):
         """Executes operations necessary before the cache can be populated.
@@ -208,8 +216,30 @@ class SqliteMetadataCache(MetadataCache):
     def _local_storage_path(self):
         return self.cache_uri[len(self._CACHE_URI_PREFIX):]
 
+    def _add_to_graph(self, fact):
+        try:
+            self.graph.add(fact)
+        except Exception as ex:
+            self.graph.rollback()
+            if not self._is_graph_add_exception_acceptable(ex):
+                raise ex
+        else:
+            self.graph.commit()
+
+    @classmethod
+    def _is_graph_add_exception_acceptable(cls, ex):
+        """Checks if a graph-add exception can be safely ignored.
+
+        """
+        # integrity errors due to violating unique constraints should be safe to
+        # ignore since the only unique constraints in rdflib-sqlalchemy are on
+        # index columns
+        return 'UNIQUE constraint failed' in text_type(ex)
+
 
 _METADATA_CACHE = None
+
+registerplugins()
 
 
 def set_metadata_cache(cache):
