@@ -6,7 +6,9 @@
 from __future__ import absolute_import, unicode_literals
 from builtins import str
 import itertools
+from collections import namedtuple
 
+from gutenberg._domain_model.exceptions import UnknownDownloadUriException
 from gutenberg._domain_model.vocabulary import DCTERMS
 from gutenberg._domain_model.vocabulary import PGTERMS
 from tests._sample_metadata import SampleMetaData
@@ -14,6 +16,7 @@ from tests._util import MockMetadataMixin
 from tests._util import MockTextMixin
 from tests._util import unittest
 
+from gutenberg.acquire import text
 from gutenberg.acquire import load_etext
 from gutenberg.acquire import load_metadata
 
@@ -43,6 +46,30 @@ class TestLoadEtext(MockTextMixin, unittest.TestCase):
             text = loader(testcase.etextno)
             self.assertIsInstance(text, str)
             self.assertNotIn(u'\ufffd', text)
+
+    def test_invalid_etext(self):
+        with self.assertRaises(UnknownDownloadUriException):
+            text.load_etext(1, mirror='http://example.com')
+
+
+class TestFailLoadEtext(unittest.TestCase):
+    def setUp(self):
+        self._original_head = text.requests.head
+
+    def tearDown(self):
+        text.requests.head = self._original_head
+
+    def request_head_response(self, ok=False):
+        response = namedtuple('Response', 'ok')
+
+        def head(*args, **kwargs):
+            return response(ok)
+        text.requests.head = head
+
+    def test_unreachable_mirror(self):
+        self.request_head_response(ok=False)
+        with self.assertRaises(UnknownDownloadUriException):
+            text.load_etext(1)
 
 
 if __name__ == '__main__':
