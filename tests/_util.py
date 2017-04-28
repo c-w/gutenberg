@@ -7,6 +7,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import abc
+import os
 import shutil
 import sys
 import tempfile
@@ -24,6 +25,9 @@ if sys.version_info < (2, 7):
 else:
     import unittest
 assert unittest  # silence warning
+
+
+INTEGRATION_TESTS_ENABLED = bool(os.getenv('GUTENBERG_RUN_INTEGRATION_TESTS'))
 
 
 # noinspection PyPep8Naming,PyAttributeOutsideInit
