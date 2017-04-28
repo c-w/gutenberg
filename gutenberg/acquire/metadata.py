@@ -150,7 +150,8 @@ class MetadataCache(with_metaclass(abc.ABCMeta, object)):
         """Determines if the fact is not well formed.
 
         """
-        return any(isinstance(token, URIRef) and ' ' in token for token in fact)
+        return any(isinstance(token, URIRef) and ' ' in token
+                   for token in fact)
 
     @classmethod
     def _iter_metadata_triples(cls, metadata_archive_path):
@@ -231,9 +232,9 @@ class SqliteMetadataCache(MetadataCache):
         """Checks if a graph-add exception can be safely ignored.
 
         """
-        # integrity errors due to violating unique constraints should be safe to
-        # ignore since the only unique constraints in rdflib-sqlalchemy are on
-        # index columns
+        # integrity errors due to violating unique constraints should be safe
+        # to ignore since the only unique constraints in rdflib-sqlalchemy are
+        # on index columns
         return 'UNIQUE constraint failed' in text_type(ex)
 
 

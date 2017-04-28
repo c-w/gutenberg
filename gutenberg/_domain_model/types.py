@@ -21,10 +21,9 @@ def validate_etextno(etextno):
 
 
 def rdf_bind_to_string(rdf_type):
-    """
-    Python2/3 compatibility wrapper around rdflib.term.bind that binds a term to
-    the approrpiate string type.
+    """Python2/3 compatibility wrapper around rdflib.term.bind that binds a
+    term to the appropriate string type.
 
     """
-    string_type = unicode if sys.version_info < (3,) else str
+    string_type = unicode if sys.version_info < (3,) else str  # noqa
     bind(rdf_type, string_type)

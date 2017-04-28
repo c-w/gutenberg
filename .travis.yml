@@ -20,17 +20,16 @@ install:
   - if [[ $TRAVIS_PYTHON_VERSION == 2.6 ]]; then pip install unittest2; fi
   - pip install -r requirements.pip
   - pip install -r requirements-py3.pip
-  - pip install coverage
+  - pip install -r requirements-dev.pip
 
-script: coverage run --source=gutenberg -m nose
+script:
+  - coverage run --source=gutenberg -m nose
+  - if [[ $TRAVIS_PYTHON_VERSION != 2.6 ]]; then flake8 gutenberg; fi
 
 after_success:
   - coverage report
   - pip install coveralls
   - coveralls
-  - pip install pyflakes pep8
-  - pyflakes . | tee >(wc -l)
-  - pep8 --statistics --count .
 
 deploy:
   provider: pypi
