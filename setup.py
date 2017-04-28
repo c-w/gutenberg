@@ -39,7 +39,7 @@ dependency_links = links_general | links_version
 
 setup(
     name='Gutenberg',
-    version='0.4.5',
+    version='0.5.0',
     author='Clemens Wolff',
     author_email='clemens.wolff+pypi@gmail.com',
     packages=find_packages(exclude=['tests']),
