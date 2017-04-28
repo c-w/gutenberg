@@ -24,7 +24,7 @@ install:
 
 script:
   - coverage run --source=gutenberg -m nose
-  - flake8 gutenberg
+  - if [[ $TRAVIS_PYTHON_VERSION != 2.6 ]]; then flake8 gutenberg; fi
 
 after_success:
   - coverage report
