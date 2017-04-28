@@ -12,6 +12,7 @@ from gutenberg._domain_model.exceptions import UnknownDownloadUriException
 from gutenberg._domain_model.vocabulary import DCTERMS
 from gutenberg._domain_model.vocabulary import PGTERMS
 from tests._sample_metadata import SampleMetaData
+from tests._util import INTEGRATION_TESTS_ENABLED
 from tests._util import MockMetadataMixin
 from tests._util import MockTextMixin
 from tests._util import unittest
@@ -43,13 +44,21 @@ class TestLoadEtext(MockTextMixin, unittest.TestCase):
             SampleMetaData.for_etextno(23962)   # UTF-8 text
         )
         for testcase, loader in itertools.product(testcases, loaders):
-            text = loader(testcase.etextno)
-            self.assertIsInstance(text, str)
-            self.assertNotIn(u'\ufffd', text)
+            etext = loader(testcase.etextno)
+            self.assertIsInstance(etext, str)
+            self.assertNotIn(u'\ufffd', etext)
 
     def test_invalid_etext(self):
         with self.assertRaises(UnknownDownloadUriException):
             text.load_etext(1, mirror='http://example.com')
+
+
+@unittest.skipUnless(INTEGRATION_TESTS_ENABLED, reason='unit-tests only')
+class TestLoadEtextNetworked(unittest.TestCase):
+    def test_load_etext(self):
+        etext = text.load_etext(2701)
+        self.assertIsInstance(etext, str)
+        self.assertGreater(len(etext), 1000)
 
 
 class TestFailLoadEtext(unittest.TestCase):

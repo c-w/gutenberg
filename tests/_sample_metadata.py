@@ -133,4 +133,5 @@ def _sample_metadata_path():
 
 def _load_metadata(etextno):
     data_path = os.path.join(_sample_metadata_path(), str(etextno))
-    return json.load(open(data_path))
+    with open(data_path) as fobj:
+        return json.load(fobj)
