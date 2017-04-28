@@ -2,10 +2,10 @@
 
 
 try:
-    from urllib2 import urlopen
+    from urllib2 import urlopen  # noqa
 except ImportError:
-    from urllib.request import urlopen
+    from urllib.request import urlopen  # noqa
 try:
-    from urllib import pathname2url
+    from urllib import pathname2url  # noqa
 except ImportError:
-    from urllib.request import pathname2url
+    from urllib.request import pathname2url  # noqa

@@ -21,12 +21,12 @@ _GUTENBERG_MIRROR = 'http://aleph.gutenberg.org'
 
 
 def _etextno_to_uri_subdirectory(etextno):
-    """
-    Returns the subdirectory that an etextno will be found in a gutenberg mirror. Generally, one
-    finds the subdirectory by separating out each digit of the etext number, and uses it for
-    a directory. The exception here is for etext numbers less than 10, which are prepended with a
-    0 for the directory traversal.
-    
+    """Returns the subdirectory that an etextno will be found in a gutenberg
+    mirror. Generally, one finds the subdirectory by separating out each digit
+    of the etext number, and uses it for a directory. The exception here is for
+    etext numbers less than 10, which are prepended with a 0 for the directory
+    traversal.
+
     >>> _etextno_to_uri_subdirectory(1)
     '0/1'
     >>> _etextno_to_uri_subdirectory(19)
@@ -45,10 +45,11 @@ def _etextno_to_uri_subdirectory(etextno):
 def _check_mirror_exists(mirror):
     response = requests.head(mirror)
     if not response.ok:
-        error = "Could not reach Gutenberg mirror '{0:s}'. Try setting a different mirror " \
-                "(https://www.gutenberg.org/MIRRORS.ALL) for --mirror flag or " \
-                "GUTENBERG_MIRROR environment variable.".format(mirror)
-        raise UnknownDownloadUriException(error)
+        raise UnknownDownloadUriException(
+            'Could not reach Gutenberg mirror "{0:s}". Try setting a '
+            'different mirror (https://www.gutenberg.org/MIRRORS.ALL) for '
+            '--mirror flag or GUTENBERG_MIRROR environment variable.'
+            .format(mirror))
 
 
 def _format_download_uri(etextno, mirror=None):
@@ -73,7 +74,9 @@ def _format_download_uri(etextno, mirror=None):
         response = requests.head(uri)
         if response.ok:
             return uri
-    raise UnknownDownloadUriException('Failed to find {0} on {1}.'.format(etextno, uri_root))
+
+    raise UnknownDownloadUriException('Failed to find {0} on {1}.'
+                                      .format(etextno, uri_root))
 
 
 def load_etext(etextno, refresh_cache=False, mirror=None):
