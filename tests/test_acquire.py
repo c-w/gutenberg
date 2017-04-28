@@ -43,9 +43,9 @@ class TestLoadEtext(MockTextMixin, unittest.TestCase):
             SampleMetaData.for_etextno(23962)   # UTF-8 text
         )
         for testcase, loader in itertools.product(testcases, loaders):
-            text = loader(testcase.etextno)
-            self.assertIsInstance(text, str)
-            self.assertNotIn(u'\ufffd', text)
+            etext = loader(testcase.etextno)
+            self.assertIsInstance(etext, str)
+            self.assertNotIn(u'\ufffd', etext)
 
     def test_invalid_etext(self):
         with self.assertRaises(UnknownDownloadUriException):
