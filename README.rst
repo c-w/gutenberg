@@ -2,8 +2,8 @@
 Gutenberg
 *********
 
-.. image:: https://travis-ci.org/c-w/Gutenberg.svg?branch=master
-    :target: https://travis-ci.org/c-w/Gutenberg
+.. image:: https://travis-ci.org/c-w/gutenberg.svg?branch=master
+    :target: https://travis-ci.org/c-w/gutenberg
 .. image:: https://coveralls.io/repos/github/c-w/Gutenberg/badge.svg?branch=master
     :target: https://coveralls.io/github/c-w/Gutenberg?branch=master
 .. image:: https://img.shields.io/pypi/v/gutenberg.svg
