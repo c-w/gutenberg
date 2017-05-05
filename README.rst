@@ -24,6 +24,8 @@ The functionality provided by this package includes:
 
 The package has been tested with Python 2.6, 2.7, 3.3, 3.4, 3.5 and 3.6.
 
+A hosted version of this package exists too. `Try it out! <https://c-w.github.io/gutenberg-http/>`_
+
 
 Installation
 ============
