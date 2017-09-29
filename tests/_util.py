@@ -9,7 +9,6 @@ from __future__ import absolute_import, unicode_literals
 import abc
 import os
 import shutil
-import sys
 import tempfile
 from contextlib import closing
 from contextlib import contextmanager
@@ -20,10 +19,7 @@ from gutenberg.acquire.metadata import SleepycatMetadataCache
 from gutenberg.acquire.metadata import set_metadata_cache
 import gutenberg.acquire.text
 
-if sys.version_info < (2, 7):
-    import unittest2 as unittest
-else:
-    import unittest
+import unittest
 assert unittest  # silence warning
 
 
