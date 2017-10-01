@@ -19,9 +19,6 @@ from gutenberg.acquire.metadata import SleepycatMetadataCache
 from gutenberg.acquire.metadata import set_metadata_cache
 import gutenberg.acquire.text
 
-import unittest
-assert unittest  # silence warning
-
 
 INTEGRATION_TESTS_ENABLED = bool(os.getenv('GUTENBERG_RUN_INTEGRATION_TESTS'))
 

@@ -5,8 +5,9 @@
 
 from __future__ import absolute_import, unicode_literals
 from builtins import str
-import itertools
 from collections import namedtuple
+import itertools
+import unittest
 
 from gutenberg._domain_model.exceptions import UnknownDownloadUriException
 from gutenberg._domain_model.vocabulary import DCTERMS
@@ -15,7 +16,6 @@ from tests._sample_metadata import SampleMetaData
 from tests._util import INTEGRATION_TESTS_ENABLED
 from tests._util import MockMetadataMixin
 from tests._util import MockTextMixin
-from tests._util import unittest
 
 from gutenberg.acquire import text
 from gutenberg.acquire import load_etext
