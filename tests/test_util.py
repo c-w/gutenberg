@@ -47,7 +47,8 @@ class TestAllSubclasses(unittest.TestCase):
 
 class TestAbstractClassMethod(unittest.TestCase):
     def test_abstractclassmethod(self):
-        class ClassWithAbstractClassMethod(with_metaclass(abc.ABCMeta, object)):
+        class ClassWithAbstractClassMethod(
+                with_metaclass(abc.ABCMeta, object)):
             @abstractclassmethod
             def method(cls):
                 pass

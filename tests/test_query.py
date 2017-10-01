@@ -97,5 +97,6 @@ class TestGetEtexts(MockMetadataMixin, unittest.TestCase):
     def test_get_etexts_subject(self):
         self._run_get_etexts_for_feature('subject')
 
+
 if __name__ == '__main__':
     unittest.main()

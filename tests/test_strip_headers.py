@@ -41,14 +41,14 @@ def _previous_lines(i, lines, amount):
     lower = max(0, i-amount)
     prev_lines = lines[lower:i-1]
     return '\n'.join('line {0}: "{1}"'.format(j, line)
-                        for j, (_, line) in enumerate(prev_lines, start=lower))
+                     for j, (_, line) in enumerate(prev_lines, start=lower))
 
 
 def _next_lines(i, lines, amount):
     upper = min(len(lines), i+amount+1)
     next_lines = lines[i+1:upper]
     return '\n'.join('line {0}: "{1}"'.format(j, line)
-                        for j, (_, line) in enumerate(next_lines, start=i+1))
+                     for j, (_, line) in enumerate(next_lines, start=i+1))
 
 
 if __name__ == '__main__':
