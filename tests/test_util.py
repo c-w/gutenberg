@@ -9,6 +9,7 @@ import codecs
 import os
 import shutil
 import tempfile
+import unittest
 
 from six import with_metaclass
 
@@ -18,7 +19,6 @@ from gutenberg._util.os import makedirs
 from gutenberg._util.os import remove
 from gutenberg._util.os import reopen_encoded
 from tests._util import always_throw
-from tests._util import unittest
 
 
 class TestAllSubclasses(unittest.TestCase):
@@ -47,7 +47,8 @@ class TestAllSubclasses(unittest.TestCase):
 
 class TestAbstractClassMethod(unittest.TestCase):
     def test_abstractclassmethod(self):
-        class ClassWithAbstractClassMethod(with_metaclass(abc.ABCMeta, object)):
+        class ClassWithAbstractClassMethod(
+                with_metaclass(abc.ABCMeta, object)):
             @abstractclassmethod
             def method(cls):
                 pass

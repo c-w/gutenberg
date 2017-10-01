@@ -2,9 +2,7 @@ dist: trusty
 language: python
 cache: pip
 python:
-  - '2.6'
   - '2.7'
-  - '3.3'
   - '3.4'
   - '3.5'
   - '3.6'
@@ -18,14 +16,13 @@ before_install:
 
 install:
   - pip install -U setuptools
-  - if [[ $TRAVIS_PYTHON_VERSION == 2.6 ]]; then pip install unittest2; fi
   - pip install -r requirements.pip
   - pip install -r requirements-py3.pip
   - pip install -r requirements-dev.pip
 
 script:
   - coverage run --source=gutenberg -m nose
-  - if [[ $TRAVIS_PYTHON_VERSION != 2.6 ]]; then flake8 gutenberg; fi
+  - flake8 gutenberg
 
 after_success:
   - coverage report

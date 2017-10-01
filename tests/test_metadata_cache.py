@@ -7,6 +7,7 @@ from __future__ import absolute_import, unicode_literals
 import os
 import sys
 import tempfile
+import unittest
 
 from gutenberg._util.url import pathname2url
 from gutenberg.acquire.metadata import CacheAlreadyExistsException
@@ -16,7 +17,6 @@ from gutenberg.acquire.metadata import SqliteMetadataCache
 from gutenberg.acquire.metadata import set_metadata_cache
 from gutenberg.query import get_metadata
 from tests._util import always_throw
-from tests._util import unittest
 
 
 # noinspection PyPep8Naming,PyAttributeOutsideInit

@@ -3,6 +3,7 @@
 
 
 from __future__ import absolute_import, unicode_literals
+import unittest
 
 from tests._sample_metadata import SampleMetaData
 from tests._util import MockMetadataMixin
@@ -10,7 +11,6 @@ from tests._util import MockMetadataMixin
 from gutenberg.query import get_etexts
 from gutenberg.query import get_metadata
 from gutenberg.query import list_supported_metadatas
-from tests._util import unittest
 
 
 class TestListSupportedMetadatas(unittest.TestCase):
@@ -96,6 +96,7 @@ class TestGetEtexts(MockMetadataMixin, unittest.TestCase):
 
     def test_get_etexts_subject(self):
         self._run_get_etexts_for_feature('subject')
+
 
 if __name__ == '__main__':
     unittest.main()

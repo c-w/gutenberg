@@ -12,7 +12,8 @@ import sys
 class SampleMetaData(object):
     __uids = {}
 
-    def __init__(self, etextno, authors=None, titles=None, formaturi=None, rights=None, subject=None, language=None, is_phantom=False):
+    def __init__(self, etextno, authors=None, titles=None, formaturi=None,
+                 rights=None, subject=None, language=None, is_phantom=False):
         self.author = frozenset(authors or [])
         self.title = frozenset(titles or [])
         self.formaturi = frozenset(formaturi or [])
@@ -62,9 +63,9 @@ class SampleMetaData(object):
     def _rdf_rights(self):
         return '' if not self.rights else '\n'.join(
             '<http://www.gutenberg.org/ebooks/{etextno}> '
-             '<http://purl.org/dc/terms/rights> '
+            '<http://purl.org/dc/terms/rights> '
             '"{rights}"'
-             '.'
+            '.'
             .format(etextno=self.etextno, rights=rights)
             for rights in self.rights)
 
