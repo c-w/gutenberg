@@ -27,7 +27,7 @@ class MetadataCache(object):
             get_metadata('title', 50405)
         except InvalidCacheException:
             pass
-        except:
+        except Exception:
             raise
 
     def test_initialize(self):
@@ -65,7 +65,7 @@ class MetadataCache(object):
             self.cache.populate()
         except CacheAlreadyExistsException:
             pass
-        except:
+        except Exception:
             raise
 
     def test_delete(self):
@@ -83,7 +83,7 @@ class MetadataCache(object):
             get_metadata('title', 50405)
         except InvalidCacheException:
             pass
-        except:
+        except Exception:
             raise
 
     def tearDown(self):

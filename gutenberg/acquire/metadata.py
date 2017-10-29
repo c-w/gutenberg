@@ -63,7 +63,7 @@ class MetadataCache(with_metaclass(abc.ABCMeta, object)):
             self.graph.open(self.cache_uri, create=False)
             self._add_namespaces(self.graph)
             self.is_open = True
-        except:
+        except Exception:
             raise InvalidCacheException('The cache is invalid or not created')
 
     def close(self):
