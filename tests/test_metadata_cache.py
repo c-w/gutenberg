@@ -27,8 +27,6 @@ class MetadataCache(object):
             get_metadata('title', 50405)
         except InvalidCacheException:
             pass
-        except Exception:
-            raise
 
     def test_initialize(self):
         # Simply creating the cache shouldn't create on-disk structures
@@ -65,8 +63,6 @@ class MetadataCache(object):
             self.cache.populate()
         except CacheAlreadyExistsException:
             pass
-        except Exception:
-            raise
 
     def test_delete(self):
         self.assertFalse(os.path.exists(self.local_storage))
@@ -83,8 +79,6 @@ class MetadataCache(object):
             get_metadata('title', 50405)
         except InvalidCacheException:
             pass
-        except Exception:
-            raise
 
     def tearDown(self):
         set_metadata_cache(None)
