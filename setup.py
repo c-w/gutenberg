@@ -45,7 +45,7 @@ setup(
     packages=find_packages(exclude=['tests']),
     url='https://github.com/c-w/Gutenberg',
     download_url='http://pypi.python.org/pypi/Gutenberg',
-    license='LICENSE.txt',
+    license='License :: OSI Approved :: Apache Software License',
     description='Library to interface with Project Gutenberg',
     long_description=open('README.rst').read(),
     dependency_links=dependency_links,
