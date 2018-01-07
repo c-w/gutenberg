@@ -49,4 +49,4 @@ setup(
     description='Library to interface with Project Gutenberg',
     long_description=open('README.rst').read(),
     dependency_links=dependency_links,
-    install_requires=install_requires)
+    install_requires=list(install_requires))
