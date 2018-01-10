@@ -39,14 +39,24 @@ dependency_links = links_general | links_version
 
 setup(
     name='Gutenberg',
-    version='0.5.0',
+    version='0.6.0',
     author='Clemens Wolff',
     author_email='clemens.wolff+pypi@gmail.com',
     packages=find_packages(exclude=['tests']),
     url='https://github.com/c-w/Gutenberg',
-    download_url='http://pypi.python.org/pypi/Gutenberg',
-    license='License :: OSI Approved :: Apache Software License',
+    download_url='https://pypi.python.org/pypi/Gutenberg',
+    license='Apache Software License',
     description='Library to interface with Project Gutenberg',
     long_description=open('README.rst').read(),
     dependency_links=dependency_links,
-    install_requires=install_requires)
+    install_requires=sorted(install_requires),
+    python_requires='==2.7.*,>=3.4',
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'License :: OSI Approved :: Apache Software License',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Topic :: Utilities'
+    ])
