@@ -37,4 +37,4 @@ deploy:
   on:
     tags: true
     distributions: sdist bdist_wheel
-    repo: c-w/Gutenberg
+    repo: c-w/gutenberg
