@@ -50,7 +50,7 @@ setup(
     long_description=open('README.rst').read(),
     dependency_links=dependency_links,
     install_requires=sorted(install_requires),
-    python_requires='==2.7.*,>=3.4',
+    python_requires='>=2.7.*,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: Apache Software License',
