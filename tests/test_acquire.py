@@ -80,6 +80,81 @@ class TestFailLoadEtext(unittest.TestCase):
         with self.assertRaises(UnknownDownloadUriException):
             text.load_etext(1)
 
+class TestExtensionsLoadEtext(unittest.TestCase):
+    def setUp(self):
+        self._original_head = text.requests.head
+        self._original_check = text._check_mirror_exists
+
+    def tearDown(self):
+        text.requests.head = self._original_head
+        text._check_mirror_exists = self._original_check
+
+    def request_head_response(self, valid_files):
+        response = namedtuple('Response', 'ok')
+
+        def head(*args, **kwargs):
+            req_file = args[0].split('/')[-1]
+            return response(req_file in valid_files)
+        text.requests.head = head
+
+        def mirror_exist(*args, **kwargs):
+            return response(True)
+        text._check_mirror_exists = mirror_exist
+
+    def test_extensions_order_utf8_only(self):
+        utf8_filename = '12345-0.txt'
+        self.request_head_response(valid_files=[utf8_filename])
+
+        extensions = text._format_download_uri(12345)
+        self.assertEqual(extensions.split('/')[-1], utf8_filename)
+
+        extensions = text._format_download_uri(12345, prefer_ascii=False)
+        self.assertEqual(extensions.split('/')[-1], utf8_filename)
+
+    def test_extensions_order_ascii_only(self):
+        ascii_filename = '12345.txt'
+        self.request_head_response(valid_files=[ascii_filename])
+
+        extensions = text._format_download_uri(12345)
+        self.assertEqual(extensions.split('/')[-1], ascii_filename)
+
+        extensions = text._format_download_uri(12345, prefer_ascii=True)
+        self.assertEqual(extensions.split('/')[-1], ascii_filename)
+
+    def test_extensions_order_utf8_first(self):
+        utf8_filename = '12345-0.txt'
+        all_files = ['12345.txt', '12345-8.txt', '12345-0.txt']
+        self.request_head_response(valid_files=all_files)
+
+        extensions = text._format_download_uri(12345)
+        self.assertEqual(extensions.split('/')[-1], utf8_filename)
+
+        extensions = text._format_download_uri(12345, prefer_ascii=False)
+        self.assertEqual(extensions.split('/')[-1], utf8_filename)
+
+    def test_extensions_order_ascii_first(self):
+        ascii_filename = '12345.txt'
+        all_files = ['12345-8.txt', '12345-0.txt', '12345.txt']
+        self.request_head_response(valid_files=all_files)
+
+        extensions = text._format_download_uri(12345)
+        self.assertNotEqual(extensions.split('/')[-1], ascii_filename)
+
+        extensions = text._format_download_uri(12345, prefer_ascii=True)
+        self.assertEqual(extensions.split('/')[-1], ascii_filename)
+
+    def test_extensions_order_eightbit_first(self):
+        eightbit_filename = '12345-8.txt'
+        ascii_filename = '12345.txt'
+        all_files = ['12345-8.txt', '12345.txt']
+        self.request_head_response(valid_files=all_files)
+
+        extensions = text._format_download_uri(12345)
+        self.assertEqual(extensions.split('/')[-1], eightbit_filename)
+
+        extensions = text._format_download_uri(12345, prefer_ascii=True)
+        self.assertEqual(extensions.split('/')[-1], ascii_filename)
+
 
 if __name__ == '__main__':
     unittest.main()
