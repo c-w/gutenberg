@@ -97,7 +97,7 @@ On Windows, it's easiest to download a pre-compiled version of BSD-DB from
 `pythonlibs <http://www.lfd.uci.edu/~gohlke/pythonlibs/>`_.
 
 For example, if you have Python 3.5 on a 64-bit version of Windows, you
-should download `bsddb3‑6.2.1‑cp35‑cp35m‑win_amd64.whl`.
+should download :code:`bsddb3‑6.2.1‑cp35‑cp35m‑win_amd64.whl`.
 
 After you download the wheel, install it and you're good to go:
 
@@ -165,10 +165,10 @@ You can get a full list of the meta-data that can be queried by calling:
 
     print(list_supported_metadatas()) # prints (u'author', u'formaturi', u'language', ...)
 
-Before you use one of the `gutenberg.query` functions you must populate the
+Before you use one of the :code:`gutenberg.query` functions you must populate the
 local metadata cache. This one-off process will take quite a while to complete
 (18 hours on my machine) but once it is done, any subsequent calls to
-`get_etexts` or `get_metadata` will be *very* fast. If you fail to populate the
+:code:`get_etexts` or :code:`get_metadata` will be *very* fast. If you fail to populate the
 cache, the calls will raise an exception.
 
 To populate the cache:
@@ -181,7 +181,7 @@ To populate the cache:
 
 
 If you need more fine-grained control over the cache (e.g. where it's stored or
-which backend is used), you can use the `set_metadata_cache` function to switch
+which backend is used), you can use the :code:`set_metadata_cache` function to switch
 out the backend of the cache before you populate it. For example, to use the
 Sqlite cache backend instead of the default Sleepycat backend and store the
 cache at a custom location, you'd do the following:
