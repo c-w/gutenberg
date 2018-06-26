@@ -10,6 +10,7 @@ from contextlib import closing
 try:
     from functools import lru_cache
 except ImportError:
+    # six: use backport for Python 2.7
     from functools32 import lru_cache
 
 from requests.exceptions import RequestException
