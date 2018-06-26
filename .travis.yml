@@ -15,12 +15,10 @@ install:
 
 script:
   - docker run -v $PWD:/app --tmpfs /data "gutenberg-$TRAVIS_PYTHON_VERSION" flake8 gutenberg
-  - docker run -v $PWD:/app --tmpfs /data "gutenberg-$TRAVIS_PYTHON_VERSION" coverage run --source=gutenberg -m nose2
+  - docker run -v $PWD:/app --tmpfs /data "gutenberg-$TRAVIS_PYTHON_VERSION" nose2 --with-coverage
 
 after_success:
-  - coverage report
-  - pip install coveralls
-  - coveralls
+  - pip install codecov && codecov
 
 deploy:
   provider: pypi
