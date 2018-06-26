@@ -5,9 +5,11 @@
 
 from __future__ import absolute_import, unicode_literals
 from builtins import str
-from collections import namedtuple
 import itertools
 import unittest
+import re
+
+import responses
 
 from gutenberg._domain_model.exceptions import UnknownDownloadUriException
 from gutenberg._domain_model.vocabulary import DCTERMS
@@ -48,6 +50,7 @@ class TestLoadEtext(MockTextMixin, unittest.TestCase):
             self.assertIsInstance(etext, str)
             self.assertNotIn(u'\ufffd', etext)
 
+    @responses.activate
     def test_invalid_etext(self):
         with self.assertRaises(UnknownDownloadUriException):
             text.load_etext(1, mirror='http://example.com')
@@ -62,45 +65,27 @@ class TestLoadEtextNetworked(unittest.TestCase):
 
 
 class TestFailLoadEtext(unittest.TestCase):
-    def setUp(self):
-        self._original_head = text.requests.head
-
-    def tearDown(self):
-        text.requests.head = self._original_head
-
     def request_head_response(self, ok=False):
-        response = namedtuple('Response', 'ok')
+        status = 200 if ok else 404
+        responses.add(responses.HEAD, text._GUTENBERG_MIRROR, status=status)
 
-        def head(*args, **kwargs):
-            return response(ok)
-        text.requests.head = head
-
+    @responses.activate
     def test_unreachable_mirror(self):
         self.request_head_response(ok=False)
+
         with self.assertRaises(UnknownDownloadUriException):
             text.load_etext(1)
 
+
 class TestExtensionsLoadEtext(unittest.TestCase):
-    def setUp(self):
-        self._original_head = text.requests.head
-        self._original_check = text._check_mirror_exists
-
-    def tearDown(self):
-        text.requests.head = self._original_head
-        text._check_mirror_exists = self._original_check
-
     def request_head_response(self, valid_files):
-        response = namedtuple('Response', 'ok')
+        responses.add(responses.HEAD, text._GUTENBERG_MIRROR, status=200)
 
-        def head(*args, **kwargs):
-            req_file = args[0].split('/')[-1]
-            return response(req_file in valid_files)
-        text.requests.head = head
+        for valid_file in valid_files:
+            url = re.compile('^.*{}$'.format(valid_file))
+            responses.add(responses.HEAD, url, status=200)
 
-        def mirror_exist(*args, **kwargs):
-            return response(True)
-        text._check_mirror_exists = mirror_exist
-
+    @responses.activate
     def test_extensions_order_utf8_only(self):
         utf8_filename = '12345-0.txt'
         self.request_head_response(valid_files=[utf8_filename])
@@ -111,6 +96,7 @@ class TestExtensionsLoadEtext(unittest.TestCase):
         extensions = text._format_download_uri(12345, prefer_ascii=False)
         self.assertEqual(extensions.split('/')[-1], utf8_filename)
 
+    @responses.activate
     def test_extensions_order_ascii_only(self):
         ascii_filename = '12345.txt'
         self.request_head_response(valid_files=[ascii_filename])
@@ -121,6 +107,7 @@ class TestExtensionsLoadEtext(unittest.TestCase):
         extensions = text._format_download_uri(12345, prefer_ascii=True)
         self.assertEqual(extensions.split('/')[-1], ascii_filename)
 
+    @responses.activate
     def test_extensions_order_utf8_first(self):
         utf8_filename = '12345-0.txt'
         all_files = ['12345.txt', '12345-8.txt', '12345-0.txt']
@@ -132,6 +119,7 @@ class TestExtensionsLoadEtext(unittest.TestCase):
         extensions = text._format_download_uri(12345, prefer_ascii=False)
         self.assertEqual(extensions.split('/')[-1], utf8_filename)
 
+    @responses.activate
     def test_extensions_order_ascii_first(self):
         ascii_filename = '12345.txt'
         all_files = ['12345-8.txt', '12345-0.txt', '12345.txt']
@@ -143,6 +131,7 @@ class TestExtensionsLoadEtext(unittest.TestCase):
         extensions = text._format_download_uri(12345, prefer_ascii=True)
         self.assertEqual(extensions.split('/')[-1], ascii_filename)
 
+    @responses.activate
     def test_extensions_order_eightbit_first(self):
         eightbit_filename = '12345-8.txt'
         ascii_filename = '12345.txt'
