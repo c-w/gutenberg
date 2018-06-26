@@ -123,6 +123,25 @@ following environment variable before attempting to install BSD-DB:
     YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION=1
 
 
+Apache Jena Fuseki
+------------------
+
+As an alternative to the BSD-DB backend, this package can also use `Apache Jena Fuseki <https://jena.apache.org/documentation/fuseki2/>`_
+for the metadata store. The Apache Jena Fuseki backend is activated by
+setting the :code:`GUTENBERG_FUSEKI_URL` environment variable to the HTTP
+endpoint at which Fuseki is listening.
+
+For local development, the Fuseki server can be run via Docker:
+
+.. sourcecode :: bash
+
+    docker build -t fuseki-server ./fuseki
+
+    docker run -d -p 3030:3030 -v /some/mount/location:/fuseki fuseki-server
+
+    export GUTENBERG_FUSEKI_URL=http://localhost:3030/ds
+
+
 Usage
 =====
 

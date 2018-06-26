@@ -12,6 +12,7 @@ import unittest
 from gutenberg._util.url import pathname2url
 from gutenberg.acquire.metadata import CacheAlreadyExistsException
 from gutenberg.acquire.metadata import InvalidCacheException
+from gutenberg.acquire.metadata import FusekiMetadataCache
 from gutenberg.acquire.metadata import SleepycatMetadataCache
 from gutenberg.acquire.metadata import SqliteMetadataCache
 from gutenberg.acquire.metadata import set_metadata_cache
@@ -85,6 +86,17 @@ class MetadataCache(object):
         if self.cache.is_open:
             self.cache.delete()
         self.cache = None
+
+
+class TestFuseki(MetadataCache, unittest.TestCase):
+    def setUp(self):
+        cache_url = os.getenv('UNIT_TEST_GUTENBERG_FUSEKI_URL')
+        if not cache_url:
+            raise unittest.SkipTest('Fuseki URL not set')
+
+        self.local_storage = "%s.url" % tempfile.mktemp()
+        self.cache = FusekiMetadataCache(self.local_storage, cache_url)
+        self.cache.catalog_source = _sample_metadata_catalog_source()
 
 
 class TestSleepycat(MetadataCache, unittest.TestCase):
