@@ -4,8 +4,10 @@ Gutenberg
 
 .. image:: https://travis-ci.org/c-w/gutenberg.svg?branch=master
     :target: https://travis-ci.org/c-w/gutenberg
-.. image:: https://coveralls.io/repos/github/c-w/Gutenberg/badge.svg?branch=master
-    :target: https://coveralls.io/github/c-w/Gutenberg?branch=master
+
+.. image:: https://codecov.io/gh/c-w/gutenberg/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/c-w/gutenberg
+
 .. image:: https://img.shields.io/pypi/v/gutenberg.svg
     :target: https://pypi.python.org/pypi/gutenberg/
 
