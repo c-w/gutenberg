@@ -53,6 +53,26 @@ def _check_mirror_exists(mirror):
             .format(mirror))
 
 
+def _format_download_uri_for_extension(etextno, extension, mirror=None):
+    """Returns the download location on the Project Gutenberg servers for a
+    given text and extension. The list of available extensions for a given
+    text can be found via the formaturi metadata extractor.
+
+    """
+    uri_root = mirror or _GUTENBERG_MIRROR
+    uri_root = uri_root.strip().rstrip('/')
+    _check_mirror_exists(uri_root)
+
+    path = _etextno_to_uri_subdirectory(etextno)
+    uri = '{root}/{path}/{etextno}{extension}'.format(
+        root=uri_root,
+        path=path,
+        etextno=etextno,
+        extension=extension)
+
+    return uri
+
+
 def _format_download_uri(etextno, mirror=None, prefer_ascii=False):
     """Returns the download location on the Project Gutenberg servers for a
     given text.
@@ -64,10 +84,6 @@ def _format_download_uri(etextno, mirror=None, prefer_ascii=False):
     Raises:
         UnknownDownloadUri: If no download location can be found for the text.
     """
-    uri_root = mirror or _GUTENBERG_MIRROR
-    uri_root = uri_root.strip().rstrip('/')
-    _check_mirror_exists(uri_root)
-
     # Check https://www.gutenberg.org/files/ for details about available
     # extensions ;
     #  - .txt is plaintext us-ascii
@@ -77,18 +93,16 @@ def _format_download_uri(etextno, mirror=None, prefer_ascii=False):
     utf8_first = ('-0.txt', '-8.txt', '.txt')
     extensions = ascii_first if prefer_ascii else utf8_first
     for extension in extensions:
-        path = _etextno_to_uri_subdirectory(etextno)
-        uri = '{root}/{path}/{etextno}{extension}'.format(
-            root=uri_root,
-            path=path,
-            etextno=etextno,
-            extension=extension)
+        uri = _format_download_uri_for_extension(etextno, extension)
         response = requests.head(uri)
         if response.ok:
             return uri
 
-    raise UnknownDownloadUriException('Failed to find {0} on {1}.'
-                                      .format(etextno, uri_root))
+    raise UnknownDownloadUriException(
+        'Failed to find a textual download candidate for {0} on {1}. '
+        'Either the book does not exist or it is only available in '
+        'non-textual formats.'
+        .format(etextno, mirror or _GUTENBERG_MIRROR))
 
 
 def load_etext(etextno, refresh_cache=False, mirror=None, prefer_ascii=False):
