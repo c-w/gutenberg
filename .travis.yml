@@ -14,8 +14,8 @@ install:
   - if [ "$TRAVIS_PYTHON_VERSION" != "2.7" ]; then docker build --build-arg PYTHON_VERSION="$TRAVIS_PYTHON_VERSION" -t "gutenberg-$TRAVIS_PYTHON_VERSION" -f Dockerfile-py3 .; fi
 
 script:
-  - docker run -v $PWD:/app "gutenberg-$TRAVIS_PYTHON_VERSION" flake8 gutenberg
-  - docker run -v $PWD:/app "gutenberg-$TRAVIS_PYTHON_VERSION" coverage run --source=gutenberg -m nose2
+  - docker run -v $PWD:/app --tmpfs /data "gutenberg-$TRAVIS_PYTHON_VERSION" flake8 gutenberg
+  - docker run -v $PWD:/app --tmpfs /data "gutenberg-$TRAVIS_PYTHON_VERSION" coverage run --source=gutenberg -m nose2
 
 after_success:
   - coverage report
