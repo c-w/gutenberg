@@ -17,7 +17,8 @@ from gutenberg._util.os import makedirs
 from gutenberg._util.os import remove
 
 _TEXT_CACHE = local_path('text')
-_GUTENBERG_MIRROR = 'http://aleph.gutenberg.org'
+_GUTENBERG_MIRROR = os.environ.get('GUTENBERG_MIRROR',
+                                   'http://aleph.gutenberg.org')
 
 
 def _etextno_to_uri_subdirectory(etextno):
@@ -135,15 +136,13 @@ def _main():
     parser = ArgumentParser(description='Download a Project Gutenberg text')
     parser.add_argument('etextno', type=int)
     parser.add_argument('outfile', type=FileType('w'))
-    parser.add_argument('--mirror', '-m', type=str)
+    parser.add_argument('--mirror', '-m', type=str, default=None)
     parser.add_argument('--prefer-ascii', '-a', type=bool, default=False)
     args = parser.parse_args()
 
-    mirror = args.mirror or os.environ.get('GUTENBERG_MIRROR')
-
     try:
         text = load_etext(args.etextno,
-                          mirror=mirror,
+                          mirror=args.mirror,
                           prefer_ascii=args.prefer_ascii)
         with reopen_encoded(args.outfile, 'w', 'utf8') as outfile:
             outfile.write(text)
