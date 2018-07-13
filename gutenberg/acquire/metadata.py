@@ -205,12 +205,15 @@ class SleepycatMetadataCache(MetadataCache):
 
 
 class FusekiMetadataCache(MetadataCache):
-    _CACHE_URL_PREFIX = 'http://'
+    _CACHE_URL_PREFIXES = ('http://', 'https://')
 
-    def __init__(self, cache_location, cache_url):
+    def __init__(self, cache_location, cache_url, user=None, password=None):
         self._check_can_be_instantiated(cache_url)
         store = 'SPARQLUpdateStore'
         MetadataCache.__init__(self, store, cache_url)
+        user = user or os.getenv('GUTENBERG_FUSEKI_USER')
+        password = password or os.getenv('GUTENBERG_FUSEKI_PASSWORD')
+        self.graph.store.setCredentials(user, password)
         self._cache_marker = cache_location
 
     def _populate_setup(self):
@@ -252,7 +255,8 @@ class FusekiMetadataCache(MetadataCache):
         RDFlib's sparqlstore).
 
         """
-        if not cache_location.startswith(cls._CACHE_URL_PREFIX):
+        if not any(cache_location.startswith(prefix)
+                   for prefix in cls._CACHE_URL_PREFIXES):
             raise InvalidCacheException('cache location is not a Fuseki url')
 
         try:
@@ -344,12 +348,9 @@ def _create_metadata_cache(cache_location):
     """Creates a new metadata cache instance appropriate for this platform.
 
     """
-    try:
-        cache_url = os.getenv('GUTENBERG_FUSEKI_URL', '')
+    cache_url = os.getenv('GUTENBERG_FUSEKI_URL')
+    if cache_url:
         return FusekiMetadataCache(cache_location, cache_url)
-    except InvalidCacheException:
-        logging.debug('Unable to create cache based on Apache Jena Fuseki. '
-                      'Next trying BSD-DB implementation.')
 
     try:
         return SleepycatMetadataCache(cache_location)

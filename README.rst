@@ -129,17 +129,26 @@ Apache Jena Fuseki
 As an alternative to the BSD-DB backend, this package can also use `Apache Jena Fuseki <https://jena.apache.org/documentation/fuseki2/>`_
 for the metadata store. The Apache Jena Fuseki backend is activated by
 setting the :code:`GUTENBERG_FUSEKI_URL` environment variable to the HTTP
-endpoint at which Fuseki is listening.
+endpoint at which Fuseki is listening. If the Fuseki server has HTTP basic
+authentication enabled, the username and password can be provided via the
+:code:`GUTENBERG_FUSEKI_USER` and :code:`GUTENBERG_FUSEKI_PASSWORD` environment
+variables.
 
 For local development, the Fuseki server can be run via Docker:
 
 .. sourcecode :: bash
 
-    docker build -t fuseki-server ./fuseki
-
-    docker run -d -p 3030:3030 -v /some/mount/location:/fuseki fuseki-server
+    docker run \
+        --detach \
+        --publish 3030:3030 \
+        --env ADMIN_PASSWORD=some-password \
+        --volume /some/mount/location:/fuseki \
+        stain/jena-fuseki:3.6.0 \
+        /jena-fuseki/fuseki-server --loc=/fuseki --update /ds
 
     export GUTENBERG_FUSEKI_URL=http://localhost:3030/ds
+    export GUTENBERG_FUSEKI_USER=admin
+    export GUTENBERG_FUSEKI_PASSWORD=some-password
 
 
 Usage

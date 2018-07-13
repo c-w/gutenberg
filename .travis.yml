@@ -11,8 +11,7 @@ services:
 
 before_install:
   - docker network create gutenberg
-  - docker build -t fuseki-server ./fuseki
-  - docker run --detach --name fuseki --network gutenberg --tmpfs /fuseki fuseki-server
+  - docker run --detach --name fuseki --network gutenberg --tmpfs /fuseki --env ADMIN_PASSWORD=some-password stain/jena-fuseki:3.6.0 /jena-fuseki/fuseki-server --loc=/fuseki --update /ds
 
 install:
   - if [ "$TRAVIS_PYTHON_VERSION" = "2.7" ]; then docker build --build-arg PYTHON_VERSION="$TRAVIS_PYTHON_VERSION" -t "gutenberg-$TRAVIS_PYTHON_VERSION" -f Dockerfile-py2 .; fi
@@ -20,7 +19,7 @@ install:
 
 script:
   - docker run -v $PWD:/app --tmpfs /data "gutenberg-$TRAVIS_PYTHON_VERSION" flake8 gutenberg
-  - docker run -v $PWD:/app --tmpfs /data --network gutenberg --env UNIT_TEST_GUTENBERG_FUSEKI_URL=http://fuseki:3030/ds "gutenberg-$TRAVIS_PYTHON_VERSION" nose2 --with-coverage
+  - docker run -v $PWD:/app --tmpfs /data --network gutenberg --env UNIT_TEST_GUTENBERG_FUSEKI_URL=http://fuseki:3030/ds --env GUTENBERG_FUSEKI_USER=admin --env GUTENBERG_FUSEKI_PASSWORD=some-password "gutenberg-$TRAVIS_PYTHON_VERSION" nose2 --verbose --with-coverage
 
 after_success:
   - pip install codecov && codecov
