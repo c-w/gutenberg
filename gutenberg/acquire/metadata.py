@@ -218,6 +218,7 @@ class FusekiMetadataCache(MetadataCache):
         already be created on the Fuseki server.
 
         """
+        makedirs(os.path.dirname(self._cache_marker))
         with codecs.open(self._cache_marker, 'w', encoding='utf-8') as fobj:
             fobj.write(self.cache_uri)
         self.graph.open(self.cache_uri)
