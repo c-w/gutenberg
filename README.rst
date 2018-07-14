@@ -57,10 +57,18 @@ your checkout by running the tests.
 
     virtualenv --no-site-packages virtualenv
     source virtualenv/bin/activate
-    pip install -r requirements.pip
+    pip install -r requirements-dev.pip
+    pip install .
 
-    pip install nose
-    nosetests
+    nose2
+
+Alternatively, you can also run the project via Docker:
+
+.. sourcecode :: sh
+
+    docker build -t gutenberg -f Dockerfile-py3 .
+
+    docker run -it -v /some/mount/path:/data gutenberg python
 
 
 Python 3
