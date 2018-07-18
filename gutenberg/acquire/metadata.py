@@ -4,6 +4,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import abc
+import codecs
 import logging
 import os
 import re
@@ -15,7 +16,9 @@ from contextlib import contextmanager
 
 from rdflib import plugin
 from rdflib.graph import Graph
+from rdflib.query import ResultException
 from rdflib.store import Store
+from rdflib.term import BNode
 from rdflib.term import URIRef
 from rdflib_sqlalchemy import registerplugins
 from six import text_type
@@ -89,7 +92,6 @@ class MetadataCache(with_metaclass(abc.ABCMeta, object)):
 
         self._populate_setup()
 
-        self.graph.open(self.cache_uri, create=True)
         with closing(self.graph):
             with self._download_metadata_archive() as metadata_archive:
                 for fact in self._iter_metadata_triples(metadata_archive):
@@ -145,8 +147,8 @@ class MetadataCache(with_metaclass(abc.ABCMeta, object)):
         yield metadata_archive.name
         remove(metadata_archive.name)
 
-    @staticmethod
-    def _metadata_is_invalid(fact):
+    @classmethod
+    def _metadata_is_invalid(cls, fact):
         """Determines if the fact is not well formed.
 
         """
@@ -186,6 +188,7 @@ class SleepycatMetadataCache(MetadataCache):
 
     def _populate_setup(self):
         makedirs(self.cache_uri)
+        self.graph.open(self.cache_uri, create=True)
 
     @classmethod
     def _check_can_be_instantiated(cls):
@@ -201,6 +204,77 @@ class SleepycatMetadataCache(MetadataCache):
         del db
 
 
+class FusekiMetadataCache(MetadataCache):
+    _CACHE_URL_PREFIXES = ('http://', 'https://')
+
+    def __init__(self, cache_location, cache_url, user=None, password=None):
+        self._check_can_be_instantiated(cache_url)
+        store = 'SPARQLUpdateStore'
+        MetadataCache.__init__(self, store, cache_url)
+        user = user or os.getenv('GUTENBERG_FUSEKI_USER')
+        password = password or os.getenv('GUTENBERG_FUSEKI_PASSWORD')
+        self.graph.store.setCredentials(user, password)
+        self._cache_marker = cache_location
+
+    def _populate_setup(self):
+        """Just create a local marker file since the actual database should
+        already be created on the Fuseki server.
+
+        """
+        makedirs(os.path.dirname(self._cache_marker))
+        with codecs.open(self._cache_marker, 'w', encoding='utf-8') as fobj:
+            fobj.write(self.cache_uri)
+        self.graph.open(self.cache_uri)
+
+    def delete(self):
+        """Deletes the local marker file and also any data in the Fuseki
+        server.
+
+        """
+        MetadataCache.delete(self)
+        try:
+            self.graph.query('DELETE WHERE { ?s ?p ?o . }')
+        except ResultException:
+            # this is often just a false positive since Jena Fuseki does not
+            # return tuples for a deletion query, so swallowing the exception
+            # here is fine
+            logging.exception('error when deleting graph')
+
+    @property
+    def _local_storage_path(self):
+        """Returns the path to the local marker file that gets written when
+        the cache was created.
+
+        """
+        return self._cache_marker
+
+    @classmethod
+    def _check_can_be_instantiated(cls, cache_location):
+        """Pre-conditions: the cache location is the URL to a Fuseki server
+        and the SPARQLWrapper library exists (transitive dependency of
+        RDFlib's sparqlstore).
+
+        """
+        if not any(cache_location.startswith(prefix)
+                   for prefix in cls._CACHE_URL_PREFIXES):
+            raise InvalidCacheException('cache location is not a Fuseki url')
+
+        try:
+            from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
+        except ImportError:
+            raise InvalidCacheException('unable to import sparql store')
+        del SPARQLUpdateStore
+
+    @classmethod
+    def _metadata_is_invalid(cls, fact):
+        """Filters out blank nodes since the SPARQLUpdateStore does not
+        support them.
+
+        """
+        return (MetadataCache._metadata_is_invalid(fact)
+                or any(isinstance(token, BNode) for token in fact))
+
+
 class SqliteMetadataCache(MetadataCache):
     """Cache manager based on SQLite and the RDFlib plugin for SQLAlchemy.
     Quite slow.
@@ -212,6 +286,9 @@ class SqliteMetadataCache(MetadataCache):
         cache_uri = self._CACHE_URI_PREFIX + cache_location
         store = plugin.get('SQLAlchemy', Store)(identifier=_DB_IDENTIFIER)
         MetadataCache.__init__(self, store, cache_uri)
+
+    def _populate_setup(self):
+        self.graph.open(self.cache_uri, create=True)
 
     @property
     def _local_storage_path(self):
@@ -271,13 +348,18 @@ def _create_metadata_cache(cache_location):
     """Creates a new metadata cache instance appropriate for this platform.
 
     """
+    cache_url = os.getenv('GUTENBERG_FUSEKI_URL')
+    if cache_url:
+        return FusekiMetadataCache(cache_location, cache_url)
+
     try:
         return SleepycatMetadataCache(cache_location)
     except InvalidCacheException:
         logging.warning('Unable to create cache based on BSD-DB. '
                         'Falling back to SQLite backend. '
                         'Performance may be degraded significantly.')
-        return SqliteMetadataCache(cache_location)
+
+    return SqliteMetadataCache(cache_location)
 
 
 def load_metadata(refresh_cache=False):
