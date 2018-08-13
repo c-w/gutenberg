@@ -25,6 +25,8 @@ script:
   - docker run -v $PWD:/app --tmpfs /data --network gutenberg --env UNIT_TEST_GUTENBERG_FUSEKI_URL=http://fuseki:3030/ds --env GUTENBERG_FUSEKI_USER=admin --env GUTENBERG_FUSEKI_PASSWORD=some-password "gutenberg-$DOCKER_PYTHON_VERSION" nose2 --verbose --with-coverage
 
 after_success:
+  # Overwrite variable for codecov
+  - export TRAVIS_PYTHON_VERSION=${DOCKER_PYTHON_VERSION}
   - pip install codecov && codecov
 
 deploy:
