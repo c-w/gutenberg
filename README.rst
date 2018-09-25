@@ -86,7 +86,7 @@ manager. For example, on Ubuntu, you can use apt-get:
 
 .. sourcecode :: sh
 
-    sudo apt-get install libdb5.1-dev
+    sudo apt-get install libdb++-dev
     export BERKELEYDB_DIR=/usr
     pip install -r requirements-py3.pip
 
