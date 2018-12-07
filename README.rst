@@ -45,6 +45,12 @@ This package depends on Berkeley DB so you'll need to install that:
 
     sudo apt-get install libdb5.1-dev
     export BERKELEYDB_DIR=/usr
+    
+If that library is not found in your package manager, try:
+
+.. sourcecode :: sh
+
+    sudo apt-get install libdb5.3-dev
 
 Now, you should probably install the dependencies for the package and verify
 your checkout by running the tests.
