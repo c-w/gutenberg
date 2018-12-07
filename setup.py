@@ -3,6 +3,7 @@
 from __future__ import absolute_import, unicode_literals
 from os.path import isfile
 from sys import version_info
+import codecs
 
 from setuptools import find_packages
 from setuptools import setup
@@ -36,10 +37,9 @@ requirements_general, links_general = requirements_for()
 requirements_version, links_version = requirements_for(version_info.major)
 install_requires = requirements_general | requirements_version
 dependency_links = links_general | links_version
-if version_info.major >=3:
-    long_description = open('README.rst', encoding="utf-8").read()
-else:
-    long_description = open('README.rst').read()
+
+with codecs.open('README.rst', encoding='utf-8') as fobj:
+    long_description = fobj.read()
 
 setup(
     name='Gutenberg',
