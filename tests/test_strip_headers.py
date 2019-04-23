@@ -33,21 +33,21 @@ class TestStripHeaders(unittest.TestCase):
                         next_lines=_next_lines(i, lines, amount=3),
                         actual=actual_line,
                         expected=expected_line,
-                        lineno_separator='line {0}:'.format(i).center(80, '-'),
+                        lineno_separator='line {}:'.format(i).center(80, '-'),
                         separator=''.center(80, '-')))
 
 
 def _previous_lines(i, lines, amount):
     lower = max(0, i-amount)
     prev_lines = lines[lower:i-1]
-    return '\n'.join('line {0}: "{1}"'.format(j, line)
+    return '\n'.join('line {}: "{}"'.format(j, line)
                      for j, (_, line) in enumerate(prev_lines, start=lower))
 
 
 def _next_lines(i, lines, amount):
     upper = min(len(lines), i+amount+1)
     next_lines = lines[i+1:upper]
-    return '\n'.join('line {0}: "{1}"'.format(j, line)
+    return '\n'.join('line {}: "{}"'.format(j, line)
                      for j, (_, line) in enumerate(next_lines, start=i+1))
 
 

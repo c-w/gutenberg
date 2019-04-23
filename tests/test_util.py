@@ -41,7 +41,7 @@ class TestAllSubclasses(unittest.TestCase):
         class ABADE(ABAD):
             pass
 
-        self.assertTrue(all_subclasses(Root), set([AB, ABC, AD, ABAD, ABADE]))
+        self.assertTrue(all_subclasses(Root), {AB, ABC, AD, ABAD, ABADE})
         self.assertEqual(all_subclasses(ABADE), set())
 
 

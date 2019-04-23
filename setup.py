@@ -25,7 +25,7 @@ def requirements_for(version=None):
                 requirement_parts = line.split('#egg=')[-1].split('-')
                 version = requirement_parts[-1]
                 library = '-'.join(requirement_parts[:-1])
-                requirement = '%s==%s' % (library, version)
+                requirement = '{}=={}'.format(library, version)
                 requirements.add(requirement)
                 links.add(line)
             else:

@@ -44,7 +44,7 @@ def _etextno_to_uri_subdirectory(etextno):
     str_etextno = str(etextno).zfill(2)
     all_but_last_digit = list(str_etextno[:-1])
     subdir_part = "/".join(all_but_last_digit)
-    subdir = "{0}/{1}".format(subdir_part, etextno)  # etextno not zfilled
+    subdir = "{}/{}".format(subdir_part, etextno)  # etextno not zfilled
     return subdir
 
 
@@ -94,7 +94,7 @@ def _format_download_uri(etextno, mirror=None, prefer_ascii=False):
     mirror = mirror or _GUTENBERG_MIRROR
     if not _does_mirror_exist(mirror):
         raise UnknownDownloadUriException(
-            'Could not reach Gutenberg mirror "{0:s}". Try setting a '
+            'Could not reach Gutenberg mirror "{:s}". Try setting a '
             'different mirror (https://www.gutenberg.org/MIRRORS.ALL) for '
             '--mirror flag or GUTENBERG_MIRROR environment variable.'
             .format(mirror))
@@ -113,7 +113,7 @@ def _format_download_uri(etextno, mirror=None, prefer_ascii=False):
             return uri
 
     raise UnknownDownloadUriException(
-        'Failed to find a textual download candidate for {0} on {1}. '
+        'Failed to find a textual download candidate for {} on {}. '
         'Either the book does not exist or it is only available in '
         'non-textual formats.'
         .format(etextno, mirror))
@@ -126,7 +126,7 @@ def load_etext(etextno, refresh_cache=False, mirror=None, prefer_ascii=False):
 
     """
     etextno = validate_etextno(etextno)
-    cached = os.path.join(_TEXT_CACHE, '{0}.txt.gz'.format(etextno))
+    cached = os.path.join(_TEXT_CACHE, '{}.txt.gz'.format(etextno))
 
     if refresh_cache:
         remove(cached)
