@@ -4,6 +4,7 @@
 
 
 from __future__ import absolute_import, unicode_literals
+import codecs
 import json
 import os
 import sys
@@ -134,5 +135,5 @@ def _sample_metadata_path():
 
 def _load_metadata(etextno):
     data_path = os.path.join(_sample_metadata_path(), str(etextno))
-    with open(data_path) as fobj:
+    with codecs.open(data_path, encoding='utf-8') as fobj:
         return json.load(fobj)
