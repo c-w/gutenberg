@@ -5,6 +5,9 @@ Gutenberg
 .. image:: https://travis-ci.org/c-w/gutenberg.svg?branch=master
     :target: https://travis-ci.org/c-w/gutenberg
 
+.. image:: https://clewolff.visualstudio.com/gutenberg/_apis/build/status/c-w.gutenberg?branchName=master
+    :target: https://clewolff.visualstudio.com/gutenberg/
+
 .. image:: https://codecov.io/gh/c-w/gutenberg/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/c-w/gutenberg
 
