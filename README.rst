@@ -27,7 +27,7 @@ The functionality provided by this package includes:
 * Cleaning the texts: removing all the crud, leaving just the text behind.
 * Making meta-data about the texts easily accessible.
 
-The package has been tested with Python 2.7, 3.4, 3.5 and 3.6.
+The package has been tested with Python 2.7, 3.4, 3.5, 3.6 and 3.7.
 
 An HTTP interface to this package exists too.
 `Try it out! <https://github.com/c-w/gutenberg-http>`_
