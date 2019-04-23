@@ -5,6 +5,9 @@ Gutenberg
 .. image:: https://travis-ci.org/c-w/gutenberg.svg?branch=master
     :target: https://travis-ci.org/c-w/gutenberg
 
+.. image:: https://clewolff.visualstudio.com/gutenberg/_apis/build/status/c-w.gutenberg?branchName=master
+    :target: https://clewolff.visualstudio.com/gutenberg/
+
 .. image:: https://codecov.io/gh/c-w/gutenberg/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/c-w/gutenberg
 
@@ -24,7 +27,7 @@ The functionality provided by this package includes:
 * Cleaning the texts: removing all the crud, leaving just the text behind.
 * Making meta-data about the texts easily accessible.
 
-The package has been tested with Python 2.7, 3.4, 3.5 and 3.6.
+The package has been tested with Python 2.7, 3.4, 3.5, 3.6 and 3.7.
 
 An HTTP interface to this package exists too.
 `Try it out! <https://github.com/c-w/gutenberg-http>`_

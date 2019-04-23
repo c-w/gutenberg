@@ -1,0 +1,47 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+strategy:
+  matrix:
+    Python27:
+      python.version.major: '2'
+      python.version.minor: '7'
+    Python35:
+      python.version.major: '3'
+      python.version.minor: '5'
+    Python36:
+      python.version.major: '3'
+      python.version.minor: '6'
+    Python37:
+      python.version.major: '3'
+      python.version.minor: '7'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '$(python.version.major).$(python.version.minor)'
+  displayName: 'Use Python $(python.version.major).$(python.version.minor)'
+
+- script: |
+    python -m pip install --upgrade pip setuptools
+  displayName: 'Upgrade pip and setuptools'
+
+- powershell: |
+    $mirror = "https://download.lfd.uci.edu/pythonlibs/q5gtlas7"
+    $wheel = "bsddb3-6.2.6-cp3$(python.version.minor)-cp3$(python.version.minor)m-win_amd64.whl"
+    Invoke-WebRequest -Uri "$mirror/$wheel" -OutFile "$(Agent.TempDirectory)\$wheel"
+    pip install "$(Agent.TempDirectory)\$wheel"
+  condition: eq(variables['python.version.major'], '3')
+  displayName: 'Install bsddb3 wheel'
+
+- script: |
+    pip install -r requirements-dev.pip
+    pip install .
+  displayName: 'Install dependencies'
+
+- script: |
+    nose2
+  displayName: 'Run tests'
