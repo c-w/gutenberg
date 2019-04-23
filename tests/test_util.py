@@ -100,7 +100,10 @@ class TestReopenEncoded(unittest.TestCase):
         self.temporary_path = tempfile.mktemp()
 
     def tearDown(self):
-        remove(self.temporary_path)
+        try:
+            remove(self.temporary_path)
+        except OSError:
+            pass
 
     def test_reopen_encoded(self):
         for encoding in ('utf-8', 'utf-16'):
@@ -108,7 +111,7 @@ class TestReopenEncoded(unittest.TestCase):
                 fobj.write('something')
 
             with open(self.temporary_path, 'r') as fobj:
-                reopened_fobj = reopen_encoded(fobj, fobj.mode)
+                reopened_fobj = reopen_encoded(fobj, fobj.mode, encoding)
                 self.assertEqual(reopened_fobj.encoding.lower(), encoding)
 
 
