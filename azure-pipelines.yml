@@ -9,9 +9,6 @@ strategy:
     Python27:
       python.version.major: '2'
       python.version.minor: '7'
-    Python34:
-      python.version.major: '3'
-      python.version.minor: '4'
     Python35:
       python.version.major: '3'
       python.version.minor: '5'
