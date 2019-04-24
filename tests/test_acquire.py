@@ -48,7 +48,7 @@ class TestLoadEtext(MockTextMixin, unittest.TestCase):
         for testcase, loader in itertools.product(testcases, loaders):
             etext = loader(testcase.etextno)
             self.assertIsInstance(etext, str)
-            self.assertNotIn(u'\ufffd', etext)
+            self.assertNotIn('\ufffd', etext)
 
     @responses.activate
     def test_invalid_etext(self):

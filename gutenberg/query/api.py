@@ -120,7 +120,7 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
         identify the text in the meta-data RDF graph.
 
         """
-        uri = r'http://www.gutenberg.org/ebooks/{0}'.format(etextno)
+        uri = r'http://www.gutenberg.org/ebooks/{}'.format(etextno)
         return URIRef(uri)
 
     @classmethod
