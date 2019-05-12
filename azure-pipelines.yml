@@ -22,6 +22,22 @@ strategy:
       python.version.major: '3'
       python.version.minor: '7'
       os.image: 'windows-latest'
+    MacOS-Python27:
+      python.version.major: '2'
+      python.version.minor: '7'
+      os.image: 'macOS-latest'
+    MacOS-Python35:
+      python.version.major: '3'
+      python.version.minor: '5'
+      os.image: 'macOS-latest'
+    MacOS-Python36:
+      python.version.major: '3'
+      python.version.minor: '6'
+      os.image: 'macOS-latest'
+    MacOS-Python37:
+      python.version.major: '3'
+      python.version.minor: '7'
+      os.image: 'macOS-latest'
 
 steps:
 - task: UsePythonVersion@0
@@ -38,8 +54,13 @@ steps:
     $wheel = "bsddb3-6.2.6-cp3$(python.version.minor)-cp3$(python.version.minor)m-win_amd64.whl"
     Invoke-WebRequest -Uri "$mirror/$wheel" -OutFile "$(Agent.TempDirectory)\$wheel"
     pip install "$(Agent.TempDirectory)\$wheel"
-  condition: eq(variables['python.version.major'], '3')
+  condition: and(eq(variables['python.version.major'], '3'), eq(variables['os.image'], 'windows-latest'))
   displayName: 'Install bsddb3 wheel'
+
+- script: |
+    brew install berkeley-db4
+  condition: eq(variables['os.image'], 'macOS-latest')
+  displayName: 'Install bsddb3 dependencies'
 
 - script: |
     pip install -r requirements-dev.pip
