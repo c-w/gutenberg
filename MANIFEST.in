@@ -1,3 +1,0 @@
-include requirements.pip
-include requirements-py2.pip
-include requirements-py3.pip

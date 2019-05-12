@@ -3,7 +3,6 @@
 !tests/
 !.coveragerc
 !.noserc
-!MANIFEST.in
 !README.rst
 !requirements*.pip
 !setup.py

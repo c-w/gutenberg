@@ -91,7 +91,7 @@ manager. For example, on Ubuntu, you can use apt-get:
 
     sudo apt-get install libdb++-dev
     export BERKELEYDB_DIR=/usr
-    pip install -r requirements-py3.pip
+    pip install .
 
 MacOS
 *****
@@ -101,7 +101,7 @@ On Mac, you can install BSD-DB using `homebrew <https://homebrew.sh/>`_:
 .. sourcecode :: sh
 
     brew install berkeley-db4
-    pip install -r requirements-py3.pip
+    pip install .
 
 Windows
 *******
@@ -117,6 +117,7 @@ After you download the wheel, install it and you're good to go:
 .. sourcecode :: bash
 
     pip install bsddb3‑6.2.1‑cp35‑cp35m‑win_amd64.whl
+    pip install .
 
 License conflicts
 *****************
