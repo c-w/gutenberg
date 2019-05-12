@@ -2,22 +2,26 @@ trigger:
 - master
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: '$(os.image)'
 
 strategy:
   matrix:
-    Python27:
+    Windows-Python27:
       python.version.major: '2'
       python.version.minor: '7'
-    Python35:
+      os.image: 'windows-latest'
+    Windows-Python35:
       python.version.major: '3'
       python.version.minor: '5'
-    Python36:
+      os.image: 'windows-latest'
+    Windows-Python36:
       python.version.major: '3'
       python.version.minor: '6'
-    Python37:
+      os.image: 'windows-latest'
+    Windows-Python37:
       python.version.major: '3'
       python.version.minor: '7'
+      os.image: 'windows-latest'
 
 steps:
 - task: UsePythonVersion@0
