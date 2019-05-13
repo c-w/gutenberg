@@ -1,7 +1,7 @@
 """Library installer."""
 
 from __future__ import absolute_import, unicode_literals
-from os.path import isfile
+from platform import system
 from sys import version_info
 import codecs
 
@@ -9,34 +9,25 @@ from setuptools import find_packages
 from setuptools import setup
 
 
-def requirements_for(version=None):
-    suffix = '-py%s' % version if version is not None else ''
-    pip_path = 'requirements%s.pip' % suffix
+install_requires = [
+    'future>=0.15.2',
+    'rdflib>=4.2.0',
+    'requests>=2.5.1',
+    'six>=1.10.0',
+    'setuptools>=18.5',
+    'rdflib-sqlalchemy>=0.3.8',
+    'SPARQLWrapper>=1.8.2',
+]
 
-    if not isfile(pip_path):
-        return set(), set()
+if version_info.major == 2:
+    install_requires.extend([
+        'functools32>=3.2.3-2',
+    ])
 
-    requirements = set()
-    links = set()
-    with open(pip_path) as pip_file:
-        for line in pip_file:
-            line = line.strip()
-            if '#egg=' in line:
-                requirement_parts = line.split('#egg=')[-1].split('-')
-                version = requirement_parts[-1]
-                library = '-'.join(requirement_parts[:-1])
-                requirement = '{}=={}'.format(library, version)
-                requirements.add(requirement)
-                links.add(line)
-            else:
-                requirements.add(line)
-    return requirements, links
-
-
-requirements_general, links_general = requirements_for()
-requirements_version, links_version = requirements_for(version_info.major)
-install_requires = requirements_general | requirements_version
-dependency_links = links_general | links_version
+if version_info.major == 3 or system() == 'Darwin':
+    install_requires.extend([
+        'bsddb3>=6.1.0',
+    ])
 
 with codecs.open('README.rst', encoding='utf-8') as fobj:
     long_description = fobj.read()
@@ -52,7 +43,6 @@ setup(
     license='Apache Software License',
     description='Library to interface with Project Gutenberg',
     long_description=long_description,
-    dependency_links=dependency_links,
     install_requires=sorted(install_requires),
     python_requires='>=2.7.*,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*',
     classifiers=[
