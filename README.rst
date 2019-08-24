@@ -14,6 +14,9 @@ Gutenberg
 .. image:: https://img.shields.io/pypi/v/gutenberg.svg
     :target: https://pypi.python.org/pypi/gutenberg/
 
+.. image:: https://img.shields.io/pypi/pyversions/gutenberg.svg
+    :target: https://pypi.python.org/pypi/gutenberg/
+
 
 Overview
 ========
