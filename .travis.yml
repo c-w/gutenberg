@@ -1,6 +1,4 @@
-language: python
-
-python: 3.6
+language: minimal
 
 env:
   - DOCKER_PYTHON_VERSION=2.7
@@ -33,3 +31,4 @@ deploy:
     tags: true
     distributions: sdist bdist_wheel
     repo: c-w/gutenberg
+    condition: $DOCKER_PYTHON_VERSION = 3.7
