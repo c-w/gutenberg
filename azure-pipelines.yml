@@ -1,6 +1,14 @@
 trigger:
 - master
 
+schedules:
+- cron: '0 4 * * *'
+  displayName: 'Daily build at midnight EDT'
+  branches:
+    include:
+    - master
+  always: true
+
 pool:
   vmImage: '$(os.image)'
 
@@ -50,7 +58,7 @@ steps:
   displayName: 'Upgrade pip and setuptools'
 
 - powershell: |
-    $mirror = "https://download.lfd.uci.edu/pythonlibs/q5gtlas7"
+    $mirror = "https://download.lfd.uci.edu/pythonlibs/r7aykn4w"
     $wheel = "bsddb3-6.2.6-cp3$(python.version.minor)-cp3$(python.version.minor)m-win_amd64.whl"
     Invoke-WebRequest -Uri "$mirror/$wheel" -OutFile "$(Agent.TempDirectory)\$wheel"
     pip install "$(Agent.TempDirectory)\$wheel"
