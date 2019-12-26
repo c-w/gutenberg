@@ -30,6 +30,10 @@ strategy:
       python.version.major: '3'
       python.version.minor: '7'
       os.image: 'windows-latest'
+    Windows-Python38:
+      python.version.major: '3'
+      python.version.minor: '8'
+      os.image: 'windows-latest'
     MacOS-Python27:
       python.version.major: '2'
       python.version.minor: '7'
@@ -45,6 +49,10 @@ strategy:
     MacOS-Python37:
       python.version.major: '3'
       python.version.minor: '7'
+      os.image: 'macOS-latest'
+    MacOS-Python38:
+      python.version.major: '3'
+      python.version.minor: '8'
       os.image: 'macOS-latest'
 
 steps:
