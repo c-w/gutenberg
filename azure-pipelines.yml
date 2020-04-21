@@ -66,20 +66,20 @@ steps:
   displayName: 'Upgrade pip and setuptools'
 
 - powershell: |
-    $mirror = "https://download.lfd.uci.edu/pythonlibs/q4hpdf1k"
+    $mirror = "https://download.lfd.uci.edu/pythonlibs/s2jqpv5t/cp3$(python.version.minor)"
     $wheel = "bsddb3-6.2.6-cp3$(python.version.minor)-cp3$(python.version.minor)m-win_amd64.whl"
     Invoke-WebRequest -Uri "$mirror/$wheel" -OutFile "$(Agent.TempDirectory)\$wheel"
     pip install "$(Agent.TempDirectory)\$wheel"
-  condition: and(eq(variables['python.version.major'], '3'), eq(variables['os.image'], 'windows-latest'), ne(variables['python.version.minor'], '8'))
-  displayName: 'Install bsddb3 wheel (!3.8)'
+  condition: and(eq(variables['python.version.major'], '3'), eq(variables['os.image'], 'windows-latest'), eq(variables['python.version.minor'], '5'))
+  displayName: 'Install bsddb3 wheel (3.5)'
 
 - powershell: |
-    $mirror = "https://download.lfd.uci.edu/pythonlibs/q4hpdf1k"
-    $wheel = "bsddb3-6.2.6-cp3$(python.version.minor)-cp3$(python.version.minor)-win_amd64.whl"
+    $mirror = "https://download.lfd.uci.edu/pythonlibs/s2jqpv5t"
+    $wheel = "bsddb3-6.2.7-cp3$(python.version.minor)-cp3$(python.version.minor)m-win_amd64.whl"
     Invoke-WebRequest -Uri "$mirror/$wheel" -OutFile "$(Agent.TempDirectory)\$wheel"
     pip install "$(Agent.TempDirectory)\$wheel"
-  condition: and(eq(variables['python.version.major'], '3'), eq(variables['os.image'], 'windows-latest'), eq(variables['python.version.minor'], '8'))
-  displayName: 'Install bsddb3 wheel (3.8)'
+  condition: and(eq(variables['python.version.major'], '3'), eq(variables['os.image'], 'windows-latest'), ge(variables['python.version.minor'], '6'))
+  displayName: 'Install bsddb3 wheel (3.6+)'
 
 - script: |
     brew install berkeley-db4
