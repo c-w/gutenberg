@@ -65,29 +65,15 @@ steps:
     python -m pip install --upgrade pip setuptools
   displayName: 'Upgrade pip and setuptools'
 
-- powershell: |
-    $mirror = "https://download.lfd.uci.edu/pythonlibs/s2jqpv5t/cp3$(python.version.minor)"
-    $wheel = "bsddb3-6.2.6-cp3$(python.version.minor)-cp3$(python.version.minor)m-win_amd64.whl"
-    Invoke-WebRequest -Uri "$mirror/$wheel" -OutFile "$(Agent.TempDirectory)\$wheel"
+- pwsh: |
+    $mirror = 'https://github.com/c-w/gutenberg/files/4944332/bsddb3-wheels.zip'
+    $bsddbVersion = if ("$(python.version.minor)" -eq "5") { '6.2.6' } else { '6.2.7' }
+    $wheel = "bsddb3-$bsddbVersion-cp3$(python.version.minor)-cp3$(python.version.minor)m-win_amd64.whl"
+    Invoke-WebRequest -Uri "$mirror" -OutFile "$(Agent.TempDirectory)\wheels.zip"
+    Expand-Archive "$(Agent.TempDirectory)\wheels.zip" "$(Agent.TempDirectory)"
     pip install "$(Agent.TempDirectory)\$wheel"
-  condition: and(eq(variables['python.version.major'], '3'), eq(variables['os.image'], 'windows-latest'), eq(variables['python.version.minor'], '5'))
-  displayName: 'Install bsddb3 wheel (3.5)'
-
-- powershell: |
-    $mirror = "https://download.lfd.uci.edu/pythonlibs/s2jqpv5t"
-    $wheel = "bsddb3-6.2.7-cp3$(python.version.minor)-cp3$(python.version.minor)m-win_amd64.whl"
-    Invoke-WebRequest -Uri "$mirror/$wheel" -OutFile "$(Agent.TempDirectory)\$wheel"
-    pip install "$(Agent.TempDirectory)\$wheel"
-  condition: and(eq(variables['python.version.major'], '3'), eq(variables['os.image'], 'windows-latest'), ge(variables['python.version.minor'], '6'), le(variables['python.version.minor'], '7'))
-  displayName: 'Install bsddb3 wheel (3.6,3.7)'
-
-- powershell: |
-    $mirror = "https://download.lfd.uci.edu/pythonlibs/s2jqpv5t"
-    $wheel = "bsddb3-6.2.7-cp3$(python.version.minor)-cp3$(python.version.minor)-win_amd64.whl"
-    Invoke-WebRequest -Uri "$mirror/$wheel" -OutFile "$(Agent.TempDirectory)\$wheel"
-    pip install "$(Agent.TempDirectory)\$wheel"
-  condition: and(eq(variables['python.version.major'], '3'), eq(variables['os.image'], 'windows-latest'), ge(variables['python.version.minor'], '8'))
-  displayName: 'Install bsddb3 wheel (3.8+)'
+  condition: and(eq(variables['python.version.major'], '3'), eq(variables['os.image'], 'windows-latest'))
+  displayName: 'Install bsddb3 wheel'
 
 - script: |
     brew install berkeley-db4
