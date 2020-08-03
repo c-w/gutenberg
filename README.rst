@@ -35,7 +35,6 @@ The package has been tested with Python 2.7 and 3.5+.
 An HTTP interface to this package exists too.
 `Try it out! <https://github.com/c-w/gutenberg-http>`_
 
-
 Installation
 ============
 
@@ -83,6 +82,10 @@ Python 3
 This package depends on BSD-DB. The bsddb module was removed from the Python
 standard library since version 2.7. This means that if you wish to use gutenberg
 on Python 3, you will need to manually install BSD-DB.
+
+If getting BSD-DB to run on your platform is difficult, take a look at
+`gutenbergpy <https://github.com/raduangelescu/gutenbergpy>`_ which only
+depends on SQLite or MongoDB.
 
 Linux
 *****
