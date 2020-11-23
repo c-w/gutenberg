@@ -24,7 +24,11 @@ if version_info.major == 2:
         'functools32>=3.2.3-2',
     ])
 
-if version_info.major == 3 or system() == 'Darwin':
+if version_info.major == 2 and system() == 'Darwin':
+    install_requires.extend([
+        'bsddb3>=6.1.0,<6.2.8',
+    ])
+elif version_info.major == 3 or system() == 'Darwin':
     install_requires.extend([
         'bsddb3>=6.1.0',
     ])
