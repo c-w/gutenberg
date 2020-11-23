@@ -1,7 +1,9 @@
-# .coveragerc to control coverage.py
+[run]
+omit =
+    # Don't complain about installer code
+    setup.py
 
 [report]
-# Regexes for lines to exclude from consideration
 exclude_lines =
     # Have to re-enable the standard pragma:
     pragma: no cover
