@@ -22,13 +22,9 @@ strategy:
       python.version.major: '3'
       python.version.minor: '5'
       os.image: 'windows-latest'
-    Windows-Python36:
+    Windows-Python39:
       python.version.major: '3'
-      python.version.minor: '6'
-      os.image: 'windows-latest'
-    Windows-Python37:
-      python.version.major: '3'
-      python.version.minor: '7'
+      python.version.minor: '9'
       os.image: 'windows-latest'
     MacOS-Python27:
       python.version.major: '2'
@@ -38,17 +34,9 @@ strategy:
       python.version.major: '3'
       python.version.minor: '5'
       os.image: 'macOS-latest'
-    MacOS-Python36:
+    MacOS-Python39:
       python.version.major: '3'
-      python.version.minor: '6'
-      os.image: 'macOS-latest'
-    MacOS-Python37:
-      python.version.major: '3'
-      python.version.minor: '7'
-      os.image: 'macOS-latest'
-    MacOS-Python38:
-      python.version.major: '3'
-      python.version.minor: '8'
+      python.version.minor: '9'
       os.image: 'macOS-latest'
 
 steps:
@@ -64,7 +52,8 @@ steps:
 - pwsh: |
     $mirror = 'https://github.com/c-w/gutenberg/files/4944332/bsddb3-wheels.zip'
     $bsddbVersion = if ("$(python.version.minor)" -eq "5") { '6.2.6' } else { '6.2.7' }
-    $wheel = "bsddb3-$bsddbVersion-cp3$(python.version.minor)-cp3$(python.version.minor)m-win_amd64.whl"
+    $abiTag = if ($(python.version.minor) -ge 8) { "cp3$(python.version.minor)" } else { "cp3$(python.version.minor)m" }
+    $wheel = "bsddb3-$bsddbVersion-cp3$(python.version.minor)-$abiTag-win_amd64.whl"
     Invoke-WebRequest -Uri "$mirror" -OutFile "$(Agent.TempDirectory)\wheels.zip"
     Expand-Archive "$(Agent.TempDirectory)\wheels.zip" "$(Agent.TempDirectory)"
     pip install "$(Agent.TempDirectory)\$wheel"
