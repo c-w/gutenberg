@@ -115,7 +115,7 @@ Windows
 
 On Windows, it's easiest to download a pre-compiled version of BSD-DB from
 `pythonlibs <http://www.lfd.uci.edu/~gohlke/pythonlibs/>`_ which works great
-for Python 3.5, 3.6 and 3.7.
+for Python 3.5+.
 
 For example, if you have Python 3.5 on a 64-bit version of Windows, you
 should download :code:`bsddb3‑6.2.1‑cp35‑cp35m‑win_amd64.whl`.
