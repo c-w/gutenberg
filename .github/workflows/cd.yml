@@ -1,0 +1,25 @@
+name: CD
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  pypi:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+
+      - name: Build
+        run: python setup.py sdist bdist_wheel
+
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@v1.4.1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}

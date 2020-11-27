@@ -2,8 +2,8 @@
 Gutenberg
 *********
 
-.. image:: https://travis-ci.org/c-w/gutenberg.svg?branch=master
-    :target: https://travis-ci.org/c-w/gutenberg
+.. image:: https://github.com/c-w/gutenberg/workflows/CI/badge.svg
+    :target: https://github.com/c-w/gutenberg/actions?query=workflow%3ACI
 
 .. image:: https://clewolff.visualstudio.com/gutenberg/_apis/build/status/c-w.gutenberg?branchName=master
     :target: https://clewolff.visualstudio.com/gutenberg/

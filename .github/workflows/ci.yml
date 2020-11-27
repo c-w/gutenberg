@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [ '*' ]
+  pull_request:
+    branches: [ '*' ]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python:
+          - '2.7'
+          - '3.5'
+          - '3.6'
+          - '3.7'
+          - '3.8'
+          - '3.9'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: docker network create gutenberg
+      - run: docker run --detach --name fuseki --network gutenberg --tmpfs /fuseki --env ADMIN_PASSWORD=some-password stain/jena-fuseki:3.6.0 /jena-fuseki/fuseki-server --loc=/fuseki --update /ds
+
+      - name: build python2.7 dockerfile
+        run: docker build --build-arg PYTHON_VERSION="${{ matrix.python }}" -t gutenberg:test -f Dockerfile-py2 .
+        if: ${{ matrix.python == '2.7' }}
+
+      - name: build python3 dockerfile
+        run: docker build --build-arg PYTHON_VERSION="${{ matrix.python }}" -t gutenberg:test -f Dockerfile-py3 .
+        if: ${{ matrix.python != '2.7' }}
+
+      - name: lint
+        run: docker run -v $PWD:/app --tmpfs /data gutenberg:test flake8 gutenberg
+
+      - name: test
+        run: |
+          codecov_env="$(bash <(curl -s https://codecov.io/env))"
+          docker run -v $PWD:/app --tmpfs /data --network gutenberg --env UNIT_TEST_GUTENBERG_FUSEKI_URL=http://fuseki:3030/ds --env GUTENBERG_FUSEKI_USER=admin --env GUTENBERG_FUSEKI_PASSWORD=some-password $codecov_env gutenberg:test bash -c "nose2 --verbose --with-coverage && bash <(curl -s https://codecov.io/bash)"
