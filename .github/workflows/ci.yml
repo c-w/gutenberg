@@ -27,17 +27,13 @@ jobs:
       - run: docker run --detach --name fuseki --network gutenberg --tmpfs /fuseki --env ADMIN_PASSWORD=some-password stain/jena-fuseki:3.6.0 /jena-fuseki/fuseki-server --loc=/fuseki --update /ds
 
       - name: build python2.7 dockerfile
-        run: docker build --build-arg PYTHON_VERSION="$DOCKER_PYTHON_VERSION" -t gutenberg:test -f Dockerfile-py2 .
-        env:
-          DOCKER_PYTHON_VERSION: ${{ matrix.python }}
-        if: ${{ matrix.python == "2.7" }}
-      
+        run: docker build --build-arg PYTHON_VERSION="${{ matrix.python }}" -t gutenberg:test -f Dockerfile-py2 .
+        if: ${{ matrix.python == '2.7' }}
+
       - name: build python3 dockerfile
-        run: docker build --build-arg PYTHON_VERSION="$DOCKER_PYTHON_VERSION" -t gutenberg:test -f Dockerfile-py3 .
-        env:
-          DOCKER_PYTHON_VERSION: ${{ matrix.python }}
-        if: ${{ matrix.python != "2.7" }}
-      
+        run: docker build --build-arg PYTHON_VERSION="${{ matrix.python }}" -t gutenberg:test -f Dockerfile-py3 .
+        if: ${{ matrix.python != '2.7' }}
+
       - name: lint
         run: docker run -v $PWD:/app --tmpfs /data gutenberg:test flake8 gutenberg
 
