@@ -5,8 +5,8 @@ Gutenberg
 .. image:: https://github.com/c-w/gutenberg/workflows/CI/badge.svg
     :target: https://github.com/c-w/gutenberg/actions?query=workflow%3ACI
 
-.. image:: https://clewolff.visualstudio.com/gutenberg/_apis/build/status/c-w.gutenberg?branchName=master
-    :target: https://clewolff.visualstudio.com/gutenberg/
+.. image:: https://github.com/c-w/gutenberg/workflows/Daily/badge.svg
+    :target: https://github.com/c-w/gutenberg/actions?query=workflow%3Adaily
 
 .. image:: https://codecov.io/gh/c-w/gutenberg/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/c-w/gutenberg
