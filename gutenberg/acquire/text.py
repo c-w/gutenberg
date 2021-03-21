@@ -24,7 +24,7 @@ from gutenberg._util.os import remove
 
 _TEXT_CACHE = local_path('text')
 _GUTENBERG_MIRROR = os.environ.get('GUTENBERG_MIRROR',
-                                   'http://aleph.gutenberg.org')
+                                   'http://gutenberg.readingroo.ms')
 
 
 def _etextno_to_uri_subdirectory(etextno):
