@@ -13,6 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
 
     strategy:
+      fail-fast: false
       matrix:
         python:
           - '2.7'
