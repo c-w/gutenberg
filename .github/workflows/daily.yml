@@ -34,8 +34,9 @@ jobs:
       - name: 'Install bsddb3 wheel'
         run: |
           $mirror = 'https://github.com/c-w/gutenberg/files/4944332/bsddb3-wheels.zip'
-          $pythonVersionMinor = python -c 'import sys; print(sys.version_info.minor)'
           $pythonVersionMajor = python -c 'import sys; print(sys.version_info.major)'
+          $pythonVersionMinor = python -c 'import sys; print(sys.version_info.minor)'
+          $pythonVersionMinor = [int]$pythonVersionMinor
           if ($pythonVersionMajor -lt 3) { exit 0 }
           $bsddbVersion = if ($pythonVersionMinor -eq 5) { '6.2.6' } else { '6.2.7' }
           $abiTag = if ($pythonVersionMinor -ge 8) { "cp3$pythonVersionMinor" } else { "cp3${pythonVersionMinor}m" }
