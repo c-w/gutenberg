@@ -41,9 +41,11 @@ jobs:
           $abiTag = if ($pythonVersionMinor -ge 8) { "cp3$pythonVersionMinor" } else { "cp3${pythonVersionMinor}m" }
           $wheel = "bsddb3-$bsddbVersion-cp3$pythonVersionMinor-$abiTag-win_amd64.whl"
           $tmpDir = [System.IO.Path]::GetTempPath()
-          Invoke-WebRequest -Uri "$mirror" -OutFile "$tmpDir\wheels.zip"
-          Expand-Archive "$tmpDir\wheels.zip" "$tmpDir"
-          pip install "$tmpDir\$wheel"
+          $zipPath = Join-Path "$tmpDir" "wheels.zip"
+          $wheelPath = Join-Path "$tmpDir" "$wheel"
+          Invoke-WebRequest -Uri "$mirror" -OutFile "$zipPath"
+          Expand-Archive "$zipPath" "$tmpDir"
+          pip install "$wheelPath"
         shell: powershell
         if: matrix.os == 'windows'
 
