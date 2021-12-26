@@ -13,10 +13,10 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
 
     strategy:
+      fail-fast: false
       matrix:
         python:
           - '2.7'
-          - '3.5'
           - '3.9'
         os:
           - windows
@@ -33,17 +33,19 @@ jobs:
 
       - name: 'Install bsddb3 wheel'
         run: |
-          $mirror = 'https://github.com/c-w/gutenberg/files/4944332/bsddb3-wheels.zip'
-          $pythonVersionMinor = python -c 'import sys; print(sys.version_info.minor)'
-          $pythonVersionMajor = python -c 'import sys; print(sys.version_info.major)'
+          $mirror = 'https://github.com/c-w/gutenberg/files/7776074/bsddb3-wheels.zip'
+          $pythonVersionMinor = [int]::Parse($(python -c 'import sys; print(sys.version_info.minor)'))
+          $pythonVersionMajor = [int]::Parse($(python -c 'import sys; print(sys.version_info.major)'))
           if ($pythonVersionMajor -lt 3) { exit 0 }
-          $bsddbVersion = if ($pythonVersionMinor -eq 5) { '6.2.6' } else { '6.2.7' }
+          $bsddbVersion = '6.2.9'
           $abiTag = if ($pythonVersionMinor -ge 8) { "cp3$pythonVersionMinor" } else { "cp3${pythonVersionMinor}m" }
           $wheel = "bsddb3-$bsddbVersion-cp3$pythonVersionMinor-$abiTag-win_amd64.whl"
           $tmpDir = [System.IO.Path]::GetTempPath()
-          Invoke-WebRequest -Uri "$mirror" -OutFile "$tmpDir\wheels.zip"
-          Expand-Archive "$tmpDir\wheels.zip" "$tmpDir"
-          pip install "$tmpDir\$wheel"
+          $zipPath = Join-Path "$tmpDir" "wheels.zip"
+          $wheelPath = Join-Path "$tmpDir" "$wheel"
+          Invoke-WebRequest -Uri "$mirror" -OutFile "$zipPath"
+          Expand-Archive "$zipPath" "$tmpDir"
+          pip install "$wheelPath"
         shell: powershell
         if: matrix.os == 'windows'
 

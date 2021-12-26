@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         python:
           - '2.7'
-          - '3.5'
           - '3.6'
           - '3.7'
           - '3.8'

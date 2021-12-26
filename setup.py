@@ -17,6 +17,7 @@ install_requires = [
     'setuptools>=18.5',
     'rdflib-sqlalchemy>=0.3.8',
     'SPARQLWrapper>=1.8.2',
+    'pyparsing<3.0.0',
 ]
 
 if version_info.major == 2:
@@ -55,7 +56,6 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
