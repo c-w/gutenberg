@@ -72,7 +72,7 @@ Alternatively, you can also run the project via Docker:
 
 .. sourcecode :: sh
 
-    docker build -t gutenberg -f Dockerfile-py3 .
+    docker build -t gutenberg .
 
     docker run -it -v /some/mount/path:/data gutenberg python
 
