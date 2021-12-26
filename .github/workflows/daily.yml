@@ -17,6 +17,7 @@ jobs:
       matrix:
         python:
           - '2.7'
+          - '3.9'
         os:
           - windows
           - macos
