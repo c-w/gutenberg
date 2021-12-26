@@ -1,8 +1,6 @@
 """Module to handle os-level interactions."""
 
 
-from __future__ import absolute_import, unicode_literals
-from io import open
 import codecs
 import errno
 import os
@@ -57,7 +55,7 @@ def determine_encoding(path, default=None):
     try:
         with open(path, 'rb') as infile:
             raw = infile.read(4)
-    except IOError:
+    except OSError:
         return default
 
     for encoding, boms in byte_order_marks:

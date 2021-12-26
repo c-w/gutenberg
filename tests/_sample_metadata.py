@@ -1,16 +1,14 @@
-# -*- coding: utf-8 -*-
 # pylint: disable=C0111
 # pylint: disable=W0142
 
 
-from __future__ import absolute_import, unicode_literals
 import codecs
 import json
 import os
 import sys
 
 
-class SampleMetaData(object):
+class SampleMetaData:
     __uids = {}
 
     def __init__(self, etextno, authors=None, titles=None, formaturi=None,

@@ -2,7 +2,6 @@
 # pylint: disable=R0904
 
 
-from __future__ import absolute_import, unicode_literals
 import unittest
 
 from tests._sample_metadata import SampleMetaData

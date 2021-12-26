@@ -1,8 +1,6 @@
 """Module to remove the noise from Project Gutenberg texts."""
 
 
-from __future__ import absolute_import, unicode_literals
-from builtins import str
 import os
 
 from gutenberg._domain_model.text import TEXT_END_MARKERS

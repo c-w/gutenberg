@@ -3,7 +3,6 @@
 # pylint: disable=R0904
 
 
-from __future__ import absolute_import, unicode_literals
 import abc
 import codecs
 import os
@@ -23,7 +22,7 @@ from tests._util import always_throw
 
 class TestAllSubclasses(unittest.TestCase):
     def test_all_subclasses(self):
-        class Root(object):
+        class Root:
             pass
 
         class AB(Root):
@@ -48,7 +47,7 @@ class TestAllSubclasses(unittest.TestCase):
 class TestAbstractClassMethod(unittest.TestCase):
     def test_abstractclassmethod(self):
         class ClassWithAbstractClassMethod(
-                with_metaclass(abc.ABCMeta, object)):
+                metaclass=abc.ABCMeta):
             @abstractclassmethod
             def method(cls):
                 pass
@@ -110,7 +109,7 @@ class TestReopenEncoded(unittest.TestCase):
             with codecs.open(self.temporary_path, 'w', encoding) as fobj:
                 fobj.write('something')
 
-            with open(self.temporary_path, 'r') as fobj:
+            with open(self.temporary_path) as fobj:
                 reopened_fobj = reopen_encoded(fobj, fobj.mode, encoding)
                 self.assertEqual(reopened_fobj.encoding.lower(), encoding)
 

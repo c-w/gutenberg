@@ -1,7 +1,6 @@
 """Module to deal with metadata acquisition."""
 # pylint:disable=W0603
 
-from __future__ import absolute_import, unicode_literals
 
 import abc
 import codecs
@@ -40,7 +39,7 @@ _DB_IDENTIFIER = 'urn:gutenberg:metadata'
 _DB_PATH = local_path(os.path.join('metadata', 'metadata.db'))
 
 
-class MetadataCache(with_metaclass(abc.ABCMeta, object)):
+class MetadataCache(metaclass=abc.ABCMeta):
     """Super-class for all metadata cache implementations.
 
     """
@@ -309,7 +308,7 @@ class SqliteMetadataCache(MetadataCache):
         # integrity errors due to violating unique constraints should be safe
         # to ignore since the only unique constraints in rdflib-sqlalchemy are
         # on index columns
-        return 'UNIQUE constraint failed' in text_type(ex)
+        return 'UNIQUE constraint failed' in str(ex)
 
 
 _METADATA_CACHE = None

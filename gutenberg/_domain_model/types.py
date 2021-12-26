@@ -1,6 +1,5 @@
 """Module to deal with type validation."""
 
-from __future__ import unicode_literals
 
 from gutenberg._domain_model.exceptions import InvalidEtextIdException
 

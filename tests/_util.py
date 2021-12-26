@@ -4,8 +4,6 @@
 # pylint: disable=W0212
 
 
-from __future__ import absolute_import, unicode_literals
-
 import abc
 import os
 import shutil
@@ -24,7 +22,7 @@ INTEGRATION_TESTS_ENABLED = bool(os.getenv('GUTENBERG_RUN_INTEGRATION_TESTS'))
 
 
 # noinspection PyPep8Naming,PyAttributeOutsideInit
-class MockTextMixin(object):
+class MockTextMixin:
     def setUp(self):
         self.mock_text_cache = tempfile.mkdtemp()
         set_text_cache(self.mock_text_cache)
@@ -34,7 +32,7 @@ class MockTextMixin(object):
 
 
 # noinspection PyPep8Naming,PyAttributeOutsideInit
-class MockMetadataMixin(with_metaclass(abc.ABCMeta, object)):
+class MockMetadataMixin(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def sample_data(self):
         raise NotImplementedError  # pragma: no cover
