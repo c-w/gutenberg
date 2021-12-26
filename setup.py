@@ -11,7 +11,6 @@ install_requires = [
     'future>=0.15.2',
     'rdflib>=4.2.0,<5.0.0',
     'requests>=2.5.1',
-    'six>=1.10.0',
     'setuptools>=18.5',
     'rdflib-sqlalchemy>=0.3.8',
     'SPARQLWrapper>=1.8.2',

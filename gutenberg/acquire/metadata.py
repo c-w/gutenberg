@@ -21,8 +21,6 @@ from rdflib.store import Store
 from rdflib.term import BNode
 from rdflib.term import URIRef
 from rdflib_sqlalchemy import registerplugins
-from six import text_type
-from six import with_metaclass
 
 from gutenberg._domain_model.exceptions import CacheAlreadyExistsException
 from gutenberg._domain_model.exceptions import InvalidCacheException

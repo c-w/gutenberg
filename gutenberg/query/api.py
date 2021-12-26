@@ -5,7 +5,6 @@
 import abc
 import os
 
-from six import with_metaclass
 from rdflib.term import URIRef
 
 from gutenberg._domain_model.exceptions import InvalidEtextIdException

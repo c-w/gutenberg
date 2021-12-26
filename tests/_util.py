@@ -11,8 +11,6 @@ import tempfile
 from contextlib import closing
 from contextlib import contextmanager
 
-from six import with_metaclass
-
 from gutenberg.acquire.metadata import SleepycatMetadataCache
 from gutenberg.acquire.metadata import set_metadata_cache
 import gutenberg.acquire.text
