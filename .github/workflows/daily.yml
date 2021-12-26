@@ -34,11 +34,11 @@ jobs:
       - name: 'Install bsddb3 wheel'
         run: |
           $mirror = 'https://github.com/c-w/gutenberg/files/7776074/bsddb3-wheels.zip'
-          $pythonVersionMinor = python -c 'import sys; print(sys.version_info.minor)' -as[int]
-          $pythonVersionMajor = python -c 'import sys; print(sys.version_info.major)' -as[int]
+          $pythonVersionMinor = [int]::Parse($(python -c 'import sys; print(sys.version_info.minor)'))
+          $pythonVersionMajor = [int]::Parse($(python -c 'import sys; print(sys.version_info.major)'))
           if ($pythonVersionMajor -lt 3) { exit 0 }
           $bsddbVersion = '6.2.9'
-          $abiTag = if ($pythonVersionMinor -le 7) { "cp3$pythonVersionMinor" } else { "cp3${pythonVersionMinor}m" }
+          $abiTag = if ($pythonVersionMinor -ge 8) { "cp3$pythonVersionMinor" } else { "cp3${pythonVersionMinor}m" }
           $wheel = "bsddb3-$bsddbVersion-cp3$pythonVersionMinor-$abiTag-win_amd64.whl"
           $tmpDir = [System.IO.Path]::GetTempPath()
           $zipPath = Join-Path "$tmpDir" "wheels.zip"
