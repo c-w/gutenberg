@@ -13,6 +13,7 @@ import tarfile
 import tempfile
 from contextlib import closing
 from contextlib import contextmanager
+from urllib.request import urlopen
 
 from rdflib import plugin
 from rdflib.graph import Graph
@@ -32,7 +33,6 @@ from gutenberg._domain_model.vocabulary import PGTERMS
 from gutenberg._util.logging import disable_logging
 from gutenberg._util.os import makedirs
 from gutenberg._util.os import remove
-from gutenberg._util.url import urlopen
 
 _GUTENBERG_CATALOG_URL = \
     r'http://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2'
@@ -193,14 +193,11 @@ class SleepycatMetadataCache(MetadataCache):
     @classmethod
     def _check_can_be_instantiated(cls):
         try:
-            from bsddb import db
+            from bsddb3 import db
         except ImportError:
-            try:
-                from bsddb3 import db
-            except ImportError:
-                db = None
+            db = None
         if db is None:
-            raise InvalidCacheException('no install of bsddb/bsddb3 found')
+            raise InvalidCacheException('no install of bsddb3 found')
         del db
 
 

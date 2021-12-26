@@ -3,10 +3,10 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from rdflib.term import bind
 from rdflib.term import Literal
 from rdflib.term import URIRef
 
-from gutenberg._domain_model.types import rdf_bind_to_string
 from gutenberg._domain_model.vocabulary import DCTERMS
 from gutenberg._domain_model.vocabulary import PGTERMS
 from gutenberg._domain_model.vocabulary import RDFTERMS
@@ -117,7 +117,7 @@ class LanguageExtractor(_SimplePredicateRelationshipExtractor):
 
     """
     _DATATYPE = URIRef('http://purl.org/dc/terms/RFC4646')
-    rdf_bind_to_string(_DATATYPE)
+    bind(_DATATYPE, str)
 
     @classmethod
     def feature_name(cls):

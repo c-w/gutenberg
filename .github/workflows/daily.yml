@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         python:
-          - '2.7'
+          - '3.6'
           - '3.9'
         os:
           - windows
@@ -35,8 +35,6 @@ jobs:
         run: |
           $mirror = 'https://github.com/c-w/gutenberg/files/7776074/bsddb3-wheels.zip'
           $pythonVersionMinor = [int]::Parse($(python -c 'import sys; print(sys.version_info.minor)'))
-          $pythonVersionMajor = [int]::Parse($(python -c 'import sys; print(sys.version_info.major)'))
-          if ($pythonVersionMajor -lt 3) { exit 0 }
           $bsddbVersion = '6.2.9'
           $abiTag = if ($pythonVersionMinor -ge 8) { "cp3$pythonVersionMinor" } else { "cp3${pythonVersionMinor}m" }
           $wheel = "bsddb3-$bsddbVersion-cp3$pythonVersionMinor-$abiTag-win_amd64.whl"

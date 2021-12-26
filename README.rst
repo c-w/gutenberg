@@ -30,7 +30,7 @@ The functionality provided by this package includes:
 * Cleaning the texts: removing all the crud, leaving just the text behind.
 * Making meta-data about the texts easily accessible.
 
-The package has been tested with Python 2.7 and 3.5+.
+The package has been tested with Python 3.6+.
 
 An HTTP interface to this package exists too.
 `Try it out! <https://github.com/c-w/gutenberg-http>`_
@@ -80,9 +80,7 @@ Alternatively, you can also run the project via Docker:
 Python 3
 --------
 
-This package depends on BSD-DB. The bsddb module was removed from the Python
-standard library since version 2.7. This means that if you wish to use gutenberg
-on Python 3, you will need to manually install BSD-DB.
+This package depends on BSD-DB and you will need to manually install it.
 
 If getting BSD-DB to run on your platform is difficult, take a look at
 `gutenbergpy <https://github.com/raduangelescu/gutenbergpy>`_ which only
@@ -114,8 +112,7 @@ Windows
 *******
 
 On Windows, it's easiest to download a pre-compiled version of BSD-DB from
-`pythonlibs <http://www.lfd.uci.edu/~gohlke/pythonlibs/>`_ which works great
-for Python 3.5+.
+`pythonlibs <http://www.lfd.uci.edu/~gohlke/pythonlibs/>`_ which works great.
 
 For example, if you have Python 3.5 on a 64-bit version of Windows, you
 should download :code:`bsddb3‑6.2.1‑cp35‑cp35m‑win_amd64.whl`.

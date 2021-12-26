@@ -6,12 +6,7 @@ from __future__ import absolute_import, unicode_literals
 import gzip
 import os
 from contextlib import closing
-
-try:
-    from functools import lru_cache
-except ImportError:
-    # six: use backport for Python 2.7
-    from functools32 import lru_cache
+from functools import lru_cache
 
 from requests.exceptions import RequestException
 import requests

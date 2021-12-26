@@ -8,8 +8,8 @@ import os
 import sys
 import tempfile
 import unittest
+from urllib.request import pathname2url
 
-from gutenberg._util.url import pathname2url
 from gutenberg.acquire.metadata import CacheAlreadyExistsException
 from gutenberg.acquire.metadata import InvalidCacheException
 from gutenberg.acquire.metadata import FusekiMetadataCache
