@@ -39,7 +39,7 @@ with codecs.open('README.rst', encoding='utf-8') as fobj:
 
 setup(
     name='Gutenberg',
-    version='0.8.1',
+    version='0.8.2',
     author='Clemens Wolff',
     author_email='clemens.wolff+pypi@gmail.com',
     packages=find_packages(exclude=['tests']),
