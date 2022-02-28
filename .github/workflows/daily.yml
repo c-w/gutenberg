@@ -10,6 +10,7 @@ on:
 
 jobs:
   daily:
+    if: github.repository_owner == 'c-w'
     runs-on: ${{ matrix.os }}-latest
 
     strategy:
