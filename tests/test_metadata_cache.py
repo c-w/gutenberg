@@ -2,14 +2,12 @@
 # pylint: disable=R0904
 
 
-from __future__ import absolute_import, unicode_literals
-
 import os
 import sys
 import tempfile
 import unittest
+from urllib.request import pathname2url
 
-from gutenberg._util.url import pathname2url
 from gutenberg.acquire.metadata import CacheAlreadyExistsException
 from gutenberg.acquire.metadata import InvalidCacheException
 from gutenberg.acquire.metadata import FusekiMetadataCache
@@ -21,7 +19,7 @@ from tests._util import always_throw
 
 
 # noinspection PyPep8Naming,PyAttributeOutsideInit
-class MetadataCache(object):
+class MetadataCache:
     def test_read_unpopulated_cache(self):
         set_metadata_cache(self.cache)
         try:

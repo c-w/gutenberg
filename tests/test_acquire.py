@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
 # pylint: disable=C0111
 # pylint: disable=R0904
 
 
-from __future__ import absolute_import, unicode_literals
-from builtins import str
 import itertools
 import unittest
 import re
@@ -82,7 +79,7 @@ class TestExtensionsLoadEtext(unittest.TestCase):
         responses.add(responses.HEAD, text._GUTENBERG_MIRROR, status=200)
 
         for valid_file in valid_files:
-            url = re.compile('^.*{}$'.format(valid_file))
+            url = re.compile(f'^.*{valid_file}$')
             responses.add(responses.HEAD, url, status=200)
 
     @responses.activate

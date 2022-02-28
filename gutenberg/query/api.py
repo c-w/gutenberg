@@ -2,11 +2,9 @@
 # pylint: disable=R0921
 
 
-from __future__ import absolute_import, unicode_literals
 import abc
 import os
 
-from six import with_metaclass
 from rdflib.term import URIRef
 
 from gutenberg._domain_model.exceptions import InvalidEtextIdException
@@ -70,7 +68,7 @@ def list_supported_metadatas():
     return tuple(sorted(MetadataExtractor._implementations().keys()))
 
 
-class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
+class MetadataExtractor(metaclass=abc.ABCMeta):
     """This class represents the interface by which the public functions in
     this API can be extended to provide access to Project Gutenberg meta-data.
     For each meta-data feature X that we want to be able to extract via the
@@ -120,7 +118,7 @@ class MetadataExtractor(with_metaclass(abc.ABCMeta, object)):
         identify the text in the meta-data RDF graph.
 
         """
-        uri = r'http://www.gutenberg.org/ebooks/{}'.format(etextno)
+        uri = fr'http://www.gutenberg.org/ebooks/{etextno}'
         return URIRef(uri)
 
     @classmethod

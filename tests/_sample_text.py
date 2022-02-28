@@ -2,15 +2,13 @@
 # pylint: disable=R0903
 
 
-from __future__ import absolute_import, unicode_literals
-from io import open
 import os
 import sys
 
 from gutenberg._util.os import determine_encoding
 
 
-class SampleText(object):
+class SampleText:
     def __init__(self, etextno, raw_text, clean_text):
         self.etextno = etextno
         self.raw_text = raw_text

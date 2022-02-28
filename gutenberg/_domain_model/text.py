@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
 """Data module that contains strings that mark the start and end of a Project
 Gutenberg disclaimer/header."""
-
-from __future__ import unicode_literals
 
 
 TEXT_START_MARKERS = frozenset((

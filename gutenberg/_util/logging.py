@@ -1,8 +1,6 @@
 """Module to deal with logging."""
 
 
-from __future__ import absolute_import, unicode_literals
-
 from contextlib import contextmanager
 import logging
 

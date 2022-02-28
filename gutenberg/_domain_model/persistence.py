@@ -1,7 +1,6 @@
 """Module to deal with storing data files on disk."""
 
 
-from __future__ import absolute_import, unicode_literals
 import os
 
 

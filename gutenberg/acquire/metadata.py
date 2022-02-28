@@ -1,7 +1,6 @@
 """Module to deal with metadata acquisition."""
 # pylint:disable=W0603
 
-from __future__ import absolute_import, unicode_literals
 
 import abc
 import codecs
@@ -13,6 +12,7 @@ import tarfile
 import tempfile
 from contextlib import closing
 from contextlib import contextmanager
+from urllib.request import urlopen
 
 from rdflib import plugin
 from rdflib.graph import Graph
@@ -21,8 +21,6 @@ from rdflib.store import Store
 from rdflib.term import BNode
 from rdflib.term import URIRef
 from rdflib_sqlalchemy import registerplugins
-from six import text_type
-from six import with_metaclass
 
 from gutenberg._domain_model.exceptions import CacheAlreadyExistsException
 from gutenberg._domain_model.exceptions import InvalidCacheException
@@ -32,7 +30,6 @@ from gutenberg._domain_model.vocabulary import PGTERMS
 from gutenberg._util.logging import disable_logging
 from gutenberg._util.os import makedirs
 from gutenberg._util.os import remove
-from gutenberg._util.url import urlopen
 
 _GUTENBERG_CATALOG_URL = \
     r'http://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2'
@@ -40,7 +37,7 @@ _DB_IDENTIFIER = 'urn:gutenberg:metadata'
 _DB_PATH = local_path(os.path.join('metadata', 'metadata.db'))
 
 
-class MetadataCache(with_metaclass(abc.ABCMeta, object)):
+class MetadataCache(metaclass=abc.ABCMeta):
     """Super-class for all metadata cache implementations.
 
     """
@@ -193,14 +190,11 @@ class SleepycatMetadataCache(MetadataCache):
     @classmethod
     def _check_can_be_instantiated(cls):
         try:
-            from bsddb import db
+            from bsddb3 import db
         except ImportError:
-            try:
-                from bsddb3 import db
-            except ImportError:
-                db = None
+            db = None
         if db is None:
-            raise InvalidCacheException('no install of bsddb/bsddb3 found')
+            raise InvalidCacheException('no install of bsddb3 found')
         del db
 
 
@@ -312,7 +306,7 @@ class SqliteMetadataCache(MetadataCache):
         # integrity errors due to violating unique constraints should be safe
         # to ignore since the only unique constraints in rdflib-sqlalchemy are
         # on index columns
-        return 'UNIQUE constraint failed' in text_type(ex)
+        return 'UNIQUE constraint failed' in str(ex)
 
 
 _METADATA_CACHE = None

@@ -1,17 +1,10 @@
 """Module to deal with text acquisition."""
 
 
-from __future__ import absolute_import, unicode_literals
-
 import gzip
 import os
 from contextlib import closing
-
-try:
-    from functools import lru_cache
-except ImportError:
-    # six: use backport for Python 2.7
-    from functools32 import lru_cache
+from functools import lru_cache
 
 from requests.exceptions import RequestException
 import requests
@@ -44,7 +37,7 @@ def _etextno_to_uri_subdirectory(etextno):
     str_etextno = str(etextno).zfill(2)
     all_but_last_digit = list(str_etextno[:-1])
     subdir_part = "/".join(all_but_last_digit)
-    subdir = "{}/{}".format(subdir_part, etextno)  # etextno not zfilled
+    subdir = f"{subdir_part}/{etextno}"  # etextno not zfilled
     return subdir
 
 
@@ -126,7 +119,7 @@ def load_etext(etextno, refresh_cache=False, mirror=None, prefer_ascii=False):
 
     """
     etextno = validate_etextno(etextno)
-    cached = os.path.join(_TEXT_CACHE, '{}.txt.gz'.format(etextno))
+    cached = os.path.join(_TEXT_CACHE, f'{etextno}.txt.gz')
 
     if refresh_cache:
         remove(cached)
