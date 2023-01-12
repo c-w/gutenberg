@@ -1,3 +1,6 @@
+:Warning: All the maintainers of this project have moved on so this project isn't receiving support anymore. If you wish to revive the project, reach out to `me <https://justamouse.com/>`_ and we'll make it happen.
+:Alternatives: Check out `gutenbergpy <https://github.com/raduangelescu/gutenbergpy>`_.
+
 *********
 Gutenberg
 *********
